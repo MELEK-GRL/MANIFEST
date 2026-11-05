@@ -1,0 +1,47 @@
+{
+  "tabs": {
+    "home": "Home",
+    "manifest": "Manifest",
+    "vision": "Vision",
+    "affirmation": "Olumlama"
+  },
+  "home": {
+    "title": "Home",
+    "subtitle": "Günün niyeti burada başlar.",
+    "today": "Bugün",
+    "body": "Küçük bir niyet seç ve gün boyu ona dön."
+  },
+  "manifestation": {
+    "title": "Manifestasyon",
+    "subtitle": "Niyetini netleştir, sonra ona alan aç.",
+    "step1": "Niyeti tek cümlede yaz.",
+    "step2": "Onu şimdiki zamanla söyle.",
+    "step3": "Günün sonunda bir kez daha oku."
+  },
+  "vision": {
+    "title": "Vision Board",
+    "subtitle": "Görmek istediğin hayatı bir araya getir.",
+    "life": "Yaşam",
+    "body": "Beden",
+    "relationship": "İlişki",
+    "creation": "Yaratım"
+  },
+  "affirmations": {
+    "title": "Olumlamalar",
+    "subtitle": "Kendine söylediğin cümleler günü taşır.",
+    "line1": "Kendime nazikçe yer açıyorum.",
+    "line2": "İstediğim hayatı sakin adımlarla kuruyorum.",
+    "line3": "Bugün yeterince iyi bir başlangıç."
+  },
+  "common": {
+    "warning": "Uyarı",
+    "confirm": "Devam etmek istediğine emin misin?",
+    "ok": "Tamam",
+    "error": "Hata",
+    "info": "Bilgi",
+    "search": "Ara",
+    "clearSearch": "Aramayı temizle",
+    "showPassword": "Şifreyi göster",
+    "hidePassword": "Şifreyi gizle"
+  }
+}

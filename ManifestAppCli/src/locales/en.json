@@ -1,0 +1,47 @@
+{
+  "tabs": {
+    "home": "Home",
+    "manifest": "Manifest",
+    "vision": "Vision",
+    "affirmation": "Affirm"
+  },
+  "home": {
+    "title": "Home",
+    "subtitle": "Today's intention starts here.",
+    "today": "Today",
+    "body": "Choose a small intention and return to it through the day."
+  },
+  "manifestation": {
+    "title": "Manifestation",
+    "subtitle": "Name the intention, then make room for it.",
+    "step1": "Write the intention in one sentence.",
+    "step2": "Say it in the present tense.",
+    "step3": "Read it once more at the end of the day."
+  },
+  "vision": {
+    "title": "Vision Board",
+    "subtitle": "Bring the life you want to see into one place.",
+    "life": "Life",
+    "body": "Body",
+    "relationship": "Relationship",
+    "creation": "Creation"
+  },
+  "affirmations": {
+    "title": "Affirmations",
+    "subtitle": "The sentences you tell yourself carry the day.",
+    "line1": "I gently make room for myself.",
+    "line2": "I build the life I want with calm steps.",
+    "line3": "Today is a good enough beginning."
+  },
+  "common": {
+    "warning": "Warning",
+    "confirm": "Are you sure you want to continue?",
+    "ok": "OK",
+    "error": "Error",
+    "info": "Info",
+    "search": "Search",
+    "clearSearch": "Clear search",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password"
+  }
+}
