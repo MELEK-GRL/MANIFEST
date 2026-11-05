@@ -64,7 +64,7 @@ const Header: React.FC<Props> = ({
   return (
     <View style={styles.wrap}>
       <LinearGradient
-        colors={[colors.backgroundPurpleDark, '#8B6FEB']}
+        colors={colors.gradientPrimary}
         start={{x: 0, y: 0}}
         end={{x: 0, y: 1}}
         style={styles.header}>

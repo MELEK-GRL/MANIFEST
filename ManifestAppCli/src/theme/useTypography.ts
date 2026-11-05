@@ -2,12 +2,16 @@ import {useMemo} from 'react';
 import {useResponsive} from '../utils/deviceStore/device';
 import {
   fontFamily as defaultFontFamily,
+  fontFamilies,
+  resolveFontFamily,
   baseFontSize,
   baseLineHeight,
   getScaledSizes,
   clampFontScale,
   FONT_SIZE_MULTIPLIER,
   type FontSizeKey,
+  type FontFamilyVariant,
+  type FontWeightToken,
 } from './typography';
 
 /**
@@ -34,6 +38,12 @@ export function useTypography() {
 
     return {
       fontFamily: defaultFontFamily,
+      fontFamilies,
+      resolveFontFamily: (
+        variant: FontFamilyVariant,
+        weight?: FontWeightToken,
+        italic?: boolean,
+      ) => resolveFontFamily(variant, weight, italic),
       fontSize,
       lineHeight,
       scaledSize,

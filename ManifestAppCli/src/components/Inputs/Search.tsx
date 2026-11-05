@@ -46,9 +46,9 @@ const Search: React.FC<Props> = ({
           flexDirection: 'row',
           alignItems: 'center',
           borderWidth: 1,
-          borderColor: colors.inputBorder,
+          borderColor: colors.borderSoft,
           borderRadius: 12 * w1px,
-          backgroundColor: colors.textInput,
+          backgroundColor: colors.backgroundSoft,
           paddingLeft: 12 * w1px,
         },
         input: {
@@ -56,7 +56,7 @@ const Search: React.FC<Props> = ({
           paddingVertical: 10 * h1px,
           paddingHorizontal: 8 * w1px,
           fontSize: fontSize.body * scale,
-          color: '#111827',
+          color: colors.textDark,
         },
         clear: {
           paddingHorizontal: 12 * w1px,
@@ -72,13 +72,13 @@ const Search: React.FC<Props> = ({
         <Icon
           name="search-outline"
           size="medium"
-          color={colors.textGraySoft}
+          color={colors.textMuted}
         />
         <RNTextInput
           value={value}
           onChangeText={onChangeText}
           placeholder={placeholder ?? t('common.search')}
-          placeholderTextColor={colors.buttonGray}
+          placeholderTextColor={colors.textLight}
           style={[styles.input, style]}
           editable={editable}
           autoCapitalize={autoCapitalize}
@@ -93,7 +93,7 @@ const Search: React.FC<Props> = ({
             onPress={() => onChangeText('')}
             activeOpacity={0.7}
             accessibilityLabel={t('common.clearSearch')}>
-            <Icon name="close-circle" size="medium" color={colors.buttonGray} />
+            <Icon name="close-circle" size="medium" color={colors.textLight} />
           </TouchableOpacity>
         ) : null}
       </View>

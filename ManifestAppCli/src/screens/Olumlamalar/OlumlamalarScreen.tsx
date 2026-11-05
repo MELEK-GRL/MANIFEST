@@ -27,7 +27,7 @@ const OlumlamalarScreen = () => {
           paddingHorizontal: 18 * w1px,
           marginBottom: 12 * h1px,
           borderLeftWidth: 4 * w1px,
-          borderLeftColor: colors.backgroundPurple,
+          borderLeftColor: colors.primary,
         },
       }),
     [w1px, h1px, fs1px],

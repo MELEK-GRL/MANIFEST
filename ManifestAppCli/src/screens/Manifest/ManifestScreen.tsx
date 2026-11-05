@@ -34,7 +34,7 @@ const ManifestScreen = () => {
           height: 32 * w1px,
           borderRadius: 16 * w1px,
           marginRight: 12 * w1px,
-          backgroundColor: colors.backgroundPurpleSoft,
+          backgroundColor: colors.primarySoft,
           alignItems: 'center',
           justifyContent: 'center',
         },
@@ -50,7 +50,7 @@ const ManifestScreen = () => {
       {stepKeys.map((step, index) => (
         <View key={step} style={styles.card}>
           <View style={styles.index}>
-            <T size={fontSize.label} weight="700" color={colors.backgroundPurple}>
+            <T size={fontSize.label} weight="700" color={colors.primary}>
               {index + 1}
             </T>
           </View>

@@ -29,7 +29,7 @@ const PageHeader: React.FC<Props> = ({title}) => {
 
   return (
     <View style={styles.wrap}>
-      <T size={fontSize.title} weight="700" color={colors.textDark}>
+      <T family="serif" size={fontSize.title} weight="700" color={colors.textDark}>
         {title}
       </T>
     </View>

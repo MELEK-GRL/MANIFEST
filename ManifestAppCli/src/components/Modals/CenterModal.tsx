@@ -30,8 +30,8 @@ const CenterModal: React.FC<Props> = ({
   rightButtonText,
   onLeftPress,
   onRightPress,
-  leftButtonBackgroundColor = colors.backgroundPurple,
-  rightButtonBackgroundColor = colors.backgroundPurple,
+  leftButtonBackgroundColor = colors.primary,
+  rightButtonBackgroundColor = colors.primary,
   fixedHeight,
 }) => {
   const t = useT();
@@ -51,7 +51,7 @@ const CenterModal: React.FC<Props> = ({
           flex: 1,
           width: screenW,
           height: screenH,
-          backgroundColor: 'rgba(17, 24, 39, 0.4)',
+          backgroundColor: colors.overlay,
           justifyContent: 'center',
           alignItems: 'center',
         },
@@ -60,7 +60,7 @@ const CenterModal: React.FC<Props> = ({
           ...(useFixedHeight
             ? {height: boxHeight, maxHeight: boxHeight}
             : {maxHeight: boxHeight}),
-          backgroundColor: '#fff',
+          backgroundColor: colors.white,
           borderRadius: 8 * w1px,
           paddingVertical: 20 * h1px,
           paddingHorizontal: 16 * w1px,
@@ -120,7 +120,7 @@ const CenterModal: React.FC<Props> = ({
             {children ? (
               children
             ) : (
-              <T size={fontSize.body} color="#374151" align="center">
+              <T size={fontSize.body} color={colors.textMuted} align="center">
                                     {displayMessage}
               </T>
             )}

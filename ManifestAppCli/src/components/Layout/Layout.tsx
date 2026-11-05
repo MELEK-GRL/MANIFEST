@@ -2,6 +2,7 @@ import React, {useMemo} from 'react';
 import {View, StyleSheet, ViewStyle} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useResponsive} from '../../utils/deviceStore/device';
+import colors from '../../theme/colors';
 
 type Props = {
   children: React.ReactNode;
@@ -14,7 +15,7 @@ type Props = {
 const Layout: React.FC<Props> = ({
   children,
   style,
-  bgColor = 'white',
+  bgColor = colors.background,
   paddingHorizontal = 16,
   paddingVertical = 0,
 }) => {

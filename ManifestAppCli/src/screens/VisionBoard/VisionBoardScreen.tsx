@@ -1,5 +1,6 @@
 import React, {useMemo} from 'react';
 import {StyleSheet, View} from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import {useT} from '../../store/useLocaleStore';
 import {Icon, T} from '@components';
 import ScreenFrame from '../ScreenFrame';
@@ -24,16 +25,23 @@ const VisionBoardScreen = () => {
         grid: {
           flexDirection: 'row',
           flexWrap: 'wrap',
-          justifyContent: 'space-between',
+          marginHorizontal: -6 * w1px,
         },
         tile: {
-          width: '48%',
-          backgroundColor: colors.white,
-          borderRadius: 22 * fs1px,
-          minHeight: 140 * h1px,
+          width: '50%',
+          paddingHorizontal: 6 * w1px,
           marginBottom: 12 * h1px,
+        },
+        tileInner: {
+          minHeight: 140 * h1px,
+          borderRadius: 22 * fs1px,
           padding: 16 * w1px,
           justifyContent: 'space-between',
+          shadowColor: colors.primaryDark,
+          shadowOpacity: 0.14,
+          shadowRadius: 10,
+          shadowOffset: {width: 0, height: 4},
+          elevation: 4,
         },
       }),
     [w1px, h1px, fs1px],
@@ -44,10 +52,20 @@ const VisionBoardScreen = () => {
       <View style={styles.grid}>
         {tiles.map(tile => (
           <View key={tile.titleKey} style={styles.tile}>
-            <Icon name={tile.icon} size="large" color={colors.backgroundPurple} />
-            <T size={fontSize.subtitle} weight="600" color={colors.textDark}>
-              {t(tile.titleKey)}
-            </T>
+            <LinearGradient
+              colors={colors.gradientTile}
+              start={{x: 0, y: 0}}
+              end={{x: 1, y: 1}}
+              style={styles.tileInner}>
+              <Icon name={tile.icon} size="large" color={colors.primary} />
+              <T
+                family="serif"
+                size={fontSize.subtitle}
+                weight="600"
+                color={colors.textDark}>
+                {t(tile.titleKey)}
+              </T>
+            </LinearGradient>
           </View>
         ))}
       </View>

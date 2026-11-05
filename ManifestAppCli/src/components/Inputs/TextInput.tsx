@@ -56,16 +56,16 @@ const TextInput: React.FC<Props> = ({
           flexDirection: 'row',
           alignItems: 'center',
           borderWidth: 1,
-          borderColor: error ? '#ef4444' : colors.inputBorder,
+          borderColor: error ? colors.danger : colors.borderSoft,
           borderRadius: 8 * w1px,
-          backgroundColor: isSoft ? '#F9FAFB' : '#fff',
+          backgroundColor: isSoft ? colors.backgroundSoft : colors.white,
         },
         input: {
           flex: 1,
           paddingVertical: 10 * h1px,
           paddingHorizontal: 12 * w1px,
           fontSize: fontSize.body * scale,
-          color: isSoft ? '#9CA3AF' : '#111827',
+          color: isSoft ? colors.textLight : colors.textDark,
           paddingRight: passwordToggle ? 44 * w1px : 12 * w1px,
         },
         eyeTouch: {
@@ -89,7 +89,7 @@ const TextInput: React.FC<Props> = ({
         <T
           size={fontSize.subtitle}
           weight="400"
-          color={colors.textGraySoft}
+          color={colors.textMuted}
           style={styles.label}>
           {label}
         </T>
@@ -97,7 +97,7 @@ const TextInput: React.FC<Props> = ({
 
       <View style={styles.inputWrap}>
         <RNTextInput
-          placeholderTextColor={colors.buttonGray}
+          placeholderTextColor={colors.textLight}
           style={[styles.input, style]}
           {...props}
           editable={editable}
@@ -117,14 +117,14 @@ const TextInput: React.FC<Props> = ({
             <Icon
               name={showPassword ? 'eye-off-outline' : 'eye-outline'}
               size="medium"
-              color={colors.textGraySoft}
+              color={colors.textMuted}
             />
           </TouchableOpacity>
         ) : null}
       </View>
 
       {error ? (
-        <T size={fontSize.subtitle} color="#ef4444" style={styles.errorText}>
+        <T size={fontSize.subtitle} color={colors.danger} style={styles.errorText}>
           {error}
         </T>
       ) : null}

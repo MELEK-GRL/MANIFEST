@@ -31,7 +31,7 @@ const ScreenFrame: React.FC<Props> = ({title, subtitle, children}) => {
         },
         content: {
           paddingHorizontal: 20 * w1px,
-          paddingBottom: 140 * h1px,
+          paddingBottom: 150 * h1px,
         },
         subtitle: {
           marginTop: 6 * h1px,
@@ -44,9 +44,7 @@ const ScreenFrame: React.FC<Props> = ({title, subtitle, children}) => {
   );
 
   return (
-    <LinearGradient
-      colors={[colors.backgroundTop, colors.backgroundBottom]}
-      style={styles.gradient}>
+    <LinearGradient colors={colors.gradientHero} style={styles.gradient}>
       <View style={styles.safe}>
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -56,7 +54,7 @@ const ScreenFrame: React.FC<Props> = ({title, subtitle, children}) => {
             <T
               size={fontSize.body}
               weight="400"
-              color={colors.textLight}
+              color={colors.textMuted}
               style={styles.subtitle}>
               {subtitle}
             </T>

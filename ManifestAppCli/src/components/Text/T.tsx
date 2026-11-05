@@ -2,20 +2,15 @@ import React, {useMemo} from 'react';
 import {Text, TextStyle, StyleSheet, TextProps} from 'react-native';
 import {fontSize} from '../../constants/typography';
 import {useTypography} from '../../theme/useTypography';
+import type {FontFamilyVariant, FontWeightToken} from '../../theme/typography';
+import colors from '../../theme/colors';
 
 type Props = TextProps & {
   children: React.ReactNode;
   size?: number;
-  weight?:
-    | '100'
-    | '200'
-    | '300'
-    | '400'
-    | '500'
-    | '600'
-    | '700'
-    | '800'
-    | '900';
+  weight?: FontWeightToken;
+  family?: FontFamilyVariant;
+  italic?: boolean;
   color?: string;
   align?: 'left' | 'center' | 'right';
   style?: TextStyle;
@@ -25,25 +20,30 @@ const T: React.FC<Props> = ({
   children,
   size = fontSize.body,
   weight = '600',
-  color = '#111827',
+  family = 'sans',
+  italic = false,
+  color = colors.textDark,
   align = 'left',
   style,
   ...rest
 }) => {
-  const {fontFamily, scale} = useTypography();
+  const {resolveFontFamily, scale} = useTypography();
+  const resolvedFamily = resolveFontFamily(family, weight, italic);
 
   const styles = useMemo(
     () =>
       StyleSheet.create({
         text: {
           fontSize: size * scale,
-          fontWeight: weight,
+          // Weight baked into font file for non-italic; italic may use light weight boost.
+          fontWeight: italic ? weight : '400',
+          fontStyle: 'normal',
           color,
           textAlign: align,
-          fontFamily,
+          fontFamily: resolvedFamily,
         },
       }),
-    [size, weight, color, align, fontFamily, scale],
+    [size, color, align, resolvedFamily, scale, italic, weight],
   );
 
   return (

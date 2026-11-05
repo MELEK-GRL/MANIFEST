@@ -13,11 +13,6 @@ import T from '../Text/T';
 import colors from '../../theme/colors';
 import {fontSize} from '../../constants/typography';
 
-const PURPLE_GRADIENT: [string, string] = [
-  colors.backgroundPurpleDark,
-  '#8B6FEB',
-];
-
 type Props = {
   buttonText: string;
   onPress?: () => void;
@@ -37,20 +32,20 @@ const Button: React.FC<Props> = ({
   activityIndicatorLoading = false,
   style,
   width = '100%',
-  backgroundColor = colors.backgroundPurple,
+  backgroundColor = colors.primary,
 }) => {
   const {w1px, h1px} = useResponsive();
   const isBusy = loading || activityIndicatorLoading;
 
-  const isPurple =
-    backgroundColor === colors.backgroundPurple ||
-    backgroundColor === colors.backgroundPurpleDark;
+  const isPrimary =
+    backgroundColor === colors.primary ||
+    backgroundColor === colors.primaryDark;
 
   const styles = useMemo(
     () =>
       StyleSheet.create({
         button: {
-          backgroundColor: isPurple ? undefined : backgroundColor,
+          backgroundColor: isPrimary ? undefined : backgroundColor,
           borderRadius: 16 * w1px,
           paddingVertical: 10 * h1px,
           paddingHorizontal: 12 * h1px,
@@ -70,8 +65,11 @@ const Button: React.FC<Props> = ({
         pressable: {
           width: '100%',
         },
+        spinner: {
+          marginRight: 8 * w1px,
+        },
       }),
-    [w1px, h1px, disabled, width, backgroundColor, isPurple],
+    [w1px, h1px, disabled, width, backgroundColor, isPrimary],
   );
 
   const content = (
@@ -79,11 +77,11 @@ const Button: React.FC<Props> = ({
       {isBusy ? (
         <ActivityIndicator
           size="small"
-          color="#fff"
-          style={{marginRight: 8 * w1px}}
+          color={colors.textWhite}
+          style={styles.spinner}
         />
       ) : null}
-      <T size={fontSize.subtitle} weight="600" color="#fff">
+      <T size={fontSize.subtitle} weight="600" color={colors.textWhite}>
         {buttonText}
       </T>
     </>
@@ -96,9 +94,9 @@ const Button: React.FC<Props> = ({
         activeOpacity={0.8}
         disabled={disabled || isBusy}
         style={[styles.pressable, style]}>
-        {isPurple ? (
+        {isPrimary ? (
           <LinearGradient
-            colors={PURPLE_GRADIENT}
+            colors={colors.gradientPrimary}
             start={{x: 0, y: 0}}
             end={{x: 0, y: 1}}
             style={styles.button}>

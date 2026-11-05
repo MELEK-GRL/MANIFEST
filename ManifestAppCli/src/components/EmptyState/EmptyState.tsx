@@ -29,12 +29,12 @@ const EmptyState: React.FC<Props> = ({title, subtitle, style}) => {
           width: 88 * w1px,
           height: 88 * w1px,
           borderRadius: 44 * w1px,
-          backgroundColor: colors.backgroundPurpleSoft,
+          backgroundColor: colors.primarySoft,
           alignItems: 'center',
           justifyContent: 'center',
           marginBottom: 16 * h1px,
           borderWidth: 1,
-          borderColor: 'rgba(116, 83, 224, 0.15)',
+          borderColor: colors.borderSoft,
         },
         title: {
           width: '100%',
@@ -53,13 +53,13 @@ const EmptyState: React.FC<Props> = ({title, subtitle, style}) => {
         <Icon
           name="document-text-outline"
           size="xxl"
-          color={colors.backgroundPurple}
+          color={colors.primary}
         />
       </View>
       <T
         size={fontSize.subtitle}
         weight="400"
-        color="#6B7280"
+        color={colors.textMuted}
         align="center"
         style={styles.title}>
         {title}
@@ -68,7 +68,7 @@ const EmptyState: React.FC<Props> = ({title, subtitle, style}) => {
         <T
           size={fontSize.body}
           weight="400"
-          color="#9CA3AF"
+          color={colors.textLight}
           align="center"
           style={styles.subtitle}>
           {subtitle}

@@ -1,0 +1,45 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "src/assets/fonts/Montserrat-Bold.ttf",
+      "sha1": "8d25a921501a92977c63bbdc0545c9e8be0cac4b"
+    },
+    {
+      "path": "src/assets/fonts/Montserrat-Medium.ttf",
+      "sha1": "321d56022fc72f5e35decbc8e97442116a96908e"
+    },
+    {
+      "path": "src/assets/fonts/Montserrat-Regular.ttf",
+      "sha1": "7a56bc06d2b862fb6d070dfc77e8ac366e2942b2"
+    },
+    {
+      "path": "src/assets/fonts/Montserrat-SemiBold.ttf",
+      "sha1": "3db04f05d6ea9c594e32567b3e846efe66e8d47e"
+    },
+    {
+      "path": "src/assets/fonts/OFL-Montserrat.txt",
+      "sha1": "c6e5a0782514a498ac406c73aee2c0fe4170188b"
+    },
+    {
+      "path": "src/assets/fonts/OFL-PlayfairDisplay.txt",
+      "sha1": "e997375e22668c444135764f63ddae74fc617985"
+    },
+    {
+      "path": "src/assets/fonts/PlayfairDisplay-Bold.ttf",
+      "sha1": "f03c57ef5c5c7fd4ddba282310c6e828c748c6ad"
+    },
+    {
+      "path": "src/assets/fonts/PlayfairDisplay-Italic.ttf",
+      "sha1": "7a9eaea7b6eb85525b5ba45013b4963ed86bdf88"
+    },
+    {
+      "path": "src/assets/fonts/PlayfairDisplay-Regular.ttf",
+      "sha1": "871afc2d998e9baebf75cd0ebde3f343e66e0f06"
+    },
+    {
+      "path": "src/assets/fonts/PlayfairDisplay-SemiBold.ttf",
+      "sha1": "8a4b90a0500042050581f604ef6f9b8bfac9935c"
+    }
+  ]
+}

@@ -36,7 +36,7 @@ const MelekSayilariScreen = () => {
           width: 64 * w1px,
           height: 48 * h1px,
           borderRadius: 14 * fs1px,
-          backgroundColor: colors.backgroundPurpleSoft,
+          backgroundColor: colors.primarySoft,
           alignItems: 'center',
           justifyContent: 'center',
           marginRight: 14 * w1px,
@@ -55,7 +55,7 @@ const MelekSayilariScreen = () => {
       {numbers.map(item => (
         <View key={item.code} style={styles.card}>
           <View style={styles.codeWrap}>
-            <T size={fontSize.subtitle} weight="700" color={colors.backgroundPurple}>
+            <T size={fontSize.subtitle} weight="700" color={colors.primary}>
               {item.code}
             </T>
           </View>

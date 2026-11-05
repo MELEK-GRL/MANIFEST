@@ -1,16 +1,25 @@
 {
   "tabs": {
-    "home": "Home",
-    "manifest": "Manifest",
-    "vision": "Vision",
-    "affirmation": "Olumlama",
-    "angels": "Sayılar"
+    "home": "Ana Sayfa",
+    "visionBoard": "Vision Board",
+    "focus": "Odak",
+    "journal": "Günlük",
+    "angels": "Melek Sayıları"
   },
   "home": {
-    "title": "Home",
-    "subtitle": "Günün niyeti burada başlar.",
-    "today": "Bugün",
-    "body": "Küçük bir niyet seç ve gün boyu ona dön."
+    "brand": "MANIFEST",
+    "tagline": "HAYAL ET • NİYET ET • GERÇEKLEŞTİR",
+    "focusTitle": "Bugün Ne Odaklanmak İstiyorsun?",
+    "tileAffirmation": "Olumlama",
+    "tileRitual": "Ritüel",
+    "tileManifest": "Manifest",
+    "tileVisionBoard": "Vision Board",
+    "messageTitle": "Günün Mesajı",
+    "messageBody": "“Evren, niyetinle uyumlanan fırsatları sana getiriyor.”",
+    "journeyTitle": "Manifestasyon Yolculuğun",
+    "ritualTitle": "Devam Eden Ritüelin",
+    "ritualBody": "55x5 Yöntemi • 3. Gün",
+    "ritualProgress": "3/5"
   },
   "manifest": {
     "title": "Manifest",

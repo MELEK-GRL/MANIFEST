@@ -6,6 +6,7 @@ import {useResponsive} from '../../utils/deviceStore/device';
 import T from '../Text/T';
 import Button from '../Buttons/Button';
 import {fontSize} from '../../constants/typography';
+import colors from '../../theme/colors';
 
 export type PopupType = 'info' | 'warning' | 'error' | 'success';
 
@@ -24,11 +25,11 @@ const TYPE_CONFIG: Record<
   PopupType,
   {accent: string; titleKey: 'common.ok' | 'common.error' | 'common.warning' | 'common.info'; icon: string}
 > = {
-  success: {accent: '#22C55E', titleKey: 'common.ok', icon: 'checkmark-circle'},
-  error: {accent: '#EF4444', titleKey: 'common.error', icon: 'close-circle'},
-  warning: {accent: '#EAB308', titleKey: 'common.warning', icon: 'warning'},
+  success: {accent: colors.success, titleKey: 'common.ok', icon: 'checkmark-circle'},
+  error: {accent: colors.danger, titleKey: 'common.error', icon: 'close-circle'},
+  warning: {accent: colors.warning, titleKey: 'common.warning', icon: 'warning'},
   info: {
-    accent: '#3B82F6',
+    accent: colors.info,
     titleKey: 'common.info',
     icon: 'information-circle',
   },
@@ -55,14 +56,14 @@ const PopupModal: React.FC<Props> = ({
       StyleSheet.create({
         overlay: {
           flex: 1,
-          backgroundColor: 'rgba(17, 24, 39, 0.45)',
+          backgroundColor: colors.overlay,
           justifyContent: 'center',
           alignItems: 'center',
         },
         box: {
           width: 320 * w1px,
           maxWidth: '90%',
-          backgroundColor: '#fff',
+          backgroundColor: colors.white,
           borderRadius: 12 * w1px,
           paddingVertical: 24 * h1px,
           paddingHorizontal: 20 * w1px,
@@ -123,14 +124,14 @@ const PopupModal: React.FC<Props> = ({
             size={fontSize.title}
             weight="700"
             align="center"
-            color="#111827"
+            color={colors.textDark}
             style={styles.title}>
             {displayTitle}
           </T>
 
           <T
             size={fontSize.bodyMedium}
-            color="#4B5563"
+            color={colors.textMuted}
             align="center"
             style={styles.message}>
             {message}
@@ -144,7 +145,7 @@ const PopupModal: React.FC<Props> = ({
                     buttonText={leftButtonText}
                     onPress={onLeftPress}
                     width="100%"
-                    backgroundColor="#94A3B8"
+                    backgroundColor={colors.buttonMuted}
                   />
                 </View>
               ) : null}

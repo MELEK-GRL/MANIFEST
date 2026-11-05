@@ -1,16 +1,25 @@
 {
   "tabs": {
     "home": "Home",
-    "manifest": "Manifest",
-    "vision": "Vision",
-    "affirmation": "Affirm",
-    "angels": "Numbers"
+    "visionBoard": "Vision Board",
+    "focus": "Focus",
+    "journal": "Journal",
+    "angels": "Angel Numbers"
   },
   "home": {
-    "title": "Home",
-    "subtitle": "Today's intention starts here.",
-    "today": "Today",
-    "body": "Choose a small intention and return to it through the day."
+    "brand": "MANIFEST",
+    "tagline": "IMAGINE • INTEND • BECOME",
+    "focusTitle": "What do you want to focus on today?",
+    "tileAffirmation": "Affirmation",
+    "tileRitual": "Ritual",
+    "tileManifest": "Manifest",
+    "tileVisionBoard": "Vision Board",
+    "messageTitle": "Message of the Day",
+    "messageBody": "“The universe brings you opportunities that match your intention.”",
+    "journeyTitle": "Your Manifestation Journey",
+    "ritualTitle": "Ongoing Ritual",
+    "ritualBody": "55x5 Method • Day 3",
+    "ritualProgress": "3/5"
   },
   "manifest": {
     "title": "Manifest",
