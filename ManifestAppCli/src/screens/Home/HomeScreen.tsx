@@ -90,7 +90,7 @@ const HomeScreen = () => {
         brandWrap: {
           alignItems: 'center',
           paddingTop: 8 * h1px,
-          paddingBottom: 22 * h1px,
+          paddingBottom: 8 * h1px,
         },
         sparkle: {
           marginBottom: 4 * h1px,
@@ -99,12 +99,12 @@ const HomeScreen = () => {
           letterSpacing: 5 * fs1px,
         },
         tagline: {
-          marginTop: 10 * h1px,
+          marginTop: 90 * h1px,
+          marginBottom: 10 * h1px,
           letterSpacing: 1.6 * fs1px,
         },
-        // Referans: soru markanın altında net ayrılmış, kartlara yakın
         focusTitle: {
-          marginTop: 65 * h1px,
+          marginTop: 0,
           marginBottom: 16 * h1px,
           paddingHorizontal: 8 * w1px,
         },
@@ -116,14 +116,16 @@ const HomeScreen = () => {
           flex: 1,
           marginHorizontal: 5 * w1px,
         },
+        tilePress: {
+          width: '100%',
+        },
         tileInner: {
+          width: '100%',
+          height: 96 * h1px,
           borderRadius: 20 * fs1px,
-          paddingTop: 16 * h1px,
-          paddingBottom: 14 * h1px,
           paddingHorizontal: 4 * w1px,
           alignItems: 'center',
           justifyContent: 'center',
-          minHeight: 92 * h1px,
           shadowColor: colors.primaryDark,
           shadowOpacity: 0.12,
           shadowRadius: 10,
@@ -131,10 +133,12 @@ const HomeScreen = () => {
           elevation: 4,
         },
         tileIcon: {
-          marginBottom: 10 * h1px,
+          marginBottom: 8 * h1px,
         },
         tileLabel: {
-          lineHeight: 14 * fs1px,
+          lineHeight: 13 * fs1px,
+          height: 26 * fs1px,
+          textAlignVertical: 'center',
         },
         messageCard: {
           height: 112 * h1px,
@@ -294,18 +298,18 @@ const HomeScreen = () => {
               style={styles.brand}>
               {t('home.brand')}
             </T>
-            <T
-              family="sans"
-              size={fontSize.caption}
-              weight="600"
-              color={colors.textMutedDark}
-              align="center"
-              style={styles.tagline}
-              numberOfLines={1}>
-              {t('home.tagline')}
-            </T>
           </View>
 
+          <T
+            family="sans"
+            size={fontSize.caption}
+            weight="600"
+            color={colors.textMutedDark}
+            align="center"
+            style={styles.tagline}
+            numberOfLines={1}>
+            {t('home.tagline')}
+          </T>
           <T
             family="serif"
             size={fontSize.titleLarge}
@@ -321,7 +325,8 @@ const HomeScreen = () => {
               <View key={tile.key} style={styles.tile}>
                 <TouchableOpacity
                   activeOpacity={0.85}
-                  onPress={() => open(tile.route)}>
+                  onPress={() => open(tile.route)}
+                  style={styles.tilePress}>
                   <LinearGradient
                     colors={colors.gradientTile}
                     start={{x: 0, y: 0}}
