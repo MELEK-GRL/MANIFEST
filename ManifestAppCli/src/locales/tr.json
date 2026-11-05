@@ -3,7 +3,8 @@
     "home": "Home",
     "manifest": "Manifest",
     "vision": "Vision",
-    "affirmation": "Olumlama"
+    "affirmation": "Olumlama",
+    "angels": "Sayılar"
   },
   "home": {
     "title": "Home",
@@ -11,8 +12,8 @@
     "today": "Bugün",
     "body": "Küçük bir niyet seç ve gün boyu ona dön."
   },
-  "manifestation": {
-    "title": "Manifestasyon",
+  "manifest": {
+    "title": "Manifest",
     "subtitle": "Niyetini netleştir, sonra ona alan aç.",
     "step1": "Niyeti tek cümlede yaz.",
     "step2": "Onu şimdiki zamanla söyle.",
@@ -32,6 +33,16 @@
     "line1": "Kendime nazikçe yer açıyorum.",
     "line2": "İstediğim hayatı sakin adımlarla kuruyorum.",
     "line3": "Bugün yeterince iyi bir başlangıç."
+  },
+  "angelNumbers": {
+    "title": "Melek Sayıları",
+    "subtitle": "Karşına çıkan sayıların anlamına bak.",
+    "n111": "Yeni bir başlangıç ve niyetlerine odaklan.",
+    "n222": "Denge, sabır ve güven içinde ilerle.",
+    "n333": "Rehberlik yakınında; yaratımın destekleniyor.",
+    "n444": "Korunuyorsun; adımların sağlam temelli.",
+    "n555": "Değişim kapıda; akışa açık kal.",
+    "n777": "Ruhsal uyanış, şans ve güçlenen sezgiler."
   },
   "common": {
     "warning": "Uyarı",

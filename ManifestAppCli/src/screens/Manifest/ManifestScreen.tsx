@@ -8,12 +8,12 @@ import {fontSize} from '../../constants/typography';
 import {useResponsive} from '../../utils/deviceStore/device';
 
 const stepKeys = [
-  'manifestation.step1',
-  'manifestation.step2',
-  'manifestation.step3',
+  'manifest.step1',
+  'manifest.step2',
+  'manifest.step3',
 ] as const;
 
-const ManifestasyonScreen = () => {
+const ManifestScreen = () => {
   const t = useT();
   const {w1px, h1px, fs1px} = useResponsive();
 
@@ -46,9 +46,7 @@ const ManifestasyonScreen = () => {
   );
 
   return (
-    <ScreenFrame
-      title={t('manifestation.title')}
-      subtitle={t('manifestation.subtitle')}>
+    <ScreenFrame title={t('manifest.title')} subtitle={t('manifest.subtitle')}>
       {stepKeys.map((step, index) => (
         <View key={step} style={styles.card}>
           <View style={styles.index}>
@@ -67,4 +65,4 @@ const ManifestasyonScreen = () => {
   );
 };
 
-export default ManifestasyonScreen;
+export default ManifestScreen;

@@ -13,7 +13,12 @@ import type {RootStackParamList} from '../../navigation/types';
 
 type Item = {
   name: keyof RootStackParamList;
-  labelKey: 'tabs.home' | 'tabs.manifest' | 'tabs.vision' | 'tabs.affirmation';
+  labelKey:
+    | 'tabs.home'
+    | 'tabs.manifest'
+    | 'tabs.vision'
+    | 'tabs.affirmation'
+    | 'tabs.angels';
   icon: string;
   activeIcon: string;
 };
@@ -21,7 +26,7 @@ type Item = {
 const items: Item[] = [
   {name: 'Home', labelKey: 'tabs.home', icon: 'home-outline', activeIcon: 'home'},
   {
-    name: 'Manifestasyon',
+    name: 'Manifest',
     labelKey: 'tabs.manifest',
     icon: 'sparkles-outline',
     activeIcon: 'sparkles',
@@ -37,6 +42,12 @@ const items: Item[] = [
     labelKey: 'tabs.affirmation',
     icon: 'heart-outline',
     activeIcon: 'heart',
+  },
+  {
+    name: 'MelekSayilari',
+    labelKey: 'tabs.angels',
+    icon: 'moon-outline',
+    activeIcon: 'moon',
   },
 ];
 
