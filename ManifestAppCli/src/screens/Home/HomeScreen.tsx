@@ -304,7 +304,7 @@ const HomeScreen = () => {
               family="serif"
               size={fontSize.brand}
               weight="700"
-              color={colors.textDark}
+              color={colors.primaryDark}
               align="center"
               style={styles.brand}>
               {t('home.brand')}
@@ -325,7 +325,7 @@ const HomeScreen = () => {
             family="serif"
             size={fontSize.titleLarge}
             weight="700"
-            color={colors.textDark}
+            color={colors.primaryDark}
             align="center"
             style={styles.focusTitle}>
             {t('home.focusTitle')}
