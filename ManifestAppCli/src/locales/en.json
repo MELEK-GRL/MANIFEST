@@ -45,7 +45,17 @@
   },
   "luckyNumbers": {
     "title": "Grigori Grabovoi numbers",
-    "subtitle": "Look at the meaning of the lucky numbers that find you."
+    "discoverTitle": "Discover your intention",
+    "discoverSubtitle": "Choose the area you want to focus on through the energy of the numbers.",
+    "dailyLabel": "Number sequence of the day",
+    "dailyExplore": "Today's discovery",
+    "discover": "Discover",
+    "favorites": "Favorites",
+    "journal": "Intention journal",
+    "rituals": "My rituals",
+    "chooseArea": "Choose an intention area",
+    "categories": "Categories",
+    "popular": "Popular"
   },
   "profile": {
     "title": "Profile",

@@ -45,7 +45,17 @@
   },
   "luckyNumbers": {
     "title": "Grigori Grabovoi sayıları",
-    "subtitle": "Karşına çıkan şanslı sayıların anlamına bak."
+    "discoverTitle": "Niyetini keşfet",
+    "discoverSubtitle": "Sayıların enerjisiyle hayatında odaklanmak istediğin alanı seç.",
+    "dailyLabel": "Günün sayı dizisi",
+    "dailyExplore": "Günün keşfi",
+    "discover": "Keşfet",
+    "favorites": "Favorilerim",
+    "journal": "Niyet defterim",
+    "rituals": "Ritüellerim",
+    "chooseArea": "Niyet alanını seç",
+    "categories": "Kategori",
+    "popular": "Popüler"
   },
   "profile": {
     "title": "Profil",
