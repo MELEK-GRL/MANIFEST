@@ -66,7 +66,7 @@ const items: Item[] = [
     labelKey: 'tabs.angels',
     icon: 'moon-outline',
     activeIcon: 'moon',
-    route: 'AngelNumbers',
+    route: 'MelekSayilari',
   },
 ];
 

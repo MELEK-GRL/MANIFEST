@@ -70,4 +70,4 @@ const AngelNumbersScreen = () => {
   );
 };
 
-export default AngelNumbersScreen;
+export default MelekSayilariScreen;

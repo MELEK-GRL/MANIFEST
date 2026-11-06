@@ -22,8 +22,8 @@ const linking: LinkingOptions<RootStackParamList> = {
       Home: 'home',
       Manifest: 'manifest',
       VisionBoard: 'vision-board',
-      Affirmations: 'affirmations',
-      AngelNumbers: 'angel-numbers',
+      Olumlamalar: 'olumlamalar',
+      MelekSayilari: 'melek-sayilari',
     },
   },
 };
