@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ManifestApp.AngelNumbers.Features.Cqrs;
+namespace ManifestApp.LuckyNumbers.Features.Cqrs;
 
 public sealed class Dispatcher : IDispatcher
 {

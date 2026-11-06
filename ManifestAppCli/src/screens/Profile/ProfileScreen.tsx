@@ -95,12 +95,6 @@ const ProfileScreen = () => {
           alignItems: 'center',
           justifyContent: 'center',
         },
-        photoAction: {
-          marginTop: 10 * h1px,
-        },
-        name: {
-          marginTop: 18 * h1px,
-        },
         details: {
           alignSelf: 'stretch',
           marginTop: 28 * h1px,
@@ -201,6 +195,7 @@ const ProfileScreen = () => {
       await uploadProfilePhoto(uri, type, cropped.filename ?? 'photo.jpg');
       setHasPhoto(true);
       setPhotoVersion(value => value + 1);
+      useAuthStore.getState().bumpPhoto();
     } catch (error) {
       setPreviewUri(null);
       const code = authErrorCode(error);
@@ -243,23 +238,7 @@ const ProfileScreen = () => {
               )}
             </View>
           </View>
-          <T
-            size={fontSize.caption}
-            weight="600"
-            color={colors.primary}
-            align="center"
-            style={styles.photoAction}>
-            {t(hasPhoto || previewUri ? 'profile.changePhoto' : 'profile.addPhoto')}
-          </T>
         </TouchableOpacity>
-        <T
-          family="serif"
-          size={fontSize.titleLarge}
-          weight="700"
-          color={colors.primaryDark}
-          style={styles.name}>
-          {username ?? ''}
-        </T>
         <View style={styles.details}>
           <View style={styles.row}>
             <View style={styles.iconCircle}>

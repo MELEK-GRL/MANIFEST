@@ -2,7 +2,7 @@ import React, {useMemo} from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {BottomMenu, PageHeader, T} from '@components';
+import {BottomMenu, PageHeader, T, UserHeader} from '@components';
 import colors from '../theme/colors';
 import {fontSize} from '../constants/typography';
 import {useResponsive} from '../utils/deviceStore/device';
@@ -10,10 +10,16 @@ import {useResponsive} from '../utils/deviceStore/device';
 type Props = {
   title: string;
   subtitle?: string;
+  userHeader?: boolean;
   children?: React.ReactNode;
 };
 
-const ScreenFrame: React.FC<Props> = ({title, subtitle, children}) => {
+const ScreenFrame: React.FC<Props> = ({
+  title,
+  subtitle,
+  userHeader = true,
+  children,
+}) => {
   const {w1px, h1px} = useResponsive();
   const insets = useSafeAreaInsets();
 
@@ -33,6 +39,13 @@ const ScreenFrame: React.FC<Props> = ({title, subtitle, children}) => {
           paddingHorizontal: 20 * w1px,
           paddingBottom: 150 * h1px,
         },
+        headerRow: {
+          flexDirection: 'row',
+          alignItems: 'center',
+        },
+        title: {
+          flex: 1,
+        },
         subtitle: {
           marginTop: 6 * h1px,
         },
@@ -49,7 +62,12 @@ const ScreenFrame: React.FC<Props> = ({title, subtitle, children}) => {
         <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.content}>
-          <PageHeader title={title} />
+          <View style={styles.headerRow}>
+            <View style={styles.title}>
+              <PageHeader title={title} />
+            </View>
+            {userHeader ? <UserHeader /> : null}
+          </View>
           {subtitle ? (
             <T
               size={fontSize.body}

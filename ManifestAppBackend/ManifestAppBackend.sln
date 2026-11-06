@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manifest", "Manifest\Manife
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VisionBoard", "VisionBoard\VisionBoard.csproj", "{657DC39E-37C8-46A0-913C-83F2E4BF8846}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AngelNumbers", "AngelNumbers\AngelNumbers.csproj", "{C3EEDBD4-C5EF-43FE-8D5D-A77761239F61}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuckyNumbers", "LuckyNumbers\LuckyNumbers.csproj", "{C3EEDBD4-C5EF-43FE-8D5D-A77761239F61}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Auth", "Auth\Auth.csproj", "{D5E3EB53-FA81-4A40-81EF-3CCF6C0E7D90}"
 EndProject

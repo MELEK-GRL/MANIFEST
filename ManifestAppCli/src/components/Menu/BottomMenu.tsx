@@ -15,7 +15,7 @@ const menuButtonImg = require('../../assets/images/MenuButton.png');
 const ICON_SIZE = 26;
 const CENTER_ICON_SIZE = 96;
 
-type TabKey = 'home' | 'profile' | 'focus' | 'settings' | 'angels';
+type TabKey = 'home' | 'profile' | 'focus' | 'settings' | 'lucky';
 
 type Item = {
   key: TabKey;
@@ -24,7 +24,7 @@ type Item = {
     | 'tabs.profile'
     | 'tabs.focus'
     | 'tabs.settings'
-    | 'tabs.angels';
+    | 'tabs.lucky';
   icon: string;
   activeIcon: string;
   route?: keyof RootStackParamList;
@@ -55,11 +55,11 @@ const items: Item[] = [
     center: true,
   },
   {
-    key: 'angels',
-    labelKey: 'tabs.angels',
+    key: 'lucky',
+    labelKey: 'tabs.lucky',
     icon: 'moon-outline',
     activeIcon: 'moon',
-    route: 'AngelNumbers',
+    route: 'LuckyNumbers',
   },
   {
     key: 'settings',

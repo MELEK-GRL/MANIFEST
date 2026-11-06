@@ -5,7 +5,7 @@ export type RootStackParamList = {
   Manifest: undefined;
   VisionBoard: undefined;
   Affirmations: undefined;
-  AngelNumbers: undefined;
+  LuckyNumbers: undefined;
   Profile: undefined;
   Settings: undefined;
 };

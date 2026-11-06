@@ -1,4 +1,4 @@
-namespace ManifestApp.AngelNumbers.Features.Cqrs;
+namespace ManifestApp.LuckyNumbers.Features.Cqrs;
 
 public interface ICommand<TResult>;
 

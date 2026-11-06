@@ -101,7 +101,10 @@ const SettingsScreen = () => {
   };
 
   return (
-    <ScreenFrame title={t('settings.title')} subtitle={t('settings.subtitle')}>
+    <ScreenFrame
+      title={t('settings.title')}
+      subtitle={t('settings.subtitle')}
+      userHeader={false}>
       <View style={styles.card}>
         <View style={styles.heading}>
           <View style={[styles.iconCircle, {backgroundColor: colors.primarySoft}]}>

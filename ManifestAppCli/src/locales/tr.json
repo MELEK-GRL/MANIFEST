@@ -4,7 +4,7 @@
     "profile": "Profil",
     "focus": "Odak",
     "settings": "Ayarlar",
-    "angels": "Melek Sayıları"
+    "lucky": "Şanslı Sayılar"
   },
   "home": {
     "brand": "MANIFEST",
@@ -43,9 +43,9 @@
     "line2": "İstediğim hayatı sakin adımlarla kuruyorum.",
     "line3": "Bugün yeterince iyi bir başlangıç."
   },
-  "angelNumbers": {
-    "title": "Melek Sayıları",
-    "subtitle": "Karşına çıkan sayıların anlamına bak.",
+  "luckyNumbers": {
+    "title": "Grigori Grabovoi sayıları",
+    "subtitle": "Karşına çıkan şanslı sayıların anlamına bak.",
     "n111": "Yeni bir başlangıç ve niyetlerine odaklan.",
     "n222": "Denge, sabır ve güven içinde ilerle.",
     "n333": "Rehberlik yakınında; yaratımın destekleniyor.",

@@ -1,6 +1,6 @@
-using ManifestApp.AngelNumbers.Entities;
+using ManifestApp.LuckyNumbers.Entities;
 
-namespace ManifestApp.AngelNumbers.Repositories;
+namespace ManifestApp.LuckyNumbers.Repositories;
 
 public interface IRepository<TEntity> where TEntity : Entity
 {

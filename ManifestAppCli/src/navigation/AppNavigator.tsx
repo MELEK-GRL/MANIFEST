@@ -9,7 +9,7 @@ import HomeScreen from '../screens/Home/HomeScreen';
 import ManifestScreen from '../screens/Manifest/ManifestScreen';
 import VisionBoardScreen from '../screens/VisionBoard/VisionBoardScreen';
 import AffirmationsScreen from '../screens/Affirmations/AffirmationsScreen';
-import AngelNumbersScreen from '../screens/AngelNumbers/AngelNumbersScreen';
+import LuckyNumbersScreen from '../screens/LuckyNumbers/LuckyNumbersScreen';
 import LoginScreen from '../screens/Login/LoginScreen';
 import RegisterScreen from '../screens/Register/RegisterScreen';
 import ProfileScreen from '../screens/Profile/ProfileScreen';
@@ -32,7 +32,7 @@ const linking: LinkingOptions<RootStackParamList> = {
       Manifest: 'manifest',
       VisionBoard: 'vision-board',
       Affirmations: 'affirmations',
-      AngelNumbers: 'angel-numbers',
+      LuckyNumbers: 'lucky-numbers',
       Profile: 'profile',
       Settings: 'settings',
     },
@@ -58,7 +58,7 @@ function AppNavigator() {
         <Stack.Screen name="Manifest" component={ManifestScreen} />
         <Stack.Screen name="VisionBoard" component={VisionBoardScreen} />
         <Stack.Screen name="Affirmations" component={AffirmationsScreen} />
-        <Stack.Screen name="AngelNumbers" component={AngelNumbersScreen} />
+        <Stack.Screen name="LuckyNumbers" component={LuckyNumbersScreen} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name="Settings" component={SettingsScreen} />
       </Stack.Navigator>

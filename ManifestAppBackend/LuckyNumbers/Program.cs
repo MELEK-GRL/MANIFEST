@@ -1,4 +1,4 @@
-using ManifestApp.AngelNumbers.Features.Cqrs;
+using ManifestApp.LuckyNumbers.Features.Cqrs;
 using Microsoft.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,7 +9,7 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "Angel Numbers",
+        Title = "Lucky Numbers",
         Version = "v1",
     });
 });

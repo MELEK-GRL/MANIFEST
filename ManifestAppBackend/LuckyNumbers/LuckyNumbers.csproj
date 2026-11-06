@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <RootNamespace>ManifestApp.AngelNumbers</RootNamespace>
-    <AssemblyName>ManifestApp.AngelNumbers</AssemblyName>
+    <RootNamespace>ManifestApp.LuckyNumbers</RootNamespace>
+    <AssemblyName>ManifestApp.LuckyNumbers</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="10.3.1" />

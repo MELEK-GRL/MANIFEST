@@ -8,15 +8,15 @@ import {fontSize} from '../../constants/typography';
 import {useResponsive} from '../../utils/deviceStore/device';
 
 const numbers = [
-  {code: '111', meaningKey: 'angelNumbers.n111'},
-  {code: '222', meaningKey: 'angelNumbers.n222'},
-  {code: '333', meaningKey: 'angelNumbers.n333'},
-  {code: '444', meaningKey: 'angelNumbers.n444'},
-  {code: '555', meaningKey: 'angelNumbers.n555'},
-  {code: '777', meaningKey: 'angelNumbers.n777'},
+  {code: '111', meaningKey: 'luckyNumbers.n111'},
+  {code: '222', meaningKey: 'luckyNumbers.n222'},
+  {code: '333', meaningKey: 'luckyNumbers.n333'},
+  {code: '444', meaningKey: 'luckyNumbers.n444'},
+  {code: '555', meaningKey: 'luckyNumbers.n555'},
+  {code: '777', meaningKey: 'luckyNumbers.n777'},
 ] as const;
 
-const AngelNumbersScreen = () => {
+const LuckyNumbersScreen = () => {
   const t = useT();
   const {w1px, h1px, fs1px} = useResponsive();
 
@@ -50,8 +50,8 @@ const AngelNumbersScreen = () => {
 
   return (
     <ScreenFrame
-      title={t('angelNumbers.title')}
-      subtitle={t('angelNumbers.subtitle')}>
+      title={t('luckyNumbers.title')}
+      subtitle={t('luckyNumbers.subtitle')}>
       {numbers.map(item => (
         <View key={item.code} style={styles.card}>
           <View style={styles.codeWrap}>
@@ -70,4 +70,4 @@ const AngelNumbersScreen = () => {
   );
 };
 
-export default AngelNumbersScreen;
+export default LuckyNumbersScreen;

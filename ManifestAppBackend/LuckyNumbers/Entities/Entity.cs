@@ -1,4 +1,4 @@
-namespace ManifestApp.AngelNumbers.Entities;
+namespace ManifestApp.LuckyNumbers.Entities;
 
 public abstract class Entity
 {

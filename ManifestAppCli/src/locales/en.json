@@ -4,7 +4,7 @@
     "profile": "Profile",
     "focus": "Focus",
     "settings": "Settings",
-    "angels": "Angel Numbers"
+    "lucky": "Lucky Numbers"
   },
   "home": {
     "brand": "MANIFEST",
@@ -43,9 +43,9 @@
     "line2": "I build the life I want with calm steps.",
     "line3": "Today is a good enough beginning."
   },
-  "angelNumbers": {
-    "title": "Angel Numbers",
-    "subtitle": "Look at the meaning of the numbers that find you.",
+  "luckyNumbers": {
+    "title": "Grigori Grabovoi numbers",
+    "subtitle": "Look at the meaning of the lucky numbers that find you.",
     "n111": "A new beginning — stay with your intention.",
     "n222": "Balance, patience, and trust on the path.",
     "n333": "Guidance is near; your creation is supported.",
