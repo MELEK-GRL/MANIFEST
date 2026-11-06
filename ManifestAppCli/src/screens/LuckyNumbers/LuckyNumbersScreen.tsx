@@ -37,6 +37,7 @@ const LuckyNumbersScreen = () => {
           marginTop: 8 * h1px,
         },
         dailyWrap: {
+          width: '100%',
           marginTop: 18 * h1px,
           borderRadius: 22 * fs1px,
           overflow: 'hidden',
@@ -55,74 +56,45 @@ const LuckyNumbersScreen = () => {
           opacity: 0.28,
         },
         daily: {
-          paddingLeft: 84 * w1px,
-          paddingRight: 18 * w1px,
-          paddingTop: 32 * h1px,
-          paddingBottom: 32 * h1px,
+          paddingLeft: 96 * w1px,
+          paddingRight: 22 * w1px,
+          paddingTop: 24 * h1px,
+          paddingBottom: 24 * h1px,
           zIndex: 1,
-        },
-        dailyInner: {
-          flexDirection: 'row',
-          alignItems: 'center',
-        },
-        dailyCenter: {
-          flex: 1,
           alignItems: 'center',
           justifyContent: 'center',
-          paddingVertical: 10 * h1px,
-          paddingRight: 14 * w1px,
         },
-        dailyLabelRow: {
-          flexDirection: 'row',
+        dailyCopy: {
+          width: '100%',
+          maxWidth: 220 * w1px,
           alignItems: 'center',
-        },
-        dailyLabelIcon: {
-          marginRight: 6 * w1px,
         },
         dailyLabel: {
-          letterSpacing: 0.6,
+          letterSpacing: 1.2 * fs1px,
         },
         sequence: {
-          marginTop: 12 * h1px,
+          marginTop: 8 * h1px,
+          letterSpacing: 1.4 * fs1px,
         },
         dailyText: {
-          marginTop: 12 * h1px,
-        },
-        dailyActions: {
-          alignItems: 'flex-end',
-          justifyContent: 'center',
-          paddingVertical: 4 * h1px,
-        },
-        chip: {
-          backgroundColor: colors.gold,
-          borderRadius: 16 * fs1px,
-          paddingHorizontal: 10 * w1px,
-          paddingVertical: 6 * h1px,
-          marginBottom: 28 * h1px,
-        },
-        discover: {
-          backgroundColor: colors.white,
-          borderRadius: 16 * fs1px,
-          paddingHorizontal: 12 * w1px,
-          paddingVertical: 8 * h1px,
+          marginTop: 8 * h1px,
+          lineHeight: 18 * fs1px,
         },
         section: {
           marginTop: 10 * h1px,
           marginBottom: 12 * h1px,
         },
-        grid: {
-          flexDirection: 'row',
-          flexWrap: 'wrap',
-          justifyContent: 'space-between',
+        list: {
+          width: '100%',
         },
         card: {
-          width: '48.5%',
+          width: '100%',
           flexDirection: 'row',
           alignItems: 'center',
           backgroundColor: colors.background,
-          borderRadius: 22 * fs1px,
-          paddingHorizontal: 8 * w1px,
-          paddingVertical: 10 * h1px,
+          borderRadius: 18 * fs1px,
+          paddingHorizontal: 12 * w1px,
+          paddingVertical: 6 * h1px,
           marginBottom: 10 * h1px,
           shadowColor: colors.primaryDark,
           shadowOpacity: 0.12,
@@ -131,10 +103,10 @@ const LuckyNumbersScreen = () => {
           elevation: 4,
         },
         cardThumbWrap: {
-          width: 44 * w1px,
-          height: 44 * w1px,
-          borderRadius: 14 * fs1px,
-          marginRight: 8 * w1px,
+          width: 52 * w1px,
+          height: 52 * w1px,
+          borderRadius: 16 * fs1px,
+          marginRight: 12 * w1px,
           overflow: 'hidden',
         },
         cardThumb: {
@@ -148,12 +120,16 @@ const LuckyNumbersScreen = () => {
         },
         cardBody: {
           flex: 1,
+          paddingRight: 4 * w1px,
         },
         cardTitle: {
           marginRight: 2 * w1px,
         },
         cardSubtitle: {
           marginTop: 4 * h1px,
+        },
+        cardArrow: {
+          marginLeft: 2 * w1px,
         },
       }),
     [w1px, h1px, fs1px],
@@ -182,54 +158,33 @@ const LuckyNumbersScreen = () => {
         <Image source={luckBanner} style={styles.dailyBg} resizeMode="stretch" />
         <View style={styles.dailyWash} pointerEvents="none" />
         <View style={styles.daily}>
-          <View style={styles.dailyInner}>
-            <View style={styles.dailyCenter}>
-              <View style={styles.dailyLabelRow}>
-                <Icon
-                  name="calendar-outline"
-                  size="small"
-                  color={colors.goldSoft}
-                  style={styles.dailyLabelIcon}
-                />
-                <T
-                  size={fontSize.caption}
-                  weight="600"
-                  color={colors.goldSoft}
-                  style={styles.dailyLabel}>
-                  {t('luckyNumbers.dailyLabel').toUpperCase()}
-                </T>
-              </View>
-              <T
-                family="serif"
-                size={fontSize.titleXl}
-                weight="700"
-                color={colors.gold}
-                align="center"
-                style={styles.sequence}>
-                {grabovoiDaily.sequence}
-              </T>
-              <T
-                size={fontSize.caption}
-                weight="500"
-                color={colors.textWhite}
-                align="center"
-                numberOfLines={2}
-                style={styles.dailyText}>
-                {text(grabovoiDaily.tr, grabovoiDaily.en)}
-              </T>
-            </View>
-            <View style={styles.dailyActions}>
-              <View style={styles.chip}>
-                <T size={fontSize.caption} weight="600" color={colors.textWhite}>
-                  {t('luckyNumbers.dailyExplore')}
-                </T>
-              </View>
-              <View style={styles.discover}>
-                <T size={fontSize.caption} weight="600" color={colors.primaryDark}>
-                  {t('luckyNumbers.discover')}
-                </T>
-              </View>
-            </View>
+          <View style={styles.dailyCopy}>
+            <T
+              size={fontSize.caption}
+              weight="600"
+              color={colors.goldSoft}
+              align="center"
+              style={styles.dailyLabel}>
+              {t('luckyNumbers.dailyLabel').toUpperCase()}
+            </T>
+            <T
+              family="serif"
+              size={fontSize.titleXl}
+              weight="700"
+              color={colors.gold}
+              align="center"
+              style={styles.sequence}>
+              {grabovoiDaily.sequence}
+            </T>
+            <T
+              size={fontSize.caption}
+              weight="500"
+              color={colors.textWhite}
+              align="center"
+              numberOfLines={2}
+              style={styles.dailyText}>
+              {text(grabovoiDaily.tr, grabovoiDaily.en)}
+            </T>
           </View>
         </View>
       </View>
@@ -238,7 +193,7 @@ const LuckyNumbersScreen = () => {
           {t('luckyNumbers.chooseArea')}
         </T>
       </View>
-      <View style={styles.grid}>
+      <View style={styles.list}>
         {grabovoiData.map(topic => (
           <View key={topic.id} style={styles.card}>
             <View style={styles.cardThumbWrap}>
@@ -256,7 +211,7 @@ const LuckyNumbersScreen = () => {
                 weight="700"
                 color={colors.textDark}
                 style={styles.cardTitle}
-                numberOfLines={2}>
+                numberOfLines={1}>
                 {text(topic.tr, topic.en)}
               </T>
               <T
@@ -264,10 +219,16 @@ const LuckyNumbersScreen = () => {
                 weight="500"
                 color={colors.textMuted}
                 style={styles.cardSubtitle}
-                numberOfLines={2}>
+                numberOfLines={1}>
                 {text(topic.subtitleTr, topic.subtitleEn)}
               </T>
             </View>
+            <Icon
+              name="chevron-forward"
+              size="small"
+              color={colors.textLight}
+              style={styles.cardArrow}
+            />
           </View>
         ))}
       </View>

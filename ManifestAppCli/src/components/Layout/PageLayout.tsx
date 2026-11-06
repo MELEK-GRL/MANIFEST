@@ -19,6 +19,9 @@ import colors from '../../theme/colors';
 import {fontSize} from '../../constants/typography';
 import {useResponsive} from '../../utils/deviceStore/device';
 
+/** Shared page edge — screens stay full-bleed inside this inset. */
+export const PAGE_EDGE = 16;
+
 type Props = {
   children?: React.ReactNode;
   title?: string;
@@ -29,7 +32,6 @@ type Props = {
   scroll?: boolean;
   softOverlay?: boolean;
   background?: 'gradient' | ImageSourcePropType;
-  paddingHorizontal?: number;
   contentContainerStyle?: StyleProp<ViewStyle>;
 };
 
@@ -43,7 +45,6 @@ const PageLayout: React.FC<Props> = ({
   scroll = true,
   softOverlay = false,
   background = 'gradient',
-  paddingHorizontal = 20,
   contentContainerStyle,
 }) => {
   const {w1px, h1px} = useResponsive();
@@ -67,11 +68,15 @@ const PageLayout: React.FC<Props> = ({
         },
         content: {
           flexGrow: 1,
-          paddingHorizontal: paddingHorizontal * w1px,
-          paddingBottom: bottomMenu ? 150 * h1px : insets.bottom + 24 * h1px,
+          paddingHorizontal: PAGE_EDGE * w1px,
+          paddingTop: 12 * h1px,
+          paddingBottom: bottomMenu
+            ? 150 * h1px
+            : Math.max(insets.bottom, 12 * h1px) + 24 * h1px,
         },
         page: {
           position: 'relative',
+          width: '100%',
         },
         cornerArt: {
           position: 'absolute',
@@ -84,6 +89,7 @@ const PageLayout: React.FC<Props> = ({
         headerRow: {
           flexDirection: 'row',
           alignItems: 'center',
+          width: '100%',
           zIndex: 2,
         },
         title: {
@@ -94,10 +100,12 @@ const PageLayout: React.FC<Props> = ({
         },
         body: {
           marginTop: title ? 16 * h1px : 0,
+          width: '100%',
           zIndex: 1,
         },
         bodyFill: {
           flex: 1,
+          width: '100%',
           zIndex: 1,
         },
       }),
@@ -108,7 +116,6 @@ const PageLayout: React.FC<Props> = ({
       insets.left,
       insets.right,
       insets.bottom,
-      paddingHorizontal,
       bottomMenu,
       title,
     ],
@@ -154,7 +161,9 @@ const PageLayout: React.FC<Props> = ({
           {page}
         </ScrollView>
       ) : (
-        <View style={[styles.content, styles.bodyFill, contentContainerStyle]}>{page}</View>
+        <View style={[styles.content, styles.bodyFill, contentContainerStyle]}>
+          {page}
+        </View>
       )}
       {bottomMenu ? <BottomMenu /> : null}
     </View>
@@ -170,7 +179,9 @@ const PageLayout: React.FC<Props> = ({
 
   return (
     <ImageBackground source={background} style={styles.root} resizeMode="cover">
-      {softOverlay ? <View style={styles.softOverlay} pointerEvents="none" /> : null}
+      {softOverlay ? (
+        <View style={styles.softOverlay} pointerEvents="none" />
+      ) : null}
       {frame}
     </ImageBackground>
   );

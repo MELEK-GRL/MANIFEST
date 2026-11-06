@@ -1,7 +1,7 @@
 export const grabovoiDaily = {
   sequence: '520 741',
-  tr: 'Bolluk ve finansal akış niyetiyle ilişkilendiriliyor.',
-  en: 'Associated with an intention of abundance and financial flow.',
+  tr: 'Bolluk ve finansal akış niyetiyle.',
+  en: 'For abundance and financial flow.',
 };
 
 export const grabovoiData = [

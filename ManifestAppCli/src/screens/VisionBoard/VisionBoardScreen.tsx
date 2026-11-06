@@ -24,11 +24,11 @@ const VisionBoardScreen = () => {
         grid: {
           flexDirection: 'row',
           flexWrap: 'wrap',
-          marginHorizontal: -6 * w1px,
+          justifyContent: 'space-between',
+          width: '100%',
         },
         tile: {
-          width: '50%',
-          paddingHorizontal: 6 * w1px,
+          width: '48.5%',
           marginBottom: 12 * h1px,
         },
         tileInner: {

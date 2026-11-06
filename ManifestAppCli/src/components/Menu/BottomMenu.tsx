@@ -96,7 +96,7 @@ const BottomMenu = () => {
         },
         dock: {
           paddingHorizontal: 14 * w1px,
-          paddingBottom: Math.max(insets.bottom, 10 * h1px),
+          paddingBottom: Math.max(insets.bottom - 6 * h1px, 4 * h1px),
           paddingTop: 8 * h1px,
         },
         sheet: {

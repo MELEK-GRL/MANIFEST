@@ -83,15 +83,15 @@ const HomeScreen = () => {
         focusTitle: {
           marginTop: 0,
           marginBottom: 16 * h1px,
-          paddingHorizontal: 8 * w1px,
         },
         grid: {
+          width: '100%',
           flexDirection: 'row',
+          gap: 10 * w1px,
           marginBottom: 16 * h1px,
         },
         tile: {
           flex: 1,
-          marginHorizontal: 5 * w1px,
         },
         tilePress: {
           width: '100%',
@@ -99,7 +99,7 @@ const HomeScreen = () => {
         tileInner: {
           width: '100%',
           height: 100 * h1px,
-          borderRadius: 20 * fs1px,
+          borderRadius: 22 * fs1px,
           paddingHorizontal: 4 * w1px,
           paddingTop: 2 * h1px,
           paddingBottom: 4 * h1px,
@@ -125,10 +125,11 @@ const HomeScreen = () => {
           textAlignVertical: 'center',
         },
         messageCard: {
+          width: '100%',
           height: 112 * h1px,
           borderRadius: 22 * fs1px,
           overflow: 'hidden',
-          marginBottom: 20 * h1px,
+          marginBottom: 16 * h1px,
           justifyContent: 'center',
         },
         messageImage: {
@@ -141,8 +142,8 @@ const HomeScreen = () => {
           backgroundColor: colors.messageWash,
         },
         messageContent: {
-          paddingVertical: 18 * h1px,
-          paddingHorizontal: 18 * w1px,
+          paddingVertical: 16 * h1px,
+          paddingHorizontal: 16 * w1px,
           maxWidth: '68%',
           zIndex: 1,
         },
@@ -152,8 +153,7 @@ const HomeScreen = () => {
         journeyHeader: {
           flexDirection: 'row',
           alignItems: 'center',
-          marginTop: 2 * h1px,
-          marginBottom: 12 * h1px,
+          marginBottom: 16 * h1px,
         },
         journeyLine: {
           flex: 1,
@@ -164,9 +164,9 @@ const HomeScreen = () => {
           marginHorizontal: 10 * w1px,
         },
         ritualCard: {
-          borderRadius: 24 * fs1px,
+          borderRadius: 22 * fs1px,
           paddingVertical: 14 * h1px,
-          paddingHorizontal: 16 * w1px,
+          paddingHorizontal: 14 * w1px,
           flexDirection: 'row',
           alignItems: 'center',
           shadowColor: colors.primaryDark,
@@ -178,7 +178,7 @@ const HomeScreen = () => {
         progress: {
           width: 48 * w1px,
           height: 48 * w1px,
-          marginRight: 14 * w1px,
+          marginRight: 12 * w1px,
           alignItems: 'center',
           justifyContent: 'center',
         },
@@ -230,10 +230,11 @@ const HomeScreen = () => {
         },
         ritualText: {
           flex: 1,
-          marginRight: 8 * w1px,
+          marginRight: 12 * w1px,
+          justifyContent: 'center',
         },
         ritualTitle: {
-          marginBottom: 2 * h1px,
+          marginBottom: 4 * h1px,
         },
         ritualNext: {
           width: 34 * w1px,
@@ -257,190 +258,180 @@ const HomeScreen = () => {
   };
 
   return (
-    <PageLayout
-      background={heroBg}
-      softOverlay
-      paddingHorizontal={22}
-      userHeader={false}>
-          <View style={styles.brandWrap}>
-            <Icon
-              name="sparkles"
-              size="small"
-              color={colors.gold}
-              style={styles.sparkle}
-            />
-            <T
-              family="serif"
-              size={fontSize.brand}
-              weight="700"
-              color={colors.primaryDark}
-              align="center"
-              style={styles.brand}>
-              {t('home.brand')}
-            </T>
-          </View>
+    <PageLayout background={heroBg} softOverlay userHeader={false}>
+      <View style={styles.brandWrap}>
+        <Icon
+          name="sparkles"
+          size="small"
+          color={colors.gold}
+          style={styles.sparkle}
+        />
+        <T
+          family="serif"
+          size={fontSize.brand}
+          weight="700"
+          color={colors.primaryDark}
+          align="center"
+          style={styles.brand}>
+          {t('home.brand')}
+        </T>
+      </View>
 
-          <T
-            family="sans"
-            size={fontSize.caption}
-            weight="600"
-            color={colors.textMutedDark}
-            align="center"
-            style={styles.tagline}
-            numberOfLines={1}>
-            {t('home.tagline')}
-          </T>
-          <T
-            family="serif"
-            size={fontSize.titleLarge}
-            weight="700"
-            color={colors.primaryDark}
-            align="center"
-            style={styles.focusTitle}>
-            {t('home.focusTitle')}
-          </T>
+      <T
+        family="sans"
+        size={fontSize.caption}
+        weight="600"
+        color={colors.textMutedDark}
+        align="center"
+        style={styles.tagline}
+        numberOfLines={1}>
+        {t('home.tagline')}
+      </T>
+      <T
+        family="serif"
+        size={fontSize.titleLarge}
+        weight="700"
+        color={colors.primaryDark}
+        align="center"
+        style={styles.focusTitle}>
+        {t('home.focusTitle')}
+      </T>
 
-          <View style={styles.grid}>
-            {tiles.map(tile => (
-              <View key={tile.key} style={styles.tile}>
-                <TouchableOpacity
-                  activeOpacity={0.85}
-                  onPress={() => open(tile.route)}
-                  style={styles.tilePress}>
-                  <LinearGradient
-                    colors={colors.gradientTile}
-                    start={{x: 0, y: 0}}
-                    end={{x: 1, y: 1}}
-                    style={styles.tileInner}>
-                    <Image
-                      source={tile.image}
-                      style={styles.tileImage}
-                      resizeMode="contain"
-                    />
-                    <T
-                      family="sans"
-                      size={fontSize.caption}
-                      weight="500"
-                      color={colors.primary}
-                      align="center"
-                      numberOfLines={2}
-                      style={styles.tileLabel}>
-                      {t(tile.labelKey)}
-                    </T>
-                  </LinearGradient>
-                </TouchableOpacity>
-              </View>
-            ))}
-          </View>
-
-          <View style={styles.messageCard}>
-            <Image
-              source={imgMessage}
-              style={styles.messageImage}
-              resizeMode="cover"
-            />
-            <View style={styles.messageWash} pointerEvents="none" />
-            <View style={styles.messageContent}>
-              <T
-                family="serif"
-                italic
-                size={fontSize.subtitle}
-                weight="600"
-                color={colors.black}
-                style={styles.messageTitle}>
-                {t('home.messageTitle')}
-              </T>
-              <T
-                family="serif"
-                italic
-                size={fontSize.bodySmall}
-                weight="600"
-                color={colors.textMutedDark}>
-                {t('home.messageBody')}
-              </T>
-            </View>
-          </View>
-
-          <View style={styles.journeyHeader}>
-            <View style={styles.journeyLine} />
-            <T
-              family="serif"
-              size={fontSize.label}
-              weight="600"
-              color={colors.textMuted}
-              align="center"
-              style={styles.journeyTitle}>
-              {t('home.journeyTitle')}
-            </T>
-            <View style={styles.journeyLine} />
-          </View>
-
-          <TouchableOpacity
-            activeOpacity={0.85}
-            onPress={() => open('Manifest')}>
-            <LinearGradient
-              colors={colors.gradientTile}
-              start={{x: 0, y: 0}}
-              end={{x: 1, y: 1}}
-              style={styles.ritualCard}>
-              <View style={styles.progress}>
-                <View style={styles.progressTrack} />
-                <View style={[styles.progressHalf, styles.progressHalfRight]}>
-                  <LinearGradient
-                    colors={colors.gradientProgress}
-                    start={{x: 0.3, y: 0}}
-                    end={{x: 0.9, y: 1}}
-                    style={[styles.progressDisc, styles.progressDiscRight]}
-                  />
-                </View>
-                <View style={[styles.progressHalf, styles.progressHalfLeft]}>
-                  <View style={styles.progressLeftPivot}>
-                    <View style={styles.progressLeftClip}>
-                      <LinearGradient
-                        colors={colors.gradientProgress}
-                        start={{x: 0.3, y: 0}}
-                        end={{x: 0.9, y: 1}}
-                        style={styles.progressDisc}
-                      />
-                    </View>
-                  </View>
-                </View>
-                <View style={styles.progressInner}>
-                  <T
-                    family="sans"
-                    size={fontSize.caption}
-                    weight="700"
-                    color={colors.textDark}>
-                    {t('home.ritualProgress')}
-                  </T>
-                </View>
-              </View>
-              <View style={styles.ritualText}>
-                <T
-                  family="serif"
-                  size={fontSize.label}
-                  weight="700"
-                  color={colors.textDark}
-                  style={styles.ritualTitle}>
-                  {t('home.ritualTitle')}
-                </T>
+      <View style={styles.grid}>
+        {tiles.map(tile => (
+          <View key={tile.key} style={styles.tile}>
+            <TouchableOpacity
+              activeOpacity={0.85}
+              onPress={() => open(tile.route)}
+              style={styles.tilePress}>
+              <LinearGradient
+                colors={colors.gradientTile}
+                start={{x: 0, y: 0}}
+                end={{x: 1, y: 1}}
+                style={styles.tileInner}>
+                <Image
+                  source={tile.image}
+                  style={styles.tileImage}
+                  resizeMode="contain"
+                />
                 <T
                   family="sans"
                   size={fontSize.caption}
                   weight="500"
-                  color={colors.textMuted}>
-                  {t('home.ritualBody')}
+                  color={colors.primary}
+                  align="center"
+                  numberOfLines={2}
+                  style={styles.tileLabel}>
+                  {t(tile.labelKey)}
                 </T>
+              </LinearGradient>
+            </TouchableOpacity>
+          </View>
+        ))}
+      </View>
+
+      <View style={styles.messageCard}>
+        <Image
+          source={imgMessage}
+          style={styles.messageImage}
+          resizeMode="cover"
+        />
+        <View style={styles.messageWash} pointerEvents="none" />
+        <View style={styles.messageContent}>
+          <T
+            family="serif"
+            italic
+            size={fontSize.subtitle}
+            weight="600"
+            color={colors.black}
+            style={styles.messageTitle}>
+            {t('home.messageTitle')}
+          </T>
+          <T
+            family="serif"
+            italic
+            size={fontSize.bodySmall}
+            weight="600"
+            color={colors.textMutedDark}>
+            {t('home.messageBody')}
+          </T>
+        </View>
+      </View>
+
+      <View style={styles.journeyHeader}>
+        <View style={styles.journeyLine} />
+        <T
+          family="serif"
+          size={fontSize.label}
+          weight="600"
+          color={colors.textMuted}
+          align="center"
+          style={styles.journeyTitle}>
+          {t('home.journeyTitle')}
+        </T>
+        <View style={styles.journeyLine} />
+      </View>
+
+      <TouchableOpacity activeOpacity={0.85} onPress={() => open('Manifest')}>
+        <LinearGradient
+          colors={colors.gradientTile}
+          start={{x: 0, y: 0}}
+          end={{x: 1, y: 1}}
+          style={styles.ritualCard}>
+          <View style={styles.progress}>
+            <View style={styles.progressTrack} />
+            <View style={[styles.progressHalf, styles.progressHalfRight]}>
+              <LinearGradient
+                colors={colors.gradientProgress}
+                start={{x: 0.3, y: 0}}
+                end={{x: 0.9, y: 1}}
+                style={[styles.progressDisc, styles.progressDiscRight]}
+              />
+            </View>
+            <View style={[styles.progressHalf, styles.progressHalfLeft]}>
+              <View style={styles.progressLeftPivot}>
+                <View style={styles.progressLeftClip}>
+                  <LinearGradient
+                    colors={colors.gradientProgress}
+                    start={{x: 0.3, y: 0}}
+                    end={{x: 0.9, y: 1}}
+                    style={styles.progressDisc}
+                  />
+                </View>
               </View>
-              <View style={styles.ritualNext}>
-                <Icon
-                  name="chevron-forward"
-                  size={18}
-                  color={colors.textDark}
-                />
-              </View>
-            </LinearGradient>
-          </TouchableOpacity>
+            </View>
+            <View style={styles.progressInner}>
+              <T
+                family="sans"
+                size={fontSize.caption}
+                weight="700"
+                color={colors.textDark}>
+                {t('home.ritualProgress')}
+              </T>
+            </View>
+          </View>
+          <View style={styles.ritualText}>
+            <T
+              family="serif"
+              size={fontSize.label}
+              weight="700"
+              color={colors.textDark}
+              style={styles.ritualTitle}>
+              {t('home.ritualTitle')}
+            </T>
+            <T
+              family="sans"
+              size={fontSize.caption}
+              weight="500"
+              color={colors.textMuted}>
+              {t('home.ritualBody')}
+            </T>
+          </View>
+          <View style={styles.ritualNext}>
+            <Icon name="chevron-forward" size={18} color={colors.textDark} />
+          </View>
+        </LinearGradient>
+      </TouchableOpacity>
     </PageLayout>
   );
 };

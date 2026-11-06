@@ -136,7 +136,7 @@ const LoginScreen = () => {
   };
 
   return (
-    <PageLayout bottomMenu={false} scroll={false} paddingHorizontal={22}>
+    <PageLayout bottomMenu={false} scroll={false}>
       <KeyboardAvoidingView
         style={styles.flex}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
