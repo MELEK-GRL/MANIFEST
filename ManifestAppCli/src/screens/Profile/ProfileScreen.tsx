@@ -209,7 +209,10 @@ const ProfileScreen = () => {
   };
 
   return (
-    <PageLayout title={t('profile.title')} subtitle={t('profile.subtitle')}>
+    <PageLayout
+      title={t('profile.title')}
+      subtitle={t('profile.subtitle')}
+      userHeader={false}>
       <View style={styles.page}>
         <TouchableOpacity
           activeOpacity={0.85}
