@@ -1,4 +1,5 @@
 export {default as T} from './Text/T';
+export {default as ActivityIndicator} from './ActivityIndicator/ActivityIndicator';
 export {default as Button} from './Buttons/Button';
 export {default as Header} from './Headers/Header';
 export {default as PageHeader} from './Headers/PageHeader';

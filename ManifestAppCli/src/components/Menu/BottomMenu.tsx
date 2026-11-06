@@ -55,18 +55,18 @@ const items: Item[] = [
     center: true,
   },
   {
-    key: 'settings',
-    labelKey: 'tabs.settings',
-    icon: 'settings-outline',
-    activeIcon: 'settings',
-    route: 'Settings',
-  },
-  {
     key: 'angels',
     labelKey: 'tabs.angels',
     icon: 'moon-outline',
     activeIcon: 'moon',
     route: 'AngelNumbers',
+  },
+  {
+    key: 'settings',
+    labelKey: 'tabs.settings',
+    icon: 'settings-outline',
+    activeIcon: 'settings',
+    route: 'Settings',
   },
 ];
 

@@ -1,5 +1,5 @@
 import React, {useMemo} from 'react';
-import {View, StyleSheet, Modal} from 'react-native';
+import {StyleSheet, TouchableOpacity, View, Modal} from 'react-native';
 import {useT} from '../../store/useLocaleStore';
 import Icon from '../Icons/Icon';
 import {useResponsive} from '../../utils/deviceStore/device';
@@ -8,7 +8,7 @@ import Button from '../Buttons/Button';
 import {fontSize} from '../../constants/typography';
 import colors from '../../theme/colors';
 
-export type PopupType = 'info' | 'warning' | 'error' | 'success';
+export type PopupType = 'info' | 'warning' | 'error' | 'danger' | 'success';
 
 type Props = {
   visible: boolean;
@@ -19,19 +19,47 @@ type Props = {
   rightButtonText?: string;
   onLeftPress?: () => void;
   onRightPress?: () => void;
+  onClose?: () => void;
 };
 
 const TYPE_CONFIG: Record<
   PopupType,
-  {accent: string; titleKey: 'common.ok' | 'common.error' | 'common.warning' | 'common.info'; icon: string}
+  {
+    accent: string;
+    soft: string;
+    titleKey: 'common.ok' | 'common.error' | 'common.warning' | 'common.info' | 'common.danger';
+    icon: string;
+  }
 > = {
-  success: {accent: colors.success, titleKey: 'common.ok', icon: 'checkmark-circle'},
-  error: {accent: colors.danger, titleKey: 'common.error', icon: 'close-circle'},
-  warning: {accent: colors.warning, titleKey: 'common.warning', icon: 'warning'},
+  success: {
+    accent: colors.success,
+    soft: colors.successSoft,
+    titleKey: 'common.ok',
+    icon: 'checkmark-circle-outline',
+  },
+  error: {
+    accent: colors.danger,
+    soft: colors.dangerSoft,
+    titleKey: 'common.error',
+    icon: 'close-circle-outline',
+  },
+  danger: {
+    accent: colors.danger,
+    soft: colors.dangerSoft,
+    titleKey: 'common.danger',
+    icon: 'alert-circle-outline',
+  },
+  warning: {
+    accent: colors.warning,
+    soft: colors.warningSoft,
+    titleKey: 'common.warning',
+    icon: 'warning-outline',
+  },
   info: {
     accent: colors.info,
+    soft: colors.infoSoft,
     titleKey: 'common.info',
-    icon: 'information-circle',
+    icon: 'information-circle-outline',
   },
 };
 
@@ -44,12 +72,15 @@ const PopupModal: React.FC<Props> = ({
   rightButtonText,
   onLeftPress,
   onRightPress,
+  onClose,
 }) => {
   const t = useT();
-  const {w1px, h1px} = useResponsive();
+  const {w1px, h1px, fs1px} = useResponsive();
   const config = TYPE_CONFIG[type];
   const displayTitle = title ?? t(config.titleKey);
-  const locked = !leftButtonText && !rightButtonText;
+  const showButtons = Boolean(leftButtonText || rightButtonText);
+  const confirmColor =
+    type === 'danger' || type === 'error' ? colors.danger : colors.primary;
 
   const styles = useMemo(
     () =>
@@ -64,37 +95,54 @@ const PopupModal: React.FC<Props> = ({
           width: 320 * w1px,
           maxWidth: '90%',
           backgroundColor: colors.white,
-          borderRadius: 12 * w1px,
-          paddingVertical: 24 * h1px,
+          borderRadius: 22 * fs1px,
+          paddingTop: 22 * h1px,
+          paddingBottom: 20 * h1px,
           paddingHorizontal: 20 * w1px,
           alignItems: 'center',
-          shadowColor: '#000',
-          shadowOpacity: 0.15,
-          shadowRadius: 12,
+          shadowColor: colors.primaryDark,
+          shadowOpacity: 0.14,
+          shadowRadius: 16,
+          shadowOffset: {width: 0, height: 6},
           elevation: 6,
         },
+        close: {
+          position: 'absolute',
+          top: 12 * h1px,
+          right: 12 * w1px,
+          width: 32 * w1px,
+          height: 32 * w1px,
+          alignItems: 'center',
+          justifyContent: 'center',
+        },
         iconWrap: {
-          marginBottom: 16 * h1px,
+          width: 64 * w1px,
+          height: 64 * w1px,
+          borderRadius: 32 * w1px,
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginTop: 8 * h1px,
+          marginBottom: 14 * h1px,
         },
         title: {
-          marginBottom: 10 * h1px,
+          marginBottom: 8 * h1px,
         },
         message: {
-          lineHeight: 22,
+          lineHeight: 22 * h1px,
         },
         buttonRow: {
           flexDirection: 'row',
-          justifyContent: 'center',
           width: '100%',
           marginTop: 20 * h1px,
-          paddingHorizontal: 4,
         },
         buttonHalf: {
           flex: 1,
-          marginHorizontal: 6 * w1px,
+        },
+        buttonGap: {
+          marginRight: 10 * w1px,
         },
       }),
-    [w1px, h1px],
+    [w1px, h1px, fs1px],
   );
 
   return (
@@ -105,20 +153,19 @@ const PopupModal: React.FC<Props> = ({
       statusBarTranslucent
       hardwareAccelerated
       presentationStyle="overFullScreen"
-      onRequestClose={() => {
-        if (locked) {
-          return;
-        }
-        if (onLeftPress) {
-          onLeftPress();
-        } else if (onRightPress) {
-          onRightPress();
-        }
-      }}>
-      <View style={styles.overlay} pointerEvents="auto">
+      onRequestClose={onClose}>
+      <View style={styles.overlay}>
         <View style={styles.box}>
-          <View style={styles.iconWrap}>
-            <Icon name={config.icon} size="xxl" color={config.accent} />
+          <TouchableOpacity
+            style={styles.close}
+            onPress={onClose}
+            activeOpacity={0.7}
+            accessibilityRole="button"
+            accessibilityLabel={t('common.cancel')}>
+            <Icon name="close-outline" size="medium" color={colors.textMuted} />
+          </TouchableOpacity>
+          <View style={[styles.iconWrap, {backgroundColor: config.soft}]}>
+            <Icon name={config.icon} size="xl" color={config.accent} />
           </View>
           <T
             size={fontSize.title}
@@ -128,19 +175,17 @@ const PopupModal: React.FC<Props> = ({
             style={styles.title}>
             {displayTitle}
           </T>
-
           <T
-            size={fontSize.bodyMedium}
+            size={fontSize.body}
             color={colors.textMuted}
             align="center"
             style={styles.message}>
             {message}
           </T>
-
-          {leftButtonText || rightButtonText ? (
+          {showButtons ? (
             <View style={styles.buttonRow}>
               {leftButtonText ? (
-                <View style={styles.buttonHalf}>
+                <View style={[styles.buttonHalf, rightButtonText ? styles.buttonGap : null]}>
                   <Button
                     buttonText={leftButtonText}
                     onPress={onLeftPress}
@@ -155,6 +200,7 @@ const PopupModal: React.FC<Props> = ({
                     buttonText={rightButtonText}
                     onPress={onRightPress}
                     width="100%"
+                    backgroundColor={confirmColor}
                   />
                 </View>
               ) : null}

@@ -25,4 +25,16 @@ public sealed class User : Entity
     public string PasswordHash { get; private set; }
 
     public string PasswordSalt { get; private set; }
+
+    public byte[]? Photo { get; private set; }
+
+    public string? PhotoContentType { get; private set; }
+
+    public bool HasPhoto => Photo is { Length: > 0 };
+
+    public void SetPhoto(byte[] photo, string contentType)
+    {
+        Photo = photo;
+        PhotoContentType = contentType;
+    }
 }

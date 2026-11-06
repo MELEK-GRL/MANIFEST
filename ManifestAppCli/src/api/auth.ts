@@ -34,6 +34,29 @@ export async function loginAccount(
   return data;
 }
 
+export type ProfileAccount = {
+  username: string;
+  email: string;
+  hasPhoto: boolean;
+};
+
+export async function fetchProfile(): Promise<ProfileAccount> {
+  const {data} = await api.get<ProfileAccount>('/api/auth/profile');
+  return data;
+}
+
+export function profilePhotoUrl(version: number) {
+  return `${api.defaults.baseURL}/api/auth/photo?v=${version}`;
+}
+
+export async function uploadProfilePhoto(uri: string, type: string, name: string) {
+  const body = new FormData();
+  body.append('photo', {uri, type, name} as unknown as Blob);
+  await api.put('/api/auth/photo', body, {
+    headers: {'Content-Type': 'multipart/form-data'},
+  });
+}
+
 const usernamePattern = /^[a-zA-Z0-9_]{3,32}$/;
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -73,6 +96,8 @@ const serverCodes: Record<string, string> = {
   username_taken: 'usernameTaken',
   email_taken: 'emailTaken',
   bad_credentials: 'badCredentials',
+  photo_invalid: 'photoInvalid',
+  photo_too_large: 'photoTooLarge',
 };
 
 export function authErrorCode(error: unknown): string {

@@ -56,18 +56,30 @@
   "profile": {
     "title": "Profil",
     "subtitle": "Hesabına buradan bak.",
-    "username": "Kullanıcı adı"
+    "addPhoto": "Fotoğraf ekle",
+    "changePhoto": "Fotoğrafı değiştir",
+    "cropTitle": "Fotoğrafı ayarla",
+    "cropChoose": "Seç",
+    "photoInvalid": "Yalnızca JPG veya PNG seç.",
+    "photoTooLarge": "Fotoğraf 8 MB'dan küçük olmalı.",
+    "photoError": "Fotoğraf yüklenemedi."
   },
   "settings": {
     "title": "Ayarlar",
     "subtitle": "Uygulama tercihlerin.",
     "language": "Dil",
+    "languageHint": "Uygulama bu dilde açılır.",
     "turkish": "Türkçe",
-    "english": "English"
+    "english": "English",
+    "logout": "Çıkış yap",
+    "logoutTitle": "Çıkış",
+    "logoutMessage": "Çıkış yapmak istediğinize emin misiniz?"
   },
   "common": {
     "warning": "Uyarı",
+    "danger": "Dikkat",
     "confirm": "Devam etmek istediğine emin misin?",
+    "cancel": "Vazgeç",
     "ok": "Tamam",
     "error": "Hata",
     "info": "Bilgi",

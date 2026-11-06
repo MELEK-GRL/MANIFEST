@@ -56,18 +56,30 @@
   "profile": {
     "title": "Profile",
     "subtitle": "Your account, in one place.",
-    "username": "Username"
+    "addPhoto": "Add photo",
+    "changePhoto": "Change photo",
+    "cropTitle": "Crop photo",
+    "cropChoose": "Choose",
+    "photoInvalid": "Choose a JPG or PNG photo.",
+    "photoTooLarge": "The photo must be smaller than 8 MB.",
+    "photoError": "The photo could not be uploaded."
   },
   "settings": {
     "title": "Settings",
     "subtitle": "Your app preferences.",
     "language": "Language",
+    "languageHint": "The app opens in this language.",
     "turkish": "Türkçe",
-    "english": "English"
+    "english": "English",
+    "logout": "Log out",
+    "logoutTitle": "Log out",
+    "logoutMessage": "Are you sure you want to log out?"
   },
   "common": {
     "warning": "Warning",
+    "danger": "Attention",
     "confirm": "Are you sure you want to continue?",
+    "cancel": "Cancel",
     "ok": "OK",
     "error": "Error",
     "info": "Info",

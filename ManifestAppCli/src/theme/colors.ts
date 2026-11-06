@@ -33,12 +33,15 @@ const colors = {
   borderGlass: '#FFFFFF',
 
   danger: '#DC2626',
-  dangerSoft: '#FEF2F2',
+  dangerSoft: '#FDECEC',
   dangerBorder: '#F87171',
   dangerText: '#B91C1C',
   success: '#22C55E',
-  warning: '#EAB308',
+  successSoft: '#E8F8EE',
+  warning: '#C9A86A',
+  warningSoft: '#F8F1E3',
   info: '#6B8CFF',
+  infoSoft: '#E8EEFF',
   overlay: '#3A2F4573',
   buttonMuted: '#B7A9C4',
 

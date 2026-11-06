@@ -20,6 +20,11 @@ public sealed class UserRepository : IUserRepository
             cancellationToken);
     }
 
+    public Task<User?> FindByIdAsync(Guid id, CancellationToken cancellationToken)
+    {
+        return _db.Users.FirstOrDefaultAsync(user => user.Id == id, cancellationToken);
+    }
+
     public Task<bool> EmailExistsAsync(string email, CancellationToken cancellationToken)
     {
         return _db.Users.AnyAsync(user => user.Email == email, cancellationToken);
@@ -29,5 +34,10 @@ public sealed class UserRepository : IUserRepository
     {
         _db.Users.Add(user);
         await _db.SaveChangesAsync(cancellationToken);
+    }
+
+    public Task SaveAsync(CancellationToken cancellationToken)
+    {
+        return _db.SaveChangesAsync(cancellationToken);
     }
 }

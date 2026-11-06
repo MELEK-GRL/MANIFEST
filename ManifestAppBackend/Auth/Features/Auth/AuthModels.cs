@@ -23,6 +23,24 @@ public sealed record RegisterUserCommand(string? Username, string? Email, string
 public sealed record LoginUserCommand(string? Username, string? Password)
     : ICommand<AuthResult>;
 
+public sealed record PhotoUpdateResult(bool Succeeded, string? Code)
+{
+    public static PhotoUpdateResult Ok() => new(true, null);
+
+    public static PhotoUpdateResult Fail(string code) => new(false, code);
+}
+
+public sealed record UserPhoto(byte[] Bytes, string ContentType);
+
+public sealed record ProfileView(string Username, string Email, bool HasPhoto);
+
+public sealed record UpdateUserPhotoCommand(Guid UserId, byte[] Photo, string ContentType)
+    : ICommand<PhotoUpdateResult>;
+
+public sealed record GetUserPhotoQuery(Guid UserId) : IQuery<UserPhoto?>;
+
+public sealed record GetProfileQuery(Guid UserId) : IQuery<ProfileView?>;
+
 public interface IPasswordHasher
 {
     (string Hash, string Salt) Hash(string password);

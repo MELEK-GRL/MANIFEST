@@ -3,12 +3,12 @@ import {
   TouchableOpacity,
   StyleSheet,
   ViewStyle,
-  ActivityIndicator,
   View,
   DimensionValue,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {useResponsive} from '../../utils/deviceStore/device';
+import ActivityIndicator from '../ActivityIndicator/ActivityIndicator';
 import T from '../Text/T';
 import colors from '../../theme/colors';
 import {fontSize} from '../../constants/typography';

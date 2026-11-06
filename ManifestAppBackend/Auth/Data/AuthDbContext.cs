@@ -23,6 +23,8 @@ public sealed class AuthDbContext : DbContext
             entity.HasIndex(user => user.Email).IsUnique();
             entity.Property(user => user.PasswordHash).IsRequired();
             entity.Property(user => user.PasswordSalt).IsRequired();
+            entity.Property(user => user.Photo).HasColumnType("bytea");
+            entity.Property(user => user.PhotoContentType).HasMaxLength(64);
         });
     }
 }
