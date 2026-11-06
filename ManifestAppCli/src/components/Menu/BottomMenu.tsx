@@ -86,8 +86,18 @@ const BottomMenu = () => {
           left: 0,
           right: 0,
           bottom: 0,
+        },
+        veil: {
+          position: 'absolute',
+          left: 0,
+          right: 0,
+          bottom: 0,
+          height: 120 * h1px + Math.max(insets.bottom, 10 * h1px),
+        },
+        dock: {
           paddingHorizontal: 14 * w1px,
           paddingBottom: Math.max(insets.bottom, 10 * h1px),
+          paddingTop: 8 * h1px,
         },
         sheet: {
           borderRadius: 28 * fs1px,
@@ -153,58 +163,66 @@ const BottomMenu = () => {
   };
 
   return (
-    <View style={styles.wrap}>
+    <View style={styles.wrap} pointerEvents="box-none">
       <LinearGradient
-        colors={colors.gradientTile}
-        start={{x: 0, y: 0}}
-        end={{x: 1, y: 1}}
-        style={styles.sheet}>
-        {items.map(item => {
-          const active = item.route ? route.name === item.route : false;
+        pointerEvents="none"
+        colors={[`${colors.background}00`, colors.background, colors.background]}
+        locations={[0, 0.42, 1]}
+        style={styles.veil}
+      />
+      <View style={styles.dock}>
+        <LinearGradient
+          colors={colors.gradientTile}
+          start={{x: 0, y: 0}}
+          end={{x: 1, y: 1}}
+          style={styles.sheet}>
+          {items.map(item => {
+            const active = item.route ? route.name === item.route : false;
 
-          return (
-            <TouchableOpacity
-              key={item.key}
-              activeOpacity={0.85}
-              accessibilityRole="button"
-              accessibilityLabel={t(item.labelKey)}
-              accessibilityState={{selected: active}}
-              onPress={() => open(item.route)}
-              style={styles.item}>
-              {item.center ? (
-                <View style={styles.centerSlot}>
-                  <Image
-                    source={menuButtonImg}
-                    style={styles.centerImage}
-                    resizeMode="contain"
-                  />
-                </View>
-              ) : active ? (
-                <LinearGradient
-                  colors={colors.gradientTabActive}
-                  start={{x: 0, y: 0}}
-                  end={{x: 1, y: 1}}
-                  style={styles.activeChip}>
-                  <View style={styles.shimmer} pointerEvents="none" />
-                  <Icon
-                    name={item.activeIcon}
-                    size={ICON_SIZE}
-                    color={colors.textWhite}
-                  />
-                </LinearGradient>
-              ) : (
-                <View style={styles.iconSlot}>
-                  <Icon
-                    name={item.icon}
-                    size={ICON_SIZE}
-                    color={colors.textLight}
-                  />
-                </View>
-              )}
-            </TouchableOpacity>
-          );
-        })}
-      </LinearGradient>
+            return (
+              <TouchableOpacity
+                key={item.key}
+                activeOpacity={0.85}
+                accessibilityRole="button"
+                accessibilityLabel={t(item.labelKey)}
+                accessibilityState={{selected: active}}
+                onPress={() => open(item.route)}
+                style={styles.item}>
+                {item.center ? (
+                  <View style={styles.centerSlot}>
+                    <Image
+                      source={menuButtonImg}
+                      style={styles.centerImage}
+                      resizeMode="contain"
+                    />
+                  </View>
+                ) : active ? (
+                  <LinearGradient
+                    colors={colors.gradientTabActive}
+                    start={{x: 0, y: 0}}
+                    end={{x: 1, y: 1}}
+                    style={styles.activeChip}>
+                    <View style={styles.shimmer} pointerEvents="none" />
+                    <Icon
+                      name={item.activeIcon}
+                      size={ICON_SIZE}
+                      color={colors.textWhite}
+                    />
+                  </LinearGradient>
+                ) : (
+                  <View style={styles.iconSlot}>
+                    <Icon
+                      name={item.icon}
+                      size={ICON_SIZE}
+                      color={colors.textLight}
+                    />
+                  </View>
+                )}
+              </TouchableOpacity>
+            );
+          })}
+        </LinearGradient>
+      </View>
     </View>
   );
 };
