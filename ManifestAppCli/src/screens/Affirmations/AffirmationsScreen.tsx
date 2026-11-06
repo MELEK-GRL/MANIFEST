@@ -13,7 +13,7 @@ const lineKeys = [
   'affirmations.line3',
 ] as const;
 
-const OlumlamalarScreen = () => {
+const AffirmationsScreen = () => {
   const t = useT();
   const {w1px, h1px, fs1px} = useResponsive();
 
@@ -48,4 +48,4 @@ const OlumlamalarScreen = () => {
   );
 };
 
-export default OlumlamalarScreen;
+export default AffirmationsScreen;

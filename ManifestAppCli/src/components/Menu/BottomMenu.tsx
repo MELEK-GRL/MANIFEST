@@ -59,14 +59,14 @@ const items: Item[] = [
     labelKey: 'tabs.journal',
     icon: 'book-outline',
     activeIcon: 'book',
-    route: 'Olumlamalar',
+    route: 'Affirmations',
   },
   {
     key: 'angels',
     labelKey: 'tabs.angels',
     icon: 'moon-outline',
     activeIcon: 'moon',
-    route: 'MelekSayilari',
+    route: 'AngelNumbers',
   },
 ];
 

@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <RootNamespace>ManifestApp.Affirmations</RootNamespace>
+    <AssemblyName>ManifestApp.Affirmations</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="10.3.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="BackgroundServices\" />
+    <Folder Include="Behaviors\" />
+    <Folder Include="Controllers\" />
+    <Folder Include="Data\" />
+    <Folder Include="DTOs\" />
+    <Folder Include="Events\" />
+    <Folder Include="Exceptions\" />
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+</Project>

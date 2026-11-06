@@ -19,8 +19,8 @@ import {useT} from '../../store/useLocaleStore';
 import type {RootStackParamList} from '../../navigation/types';
 
 const heroBg = require('../../assets/images/mobilAppBackround.png');
-const imgMessage = require('../../assets/images/GununMesajiBackground.png');
-const iconOlumlama = require('../../assets/icons/olumlamaIcon.png');
+const imgMessage = require('../../assets/images/dailyMessageBackground.png');
+const iconAffirmation = require('../../assets/icons/affirmationIcon.png');
 const iconRitual = require('../../assets/icons/ritualIcon.png');
 const iconManifest = require('../../assets/icons/manifestIcon.png');
 const iconVisionBoard = require('../../assets/icons/visionBoardIcon.png');
@@ -40,8 +40,8 @@ const tiles: Tile[] = [
   {
     key: 'affirmation',
     labelKey: 'home.tileAffirmation',
-    image: iconOlumlama,
-    route: 'Olumlamalar',
+    image: iconAffirmation,
+    route: 'Affirmations',
   },
   {
     key: 'ritual',

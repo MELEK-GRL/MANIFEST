@@ -16,7 +16,7 @@ const numbers = [
   {code: '777', meaningKey: 'angelNumbers.n777'},
 ] as const;
 
-const MelekSayilariScreen = () => {
+const AngelNumbersScreen = () => {
   const t = useT();
   const {w1px, h1px, fs1px} = useResponsive();
 
@@ -70,4 +70,4 @@ const MelekSayilariScreen = () => {
   );
 };
 
-export default MelekSayilariScreen;
+export default AngelNumbersScreen;
