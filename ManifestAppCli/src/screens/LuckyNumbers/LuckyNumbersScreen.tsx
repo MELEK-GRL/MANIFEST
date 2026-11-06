@@ -1,5 +1,6 @@
 import React, {useMemo} from 'react';
 import {Image, StyleSheet, View} from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import {Icon, PageLayout, T} from '@components';
 import {grabovoiDaily, grabovoiData} from '../../data/LuckyNumbers/grabovoi';
 import {useLocaleStore, useT} from '../../store/useLocaleStore';
@@ -81,33 +82,36 @@ const LuckyNumbersScreen = () => {
           lineHeight: 18 * fs1px,
         },
         section: {
-          marginTop: 10 * h1px,
-          marginBottom: 12 * h1px,
+          marginTop: 14 * h1px,
+          marginBottom: 14 * h1px,
         },
         list: {
           width: '100%',
+          gap: 10 * h1px,
         },
         card: {
           width: '100%',
           flexDirection: 'row',
           alignItems: 'center',
-          backgroundColor: colors.background,
-          borderRadius: 18 * fs1px,
+          borderRadius: 20 * fs1px,
           paddingHorizontal: 12 * w1px,
-          paddingVertical: 6 * h1px,
-          marginBottom: 10 * h1px,
+          paddingVertical: 8 * h1px,
+          borderWidth: 1,
+          borderColor: colors.borderSoft,
           shadowColor: colors.primaryDark,
-          shadowOpacity: 0.12,
-          shadowRadius: 10,
+          shadowOpacity: 0.1,
+          shadowRadius: 12,
           shadowOffset: {width: 0, height: 4},
-          elevation: 4,
+          elevation: 3,
         },
         cardThumbWrap: {
-          width: 52 * w1px,
-          height: 52 * w1px,
+          width: 54 * w1px,
+          height: 54 * w1px,
           borderRadius: 16 * fs1px,
           marginRight: 12 * w1px,
           overflow: 'hidden',
+          borderWidth: 1,
+          borderColor: colors.borderGlass,
         },
         cardThumb: {
           width: '100%',
@@ -116,20 +120,26 @@ const LuckyNumbersScreen = () => {
         cardThumbWash: {
           ...StyleSheet.absoluteFillObject,
           backgroundColor: colors.messageWash,
-          opacity: 0.85,
+          opacity: 0.7,
         },
         cardBody: {
           flex: 1,
-          paddingRight: 4 * w1px,
+          paddingRight: 8 * w1px,
+          justifyContent: 'center',
         },
         cardTitle: {
-          marginRight: 2 * w1px,
+          letterSpacing: 0.2,
         },
         cardSubtitle: {
-          marginTop: 4 * h1px,
+          marginTop: 3 * h1px,
         },
         cardArrow: {
-          marginLeft: 2 * w1px,
+          width: 30 * w1px,
+          height: 30 * w1px,
+          borderRadius: 15 * w1px,
+          backgroundColor: colors.blush,
+          alignItems: 'center',
+          justifyContent: 'center',
         },
       }),
     [w1px, h1px, fs1px],
@@ -195,7 +205,12 @@ const LuckyNumbersScreen = () => {
       </View>
       <View style={styles.list}>
         {grabovoiData.map(topic => (
-          <View key={topic.id} style={styles.card}>
+          <LinearGradient
+            key={topic.id}
+            colors={colors.gradientTile}
+            start={{x: 0, y: 0}}
+            end={{x: 1, y: 1}}
+            style={styles.card}>
             <View style={styles.cardThumbWrap}>
               <Image
                 source={topicImages[topic.id] ?? luckMany}
@@ -207,7 +222,7 @@ const LuckyNumbersScreen = () => {
             <View style={styles.cardBody}>
               <T
                 family="serif"
-                size={fontSize.label}
+                size={fontSize.subtitle}
                 weight="700"
                 color={colors.textDark}
                 style={styles.cardTitle}
@@ -223,13 +238,10 @@ const LuckyNumbersScreen = () => {
                 {text(topic.subtitleTr, topic.subtitleEn)}
               </T>
             </View>
-            <Icon
-              name="chevron-forward"
-              size="small"
-              color={colors.textLight}
-              style={styles.cardArrow}
-            />
-          </View>
+            <View style={styles.cardArrow}>
+              <Icon name="chevron-forward" size={16} color={colors.textDark} />
+            </View>
+          </LinearGradient>
         ))}
       </View>
     </PageLayout>
