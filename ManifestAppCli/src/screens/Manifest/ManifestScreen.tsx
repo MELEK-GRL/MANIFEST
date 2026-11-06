@@ -1,8 +1,7 @@
 import React, {useMemo} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {useT} from '../../store/useLocaleStore';
-import {T} from '@components';
-import ScreenFrame from '../ScreenFrame';
+import {PageLayout, T} from '@components';
 import colors from '../../theme/colors';
 import {fontSize} from '../../constants/typography';
 import {useResponsive} from '../../utils/deviceStore/device';
@@ -46,7 +45,7 @@ const ManifestScreen = () => {
   );
 
   return (
-    <ScreenFrame title={t('manifest.title')} subtitle={t('manifest.subtitle')}>
+    <PageLayout title={t('manifest.title')} subtitle={t('manifest.subtitle')}>
       {stepKeys.map((step, index) => (
         <View key={step} style={styles.card}>
           <View style={styles.index}>
@@ -61,7 +60,7 @@ const ManifestScreen = () => {
           </View>
         </View>
       ))}
-    </ScreenFrame>
+    </PageLayout>
   );
 };
 

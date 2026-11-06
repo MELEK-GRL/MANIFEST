@@ -1,6 +1,5 @@
 import React, {useMemo, useRef, useState} from 'react';
 import {
-  ImageBackground,
   findNodeHandle,
   Keyboard,
   KeyboardAvoidingView,
@@ -14,7 +13,7 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';
 import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import LinearGradient from 'react-native-linear-gradient';
-import {Button, Icon, T, TextInput} from '@components';
+import {Button, Icon, PageLayout, T, TextInput} from '@components';
 import colors from '../../theme/colors';
 import {fontSize} from '../../constants/typography';
 import {useResponsive} from '../../utils/deviceStore/device';
@@ -22,8 +21,6 @@ import {useT} from '../../store/useLocaleStore';
 import {useAuthStore} from '../../store/useAuthStore';
 import {authErrorCode, loginAccount, validatePassword, validateUsername} from '../../api/auth';
 import type {RootStackParamList} from '../../navigation/types';
-
-const heroBg = require('../../assets/images/mobilAppBackround.png');
 
 const LoginScreen = () => {
   const t = useT();
@@ -41,17 +38,11 @@ const LoginScreen = () => {
   const styles = useMemo(
     () =>
       StyleSheet.create({
-        root: {flex: 1},
         flex: {flex: 1},
-        wash: {
-          ...StyleSheet.absoluteFillObject,
-          backgroundColor: colors.backgroundWash,
-        },
         content: {
           flexGrow: 1,
-          paddingTop: insets.top + 28 * h1px,
+          paddingTop: 28 * h1px,
           paddingBottom: insets.bottom + 28 * h1px,
-          paddingHorizontal: 22 * w1px,
           justifyContent: 'center',
         },
         brandWrap: {
@@ -90,7 +81,7 @@ const LoginScreen = () => {
           alignItems: 'center',
         },
       }),
-    [w1px, h1px, fs1px, insets.top, insets.bottom],
+    [w1px, h1px, fs1px, insets.bottom],
   );
 
   const reveal = (key: string) => {
@@ -145,8 +136,7 @@ const LoginScreen = () => {
   };
 
   return (
-    <ImageBackground source={heroBg} style={styles.root} resizeMode="cover">
-      <View style={styles.wash} pointerEvents="none" />
+    <PageLayout bottomMenu={false} scroll={false} paddingHorizontal={22}>
       <KeyboardAvoidingView
         style={styles.flex}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
@@ -242,7 +232,7 @@ const LoginScreen = () => {
           </LinearGradient>
         </ScrollView>
       </KeyboardAvoidingView>
-    </ImageBackground>
+    </PageLayout>
   );
 };
 

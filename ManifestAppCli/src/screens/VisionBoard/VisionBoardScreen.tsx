@@ -2,8 +2,7 @@ import React, {useMemo} from 'react';
 import {StyleSheet, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {useT} from '../../store/useLocaleStore';
-import {Icon, T} from '@components';
-import ScreenFrame from '../ScreenFrame';
+import {Icon, PageLayout, T} from '@components';
 import colors from '../../theme/colors';
 import {fontSize} from '../../constants/typography';
 import {useResponsive} from '../../utils/deviceStore/device';
@@ -48,7 +47,7 @@ const VisionBoardScreen = () => {
   );
 
   return (
-    <ScreenFrame title={t('vision.title')} subtitle={t('vision.subtitle')}>
+    <PageLayout title={t('vision.title')} subtitle={t('vision.subtitle')}>
       <View style={styles.grid}>
         {tiles.map(tile => (
           <View key={tile.titleKey} style={styles.tile}>
@@ -69,7 +68,7 @@ const VisionBoardScreen = () => {
           </View>
         ))}
       </View>
-    </ScreenFrame>
+    </PageLayout>
   );
 };
 

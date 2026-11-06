@@ -1,6 +1,5 @@
 import React, {useMemo, useRef, useState} from 'react';
 import {
-  ImageBackground,
   findNodeHandle,
   Keyboard,
   KeyboardAvoidingView,
@@ -14,7 +13,7 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';
 import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import LinearGradient from 'react-native-linear-gradient';
-import {Button, Icon, T, TextInput} from '@components';
+import {Button, Icon, PageLayout, T, TextInput} from '@components';
 import colors from '../../theme/colors';
 import {fontSize} from '../../constants/typography';
 import {useResponsive} from '../../utils/deviceStore/device';
@@ -28,8 +27,6 @@ import {
   validateUsername,
 } from '../../api/auth';
 import type {RootStackParamList} from '../../navigation/types';
-
-const heroBg = require('../../assets/images/mobilAppBackround.png');
 
 const RegisterScreen = () => {
   const t = useT();
@@ -55,17 +52,11 @@ const RegisterScreen = () => {
   const styles = useMemo(
     () =>
       StyleSheet.create({
-        root: {flex: 1},
         flex: {flex: 1},
-        wash: {
-          ...StyleSheet.absoluteFillObject,
-          backgroundColor: colors.backgroundWash,
-        },
         content: {
           flexGrow: 1,
-          paddingTop: insets.top + 20 * h1px,
+          paddingTop: 20 * h1px,
           paddingBottom: insets.bottom + 24 * h1px,
-          paddingHorizontal: 22 * w1px,
         },
         brandWrap: {
           alignItems: 'center',
@@ -160,8 +151,7 @@ const RegisterScreen = () => {
   };
 
   return (
-    <ImageBackground source={heroBg} style={styles.root} resizeMode="cover">
-      <View style={styles.wash} pointerEvents="none" />
+    <PageLayout bottomMenu={false} scroll={false} paddingHorizontal={22}>
       <KeyboardAvoidingView
         style={styles.flex}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
@@ -280,7 +270,7 @@ const RegisterScreen = () => {
           </LinearGradient>
         </ScrollView>
       </KeyboardAvoidingView>
-    </ImageBackground>
+    </PageLayout>
   );
 };
 

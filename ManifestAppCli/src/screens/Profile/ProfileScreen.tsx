@@ -2,8 +2,7 @@ import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {launchImageLibrary} from 'react-native-image-picker';
 import ImageCropPicker from 'react-native-image-crop-picker';
-import {ActivityIndicator, Icon, PopupModal, T} from '@components';
-import ScreenFrame from '../ScreenFrame';
+import {ActivityIndicator, Icon, PageLayout, PopupModal, T} from '@components';
 import colors from '../../theme/colors';
 import {fontSize} from '../../constants/typography';
 import {useResponsive} from '../../utils/deviceStore/device';
@@ -210,7 +209,7 @@ const ProfileScreen = () => {
   };
 
   return (
-    <ScreenFrame title={t('profile.title')} subtitle={t('profile.subtitle')}>
+    <PageLayout title={t('profile.title')} subtitle={t('profile.subtitle')}>
       <View style={styles.page}>
         <TouchableOpacity
           activeOpacity={0.85}
@@ -282,7 +281,7 @@ const ProfileScreen = () => {
         message={photoError ?? ''}
         onClose={() => setPhotoError(null)}
       />
-    </ScreenFrame>
+    </PageLayout>
   );
 };
 

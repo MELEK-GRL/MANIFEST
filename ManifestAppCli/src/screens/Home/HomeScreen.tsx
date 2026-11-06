@@ -1,17 +1,9 @@
 import React, {useMemo} from 'react';
-import {
-  Image,
-  ImageBackground,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import LinearGradient from 'react-native-linear-gradient';
-import {BottomMenu, Icon, T} from '@components';
+import {Icon, PageLayout, T} from '@components';
 import colors from '../../theme/colors';
 import {fontSize} from '../../constants/typography';
 import {useResponsive} from '../../utils/deviceStore/device';
@@ -65,7 +57,6 @@ const tiles: Tile[] = [
 
 const HomeScreen = () => {
   const t = useT();
-  const insets = useSafeAreaInsets();
   const {w1px, h1px, fs1px} = useResponsive();
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -73,24 +64,6 @@ const HomeScreen = () => {
   const styles = useMemo(
     () =>
       StyleSheet.create({
-        root: {
-          flex: 1,
-        },
-        softOverlay: {
-          ...StyleSheet.absoluteFillObject,
-          backgroundColor: colors.backgroundWash,
-        },
-        safe: {
-          flex: 1,
-          paddingTop: insets.top,
-          paddingLeft: insets.left,
-          paddingRight: insets.right,
-        },
-        content: {
-          paddingHorizontal: 22 * w1px,
-          paddingBottom: 150 * h1px,
-        },
-        // Referans: üstte menü/zil boşluğu varmış gibi MANIFEST konumu
         brandWrap: {
           alignItems: 'center',
           paddingTop: 8 * h1px,
@@ -276,7 +249,7 @@ const HomeScreen = () => {
           elevation: 3,
         },
       }),
-    [w1px, h1px, fs1px, insets.top, insets.left, insets.right],
+    [w1px, h1px, fs1px],
   );
 
   const open = (name: keyof RootStackParamList) => {
@@ -284,15 +257,11 @@ const HomeScreen = () => {
   };
 
   return (
-    <ImageBackground
-      source={heroBg}
-      style={styles.root}
-      resizeMode="cover">
-      <View style={styles.softOverlay} pointerEvents="none" />
-      <View style={styles.safe}>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.content}>
+    <PageLayout
+      background={heroBg}
+      softOverlay
+      paddingHorizontal={22}
+      userHeader={false}>
           <View style={styles.brandWrap}>
             <Icon
               name="sparkles"
@@ -472,10 +441,7 @@ const HomeScreen = () => {
               </View>
             </LinearGradient>
           </TouchableOpacity>
-        </ScrollView>
-        <BottomMenu />
-      </View>
-    </ImageBackground>
+    </PageLayout>
   );
 };
 

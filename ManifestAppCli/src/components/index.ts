@@ -8,6 +8,7 @@ export {default as CenterModal} from './Modals/CenterModal';
 export {default as PopupModal} from './Modals/PopupModal';
 export {default as BottomMenu} from './Menu/BottomMenu';
 export {default as Layout} from './Layout/Layout';
+export {default as PageLayout} from './Layout/PageLayout';
 export {default as EmptyState} from './EmptyState/EmptyState';
 export {default as TextInput} from './Inputs/TextInput';
 export {default as Search} from './Inputs/Search';

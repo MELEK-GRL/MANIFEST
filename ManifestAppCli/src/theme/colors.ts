@@ -14,7 +14,7 @@ const colors = {
   backgroundCard: '#FFFFFF',
   backgroundGlass: '#FFFFFFF5',
   backgroundSoft: '#F3EAF0',
-  backgroundWash: '#F9E9E84D',
+  backgroundWash: '#F9E9E870',
   messageWash: '#F9E9E833',
 
   gold: '#C9A86A',

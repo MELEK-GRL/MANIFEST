@@ -2,8 +2,7 @@ import React, {useMemo, useState} from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {Icon, PopupModal, T} from '@components';
-import ScreenFrame from '../ScreenFrame';
+import {Icon, PageLayout, PopupModal, T} from '@components';
 import colors from '../../theme/colors';
 import {fontSize} from '../../constants/typography';
 import {useResponsive} from '../../utils/deviceStore/device';
@@ -101,7 +100,7 @@ const SettingsScreen = () => {
   };
 
   return (
-    <ScreenFrame
+    <PageLayout
       title={t('settings.title')}
       subtitle={t('settings.subtitle')}
       userHeader={false}>
@@ -174,7 +173,7 @@ const SettingsScreen = () => {
         onRightPress={logout}
         onClose={() => setLogoutVisible(false)}
       />
-    </ScreenFrame>
+    </PageLayout>
   );
 };
 
