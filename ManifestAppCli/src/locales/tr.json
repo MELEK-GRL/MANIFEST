@@ -1,9 +1,9 @@
 {
   "tabs": {
     "home": "Ana Sayfa",
-    "visionBoard": "Vision Board",
+    "profile": "Profil",
     "focus": "Odak",
-    "journal": "Günlük",
+    "settings": "Ayarlar",
     "angels": "Melek Sayıları"
   },
   "home": {
@@ -53,6 +53,18 @@
     "n555": "Değişim kapıda; akışa açık kal.",
     "n777": "Ruhsal uyanış, şans ve güçlenen sezgiler."
   },
+  "profile": {
+    "title": "Profil",
+    "subtitle": "Hesabına buradan bak.",
+    "username": "Kullanıcı adı"
+  },
+  "settings": {
+    "title": "Ayarlar",
+    "subtitle": "Uygulama tercihlerin.",
+    "language": "Dil",
+    "turkish": "Türkçe",
+    "english": "English"
+  },
   "common": {
     "warning": "Uyarı",
     "confirm": "Devam etmek istediğine emin misin?",
@@ -63,5 +75,27 @@
     "clearSearch": "Aramayı temizle",
     "showPassword": "Şifreyi göster",
     "hidePassword": "Şifreyi gizle"
+  },
+  "auth": {
+    "loginTitle": "Giriş Yap",
+    "registerTitle": "Kayıt Ol",
+    "username": "Kullanıcı adı",
+    "email": "E-posta",
+    "password": "Şifre",
+    "passwordAgain": "Şifre tekrar",
+    "login": "Giriş yap",
+    "register": "Kayıt ol",
+    "needAccount": "Hesabın yok mu? Kayıt ol",
+    "haveAccount": "Hesabın var mı? Giriş yap",
+    "usernameRequired": "Kullanıcı adı gerekli.",
+    "usernameInvalid": "Kullanıcı adı 3-32 karakter olmalı; harf, rakam veya _ kullan.",
+    "emailRequired": "E-posta gerekli.",
+    "emailInvalid": "Geçerli bir e-posta yaz.",
+    "passwordLength": "Şifre en az 6, en fazla 8 karakter olmalı.",
+    "passwordMismatch": "Şifreler aynı değil.",
+    "usernameTaken": "Bu kullanıcı adı alınmış.",
+    "emailTaken": "Bu e-posta alınmış.",
+    "badCredentials": "Kullanıcı adı veya şifre hatalı.",
+    "network": "Bağlantı kurulamadı. Tekrar dene."
   }
 }

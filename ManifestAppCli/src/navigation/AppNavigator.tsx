@@ -4,11 +4,18 @@ import {
   type LinkingOptions,
 } from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {View} from 'react-native';
 import HomeScreen from '../screens/Home/HomeScreen';
 import ManifestScreen from '../screens/Manifest/ManifestScreen';
 import VisionBoardScreen from '../screens/VisionBoard/VisionBoardScreen';
 import AffirmationsScreen from '../screens/Affirmations/AffirmationsScreen';
 import AngelNumbersScreen from '../screens/AngelNumbers/AngelNumbersScreen';
+import LoginScreen from '../screens/Login/LoginScreen';
+import RegisterScreen from '../screens/Register/RegisterScreen';
+import ProfileScreen from '../screens/Profile/ProfileScreen';
+import SettingsScreen from '../screens/Settings/SettingsScreen';
+import colors from '../theme/colors';
+import {useAuthHydrated, useAuthStore} from '../store/useAuthStore';
 import type {RootStackParamList} from './types';
 
 export const navigationRef = createNavigationContainerRef<RootStackParamList>();
@@ -19,28 +26,41 @@ const linking: LinkingOptions<RootStackParamList> = {
   prefixes: ['manifestapp://'],
   config: {
     screens: {
+      Login: 'login',
+      Register: 'register',
       Home: 'home',
       Manifest: 'manifest',
       VisionBoard: 'vision-board',
-      Olumlamalar: 'olumlamalar',
-      MelekSayilari: 'melek-sayilari',
+      Affirmations: 'affirmations',
+      AngelNumbers: 'angel-numbers',
+      Profile: 'profile',
+      Settings: 'settings',
     },
   },
 };
 
-const initialRouteName: keyof RootStackParamList = 'Home';
-
 function AppNavigator() {
+  const hydrated = useAuthHydrated();
+  const token = useAuthStore(state => state.token);
+
+  if (!hydrated) {
+    return <View style={{flex: 1, backgroundColor: colors.background}} />;
+  }
+
   return (
     <NavigationContainer ref={navigationRef} linking={linking}>
       <Stack.Navigator
-        initialRouteName={initialRouteName}
+        initialRouteName={token ? 'Home' : 'Login'}
         screenOptions={{headerShown: false}}>
+        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="Register" component={RegisterScreen} />
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Manifest" component={ManifestScreen} />
         <Stack.Screen name="VisionBoard" component={VisionBoardScreen} />
         <Stack.Screen name="Affirmations" component={AffirmationsScreen} />
         <Stack.Screen name="AngelNumbers" component={AngelNumbersScreen} />
+        <Stack.Screen name="Profile" component={ProfileScreen} />
+        <Stack.Screen name="Settings" component={SettingsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -15,15 +15,15 @@ const menuButtonImg = require('../../assets/images/MenuButton.png');
 const ICON_SIZE = 26;
 const CENTER_ICON_SIZE = 96;
 
-type TabKey = 'home' | 'visionBoard' | 'focus' | 'journal' | 'angels';
+type TabKey = 'home' | 'profile' | 'focus' | 'settings' | 'angels';
 
 type Item = {
   key: TabKey;
   labelKey:
     | 'tabs.home'
-    | 'tabs.visionBoard'
+    | 'tabs.profile'
     | 'tabs.focus'
-    | 'tabs.journal'
+    | 'tabs.settings'
     | 'tabs.angels';
   icon: string;
   activeIcon: string;
@@ -40,11 +40,11 @@ const items: Item[] = [
     route: 'Home',
   },
   {
-    key: 'visionBoard',
-    labelKey: 'tabs.visionBoard',
-    icon: 'images-outline',
-    activeIcon: 'images',
-    route: 'VisionBoard',
+    key: 'profile',
+    labelKey: 'tabs.profile',
+    icon: 'person-outline',
+    activeIcon: 'person',
+    route: 'Profile',
   },
   {
     key: 'focus',
@@ -55,18 +55,18 @@ const items: Item[] = [
     center: true,
   },
   {
-    key: 'journal',
-    labelKey: 'tabs.journal',
-    icon: 'book-outline',
-    activeIcon: 'book',
-    route: 'Affirmations',
+    key: 'settings',
+    labelKey: 'tabs.settings',
+    icon: 'settings-outline',
+    activeIcon: 'settings',
+    route: 'Settings',
   },
   {
     key: 'angels',
     labelKey: 'tabs.angels',
     icon: 'moon-outline',
     activeIcon: 'moon',
-    route: 'MelekSayilari',
+    route: 'AngelNumbers',
   },
 ];
 

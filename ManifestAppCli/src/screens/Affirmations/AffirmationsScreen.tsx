@@ -48,4 +48,4 @@ const AffirmationsScreen = () => {
   );
 };
 
-export default OlumlamalarScreen;
+export default AffirmationsScreen;

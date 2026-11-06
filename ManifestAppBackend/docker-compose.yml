@@ -1,0 +1,15 @@
+services:
+  auth-db:
+    image: postgres:16
+    container_name: manifest-auth-db
+    environment:
+      POSTGRES_USER: manifest
+      POSTGRES_PASSWORD: manifest
+      POSTGRES_DB: manifest_auth
+    ports:
+      - "5432:5432"
+    volumes:
+      - manifest_auth_data:/var/lib/postgresql/data
+
+volumes:
+  manifest_auth_data:

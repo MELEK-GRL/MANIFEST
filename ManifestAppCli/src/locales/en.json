@@ -1,9 +1,9 @@
 {
   "tabs": {
     "home": "Home",
-    "visionBoard": "Vision Board",
+    "profile": "Profile",
     "focus": "Focus",
-    "journal": "Journal",
+    "settings": "Settings",
     "angels": "Angel Numbers"
   },
   "home": {
@@ -53,6 +53,18 @@
     "n555": "Change is close; stay open to the flow.",
     "n777": "Spiritual awakening, luck, and stronger intuition."
   },
+  "profile": {
+    "title": "Profile",
+    "subtitle": "Your account, in one place.",
+    "username": "Username"
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Your app preferences.",
+    "language": "Language",
+    "turkish": "Türkçe",
+    "english": "English"
+  },
   "common": {
     "warning": "Warning",
     "confirm": "Are you sure you want to continue?",
@@ -63,5 +75,27 @@
     "clearSearch": "Clear search",
     "showPassword": "Show password",
     "hidePassword": "Hide password"
+  },
+  "auth": {
+    "loginTitle": "Sign in",
+    "registerTitle": "Create account",
+    "username": "Username",
+    "email": "Email",
+    "password": "Password",
+    "passwordAgain": "Confirm password",
+    "login": "Sign in",
+    "register": "Create account",
+    "needAccount": "No account yet? Create one",
+    "haveAccount": "Already have an account? Sign in",
+    "usernameRequired": "Username is required.",
+    "usernameInvalid": "Use 3–32 characters: letters, numbers, or _.",
+    "emailRequired": "Email is required.",
+    "emailInvalid": "Enter a valid email.",
+    "passwordLength": "Password must be 6 to 8 characters.",
+    "passwordMismatch": "Passwords do not match.",
+    "usernameTaken": "That username is taken.",
+    "emailTaken": "That email is taken.",
+    "badCredentials": "Username or password is incorrect.",
+    "network": "Could not connect. Try again."
   }
 }
