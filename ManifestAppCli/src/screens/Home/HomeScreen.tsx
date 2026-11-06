@@ -20,6 +20,10 @@ import type {RootStackParamList} from '../../navigation/types';
 
 const heroBg = require('../../assets/images/mobilAppBackround.png');
 const imgMessage = require('../../assets/images/GununMesajiBackground.png');
+const iconOlumlama = require('../../assets/icons/olumlamaIcon.png');
+const iconRitual = require('../../assets/icons/ritualIcon.png');
+const iconManifest = require('../../assets/icons/manifestIcon.png');
+const iconVisionBoard = require('../../assets/icons/visionBoardIcon.png');
 
 type Tile = {
   key: string;
@@ -28,7 +32,7 @@ type Tile = {
     | 'home.tileRitual'
     | 'home.tileManifest'
     | 'home.tileVisionBoard';
-  icon: string;
+  image: number;
   route: keyof RootStackParamList;
 };
 
@@ -36,25 +40,25 @@ const tiles: Tile[] = [
   {
     key: 'affirmation',
     labelKey: 'home.tileAffirmation',
-    icon: 'flower-outline',
+    image: iconOlumlama,
     route: 'Olumlamalar',
   },
   {
     key: 'ritual',
     labelKey: 'home.tileRitual',
-    icon: 'sparkles-outline',
+    image: iconRitual,
     route: 'Manifest',
   },
   {
     key: 'manifest',
     labelKey: 'home.tileManifest',
-    icon: 'create-outline',
+    image: iconManifest,
     route: 'Manifest',
   },
   {
     key: 'visionBoard',
     labelKey: 'home.tileVisionBoard',
-    icon: 'images-outline',
+    image: iconVisionBoard,
     route: 'VisionBoard',
   },
 ];
@@ -121,23 +125,30 @@ const HomeScreen = () => {
         },
         tileInner: {
           width: '100%',
-          height: 96 * h1px,
+          height: 100 * h1px,
           borderRadius: 20 * fs1px,
           paddingHorizontal: 4 * w1px,
+          paddingTop: 2 * h1px,
+          paddingBottom: 4 * h1px,
           alignItems: 'center',
-          justifyContent: 'center',
+          overflow: 'hidden',
           shadowColor: colors.primaryDark,
           shadowOpacity: 0.12,
           shadowRadius: 10,
           shadowOffset: {width: 0, height: 4},
           elevation: 4,
         },
-        tileIcon: {
-          marginBottom: 8 * h1px,
+        tileImage: {
+          width: 65 * w1px,
+          height: 65 * w1px,
         },
         tileLabel: {
-          lineHeight: 13 * fs1px,
-          height: 26 * fs1px,
+          position: 'absolute',
+          left: 2 * w1px,
+          right: 2 * w1px,
+          bottom: 6 * h1px,
+          lineHeight: 12 * fs1px,
+          height: 24 * fs1px,
           textAlignVertical: 'center',
         },
         messageCard: {
@@ -332,11 +343,10 @@ const HomeScreen = () => {
                     start={{x: 0, y: 0}}
                     end={{x: 1, y: 1}}
                     style={styles.tileInner}>
-                    <Icon
-                      name={tile.icon}
-                      size={26}
-                      color={colors.primary}
-                      style={styles.tileIcon}
+                    <Image
+                      source={tile.image}
+                      style={styles.tileImage}
+                      resizeMode="contain"
                     />
                     <T
                       family="sans"
