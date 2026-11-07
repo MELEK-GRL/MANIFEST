@@ -76,6 +76,7 @@ const VisionBoardScreen = () => {
     cardId: string | null;
     items: DreamItem[];
   }>({visible: false, mode: 'create', cardId: null, items: []});
+  const [editorAddedViaPlus, setEditorAddedViaPlus] = useState(false);
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const [board, setBoard] = useState<BoardSize>({width: 0, height: 0});
   const [loading, setLoading] = useState(true);
@@ -390,6 +391,7 @@ const VisionBoardScreen = () => {
     setActiveDreamCardId(cardId);
     setSelectedKey(null);
     setDreamDraft('');
+    setEditorAddedViaPlus(false);
     setCardEditor({
       visible: true,
       mode: 'edit',
@@ -413,6 +415,7 @@ const VisionBoardScreen = () => {
     }
     setSelectedKey(null);
     setDreamDraft('');
+    setEditorAddedViaPlus(false);
     setCardEditor({
       visible: true,
       mode: 'create',
@@ -429,6 +432,7 @@ const VisionBoardScreen = () => {
       items: [],
     });
     setDreamDraft('');
+    setEditorAddedViaPlus(false);
   };
 
   const addEditorDream = () => {
@@ -444,6 +448,7 @@ const VisionBoardScreen = () => {
       items: [...prev.items, makeDreamItem(text)],
     }));
     setDreamDraft('');
+    setEditorAddedViaPlus(true);
   };
 
   const removeEditorDream = (itemId: string) => {
@@ -454,12 +459,10 @@ const VisionBoardScreen = () => {
   };
 
   const commitCardEditor = () => {
-    // Plus'a basmadan yazılan metni de kayda dahil et
-    const pending = dreamDraft.trim();
-    let nextItems = cardEditor.items;
-    if (pending && nextItems.length < MAX_DREAMS) {
-      nextItems = [...nextItems, makeDreamItem(pending)];
+    if (!editorAddedViaPlus) {
+      return;
     }
+    const nextItems = cardEditor.items;
 
     if (cardEditor.mode === 'create') {
       if (nextItems.length === 0) {
@@ -585,6 +588,34 @@ const VisionBoardScreen = () => {
     }
   };
 
+  const uploadBoardPhotos = async (
+    source: BoardItem[],
+  ): Promise<BoardItem[]> => {
+    const nextItems: BoardItem[] = [];
+    for (const item of source) {
+      if (item.pendingUpload || !item.serverId) {
+        const created = await addVisionBoardItem({
+          uri: item.uri,
+          type: 'image/jpeg',
+          name: 'vision.jpg',
+          x: item.x,
+          y: item.y,
+          scale: item.scale,
+        });
+        nextItems.push({
+          ...item,
+          key: created.id,
+          serverId: created.id,
+          uri: visionBoardItemImageUrl(created.id, Date.now()),
+          pendingUpload: false,
+        });
+      } else {
+        nextItems.push(item);
+      }
+    }
+    return nextItems;
+  };
+
   const saveBoard = async () => {
     if (!token || saving) {
       if (!token) {
@@ -603,30 +634,8 @@ const VisionBoardScreen = () => {
         }
       }
 
-      const nextItems: BoardItem[] = [];
-      for (const item of items) {
-        if (item.pendingUpload || !item.serverId) {
-          const created = await addVisionBoardItem({
-            uri: item.uri,
-            type: 'image/jpeg',
-            name: 'vision.jpg',
-            x: item.x,
-            y: item.y,
-            scale: item.scale,
-          });
-          nextItems.push({
-            ...item,
-            key: created.id,
-            serverId: created.id,
-            uri: visionBoardItemImageUrl(created.id, Date.now()),
-            pendingUpload: false,
-          });
-        } else {
-          nextItems.push(item);
-        }
-      }
-
-      await saveVisionBoardLayout(
+      let nextItems = await uploadBoardPhotos(items);
+      const layoutPayload = () =>
         nextItems
           .filter(item => item.serverId)
           .map(item => ({
@@ -634,8 +643,24 @@ const VisionBoardScreen = () => {
             x: item.x,
             y: item.y,
             scale: item.scale,
+          }));
+
+      try {
+        await saveVisionBoardLayout(layoutPayload());
+      } catch (layoutError) {
+        // Sunucuda artık yok olan eski id'ler — fotoğrafları yeniden yükle
+        if (visionBoardErrorCode(layoutError) !== 'item_missing') {
+          throw layoutError;
+        }
+        nextItems = await uploadBoardPhotos(
+          nextItems.map(item => ({
+            ...item,
+            serverId: undefined,
+            pendingUpload: true,
           })),
-      );
+        );
+        await saveVisionBoardLayout(layoutPayload());
+      }
 
       const nextServerIds = nextItems
         .map(item => item.serverId!)
@@ -661,6 +686,8 @@ const VisionBoardScreen = () => {
         showModal('error', t('vision.boardFull'));
       } else if (code === 'photo_too_large') {
         showModal('error', t('vision.photoTooLarge'));
+      } else if (code === 'photo_invalid') {
+        showModal('error', t('vision.pickError'));
       } else {
         showModal('error', t('vision.saveError'));
       }
@@ -678,10 +705,7 @@ const VisionBoardScreen = () => {
     (items.length > 0 || serverIds.length > 0 || hasDreamContent);
   const canClear = (items.length > 0 || hasDreamContent) && !saving;
   const canWriteEditorDream = cardEditor.items.length < MAX_DREAMS;
-  const canCommitEditor =
-    cardEditor.mode === 'edit' ||
-    cardEditor.items.length > 0 ||
-    Boolean(dreamDraft.trim());
+  const canCommitEditor = editorAddedViaPlus;
 
   return (
     <PageLayout title={t('vision.title')}>
@@ -734,9 +758,8 @@ const VisionBoardScreen = () => {
         rightButtonText={t('vision.save')}
         onLeftPress={closeCardEditor}
         onRightPress={commitCardEditor}
-        rightButtonBackgroundColor={
-          canCommitEditor ? colors.primary : colors.buttonMuted
-        }>
+        rightButtonDisabled={!canCommitEditor}
+        rightButtonBackgroundColor={colors.primary}>
         <View style={styles.editorBody}>
           <DreamCardPreview
             items={cardEditor.items}

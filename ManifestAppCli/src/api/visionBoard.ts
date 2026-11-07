@@ -56,7 +56,17 @@ export async function saveVisionBoardLayout(
 }
 
 export async function deleteVisionBoardItem(itemId: string): Promise<void> {
-  await api.delete(`/api/vision-board/items/${itemId}`);
+  try {
+    await api.delete(`/api/vision-board/items/${itemId}`);
+  } catch (error) {
+    const status = axios.isAxiosError(error) ? error.response?.status : null;
+    const code = visionBoardErrorCode(error);
+    // Zaten silinmiş / yok — kaydı bozma
+    if (status === 404 || code === 'item_missing') {
+      return;
+    }
+    throw error;
+  }
 }
 
 export function visionBoardErrorCode(error: unknown): string | null {

@@ -78,6 +78,7 @@ const VisionBoardDetailScreen = () => {
     cardId: string | null;
     items: DreamItem[];
   }>({visible: false, mode: 'create', cardId: null, items: []});
+  const [editorAddedViaPlus, setEditorAddedViaPlus] = useState(false);
   const [board, setBoard] = useState<BoardSize>({width: 0, height: 0});
   const [savedAt, setSavedAt] = useState('');
   const [modal, setModal] = useState<{
@@ -277,6 +278,7 @@ const VisionBoardDetailScreen = () => {
     setActiveDreamCardId(cardId);
     setSelectedKey(null);
     setDreamDraft('');
+    setEditorAddedViaPlus(false);
     setCardEditor({
       visible: true,
       mode: 'edit',
@@ -300,6 +302,7 @@ const VisionBoardDetailScreen = () => {
     }
     setSelectedKey(null);
     setDreamDraft('');
+    setEditorAddedViaPlus(false);
     setCardEditor({
       visible: true,
       mode: 'create',
@@ -316,6 +319,7 @@ const VisionBoardDetailScreen = () => {
       items: [],
     });
     setDreamDraft('');
+    setEditorAddedViaPlus(false);
   };
 
   const addEditorDream = () => {
@@ -328,6 +332,7 @@ const VisionBoardDetailScreen = () => {
       items: [...prev.items, makeDreamItem(text)],
     }));
     setDreamDraft('');
+    setEditorAddedViaPlus(true);
   };
 
   const removeEditorDream = (itemId: string) => {
@@ -338,11 +343,10 @@ const VisionBoardDetailScreen = () => {
   };
 
   const commitCardEditor = () => {
-    const pending = dreamDraft.trim();
-    let nextItems = cardEditor.items;
-    if (pending && nextItems.length < MAX_DREAMS) {
-      nextItems = [...nextItems, makeDreamItem(pending)];
+    if (!editorAddedViaPlus) {
+      return;
     }
+    const nextItems = cardEditor.items;
     if (cardEditor.mode === 'create') {
       if (nextItems.length === 0) {
         return;
@@ -502,6 +506,34 @@ const VisionBoardDetailScreen = () => {
     }
   };
 
+  const uploadBoardPhotos = async (
+    source: BoardItem[],
+  ): Promise<BoardItem[]> => {
+    const nextItems: BoardItem[] = [];
+    for (const item of source) {
+      if (item.pendingUpload || !item.serverId) {
+        const created = await addVisionBoardItem({
+          uri: item.uri,
+          type: 'image/jpeg',
+          name: 'vision.jpg',
+          x: item.x,
+          y: item.y,
+          scale: item.scale,
+        });
+        nextItems.push({
+          ...item,
+          key: created.id,
+          serverId: created.id,
+          uri: visionBoardItemImageUrl(created.id, Date.now()),
+          pendingUpload: false,
+        });
+      } else {
+        nextItems.push(item);
+      }
+    }
+    return nextItems;
+  };
+
   const saveBoard = async () => {
     if (!token || saving) {
       if (!token) {
@@ -520,30 +552,8 @@ const VisionBoardDetailScreen = () => {
         }
       }
 
-      const nextItems: BoardItem[] = [];
-      for (const item of items) {
-        if (item.pendingUpload || !item.serverId) {
-          const created = await addVisionBoardItem({
-            uri: item.uri,
-            type: 'image/jpeg',
-            name: 'vision.jpg',
-            x: item.x,
-            y: item.y,
-            scale: item.scale,
-          });
-          nextItems.push({
-            ...item,
-            key: created.id,
-            serverId: created.id,
-            uri: visionBoardItemImageUrl(created.id, Date.now()),
-            pendingUpload: false,
-          });
-        } else {
-          nextItems.push(item);
-        }
-      }
-
-      await saveVisionBoardLayout(
+      let nextItems = await uploadBoardPhotos(items);
+      const layoutPayload = () =>
         nextItems
           .filter(item => item.serverId)
           .map(item => ({
@@ -551,8 +561,23 @@ const VisionBoardDetailScreen = () => {
             x: item.x,
             y: item.y,
             scale: item.scale,
+          }));
+
+      try {
+        await saveVisionBoardLayout(layoutPayload());
+      } catch (layoutError) {
+        if (visionBoardErrorCode(layoutError) !== 'item_missing') {
+          throw layoutError;
+        }
+        nextItems = await uploadBoardPhotos(
+          nextItems.map(item => ({
+            ...item,
+            serverId: undefined,
+            pendingUpload: true,
           })),
-      );
+        );
+        await saveVisionBoardLayout(layoutPayload());
+      }
 
       const nextServerIds = nextItems
         .map(item => item.serverId!)
@@ -583,6 +608,8 @@ const VisionBoardDetailScreen = () => {
         showModal('error', t('vision.boardFull'));
       } else if (code === 'photo_too_large') {
         showModal('error', t('vision.photoTooLarge'));
+      } else if (code === 'photo_invalid') {
+        showModal('error', t('vision.pickError'));
       } else {
         showModal('error', t('vision.saveError'));
       }
@@ -598,10 +625,7 @@ const VisionBoardDetailScreen = () => {
   const canSave = Boolean(token) && !saving;
   const canClear = (items.length > 0 || hasDreamContent) && !saving;
   const canWriteEditorDream = cardEditor.items.length < MAX_DREAMS;
-  const canCommitEditor =
-    cardEditor.mode === 'edit' ||
-    cardEditor.items.length > 0 ||
-    Boolean(dreamDraft.trim());
+  const canCommitEditor = editorAddedViaPlus;
 
   return (
     <PageLayout title={t('vision.detailTitle')}>
@@ -676,9 +700,8 @@ const VisionBoardDetailScreen = () => {
         rightButtonText={t('vision.save')}
         onLeftPress={closeCardEditor}
         onRightPress={commitCardEditor}
-        rightButtonBackgroundColor={
-          canCommitEditor ? colors.primary : colors.buttonMuted
-        }>
+        rightButtonDisabled={!canCommitEditor}
+        rightButtonBackgroundColor={colors.primary}>
         <View style={styles.editorBody}>
           <DreamCardPreview
             items={cardEditor.items}
