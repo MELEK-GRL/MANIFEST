@@ -132,17 +132,14 @@ const BottomMenu = () => {
           overflow: 'visible',
         },
         activeChip: {
-          width: 40 * w1px,
-          height: 40 * w1px,
-          borderRadius: 13 * fs1px,
+          width: Math.round(40 * w1px),
+          height: Math.round(40 * w1px),
+          borderRadius: Math.round(12 * fs1px),
           alignItems: 'center',
           justifyContent: 'center',
-          overflow: 'hidden',
-        },
-        shimmer: {
-          ...StyleSheet.absoluteFillObject,
-          backgroundColor: '#FFFFFF33',
-          height: '45%',
+          backgroundColor: colors.primarySoft,
+          borderWidth: StyleSheet.hairlineWidth,
+          borderColor: colors.lavender,
         },
         centerImage: {
           width: CENTER_ICON_SIZE * w1px,
@@ -201,18 +198,13 @@ const BottomMenu = () => {
                     />
                   </View>
                 ) : active ? (
-                  <LinearGradient
-                    colors={colors.gradientTabActive}
-                    start={{x: 0, y: 0}}
-                    end={{x: 1, y: 1}}
-                    style={styles.activeChip}>
-                    <View style={styles.shimmer} pointerEvents="none" />
+                  <View style={styles.activeChip}>
                     <Icon
                       name={item.activeIcon}
                       size={ICON_SIZE}
-                      color={colors.textWhite}
+                      color={colors.primary}
                     />
-                  </LinearGradient>
+                  </View>
                 ) : (
                   <View style={styles.iconSlot}>
                     <Icon

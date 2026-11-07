@@ -111,9 +111,30 @@ const HomeScreen = () => {
           shadowOffset: {width: 0, height: 4},
           elevation: 4,
         },
+        tileIconWrap: {
+          width: 68 * w1px,
+          height: 68 * w1px,
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginTop: 2 * h1px,
+        },
+        tileIconHalo: {
+          position: 'absolute',
+          width: 52 * w1px,
+          height: 52 * w1px,
+          borderRadius: 26 * w1px,
+          backgroundColor: colors.primarySoft,
+          opacity: 0.45,
+        },
         tileImage: {
-          width: 65 * w1px,
-          height: 65 * w1px,
+          width: 60 * w1px,
+          height: 60 * w1px,
+          opacity: 0.86,
+        },
+        tileIconWash: {
+          ...StyleSheet.absoluteFillObject,
+          backgroundColor: colors.messageWash,
+          borderRadius: 18 * fs1px,
         },
         tileLabel: {
           position: 'absolute',
@@ -309,11 +330,15 @@ const HomeScreen = () => {
                 start={{x: 0, y: 0}}
                 end={{x: 1, y: 1}}
                 style={styles.tileInner}>
-                <Image
-                  source={tile.image}
-                  style={styles.tileImage}
-                  resizeMode="contain"
-                />
+                <View style={styles.tileIconWrap}>
+                  <View style={styles.tileIconHalo} pointerEvents="none" />
+                  <Image
+                    source={tile.image}
+                    style={styles.tileImage}
+                    resizeMode="contain"
+                  />
+                  <View style={styles.tileIconWash} pointerEvents="none" />
+                </View>
                 <T
                   family="sans"
                   size={fontSize.caption}

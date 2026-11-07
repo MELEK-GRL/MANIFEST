@@ -29,7 +29,7 @@ type Props = {
   cornerArt?: ImageSourcePropType;
   bottomMenu?: boolean;
   scroll?: boolean;
-  softOverlay?: boolean;
+  softOverlay?: boolean | 'light';
   background?: 'gradient' | ImageSourcePropType;
   contentContainerStyle?: StyleProp<ViewStyle>;
 };
@@ -57,7 +57,8 @@ const PageLayout: React.FC<Props> = ({
         },
         softOverlay: {
           ...StyleSheet.absoluteFillObject,
-          backgroundColor: colors.backgroundWash,
+          backgroundColor:
+            softOverlay === 'light' ? colors.messageWash : colors.backgroundWash,
         },
         safe: {
           flex: 1,
@@ -112,6 +113,7 @@ const PageLayout: React.FC<Props> = ({
       insets.bottom,
       bottomMenu,
       title,
+      softOverlay,
     ],
   );
 

@@ -54,7 +54,22 @@
     "popular": "Popular",
     "detailBack": "Back",
     "detailSequences": "Number sequences",
-    "detailMissing": "This intention area was not found."
+    "detailMissing": "This intention area was not found.",
+    "areaMeaningTitle": "What Does This Area Mean?",
+    "setIntention": "Set Intention",
+    "createRitual": "Create Ritual",
+    "guideTips": "Guide & Tips",
+    "filterAll": "All",
+    "filterPopular": "Popular",
+    "filterFavorites": "Favorites",
+    "copy": "Copy",
+    "favorite": "Favorite",
+    "favorited": "Favorited",
+    "startRitual": "Start Ritual",
+    "copied": "Number sequence copied.",
+    "badgeShared": "Most Shared",
+    "badgePopular": "Popular",
+    "badgeFrequent": "Frequently Used"
   },
   "profile": {
     "title": "Profile",

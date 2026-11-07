@@ -54,7 +54,22 @@
     "popular": "Popüler",
     "detailBack": "Geri",
     "detailSequences": "Sayı dizileri",
-    "detailMissing": "Bu niyet alanı bulunamadı."
+    "detailMissing": "Bu niyet alanı bulunamadı.",
+    "areaMeaningTitle": "Bu Alan Ne Anlamına Gelir?",
+    "setIntention": "Niyetini Belirle",
+    "createRitual": "Ritüel Oluştur",
+    "guideTips": "Rehber & İpuçları",
+    "filterAll": "Tümü",
+    "filterPopular": "Popüler",
+    "filterFavorites": "Favorilerim",
+    "copy": "Kopyala",
+    "favorite": "Favorile",
+    "favorited": "Favoride",
+    "startRitual": "Ritüele Başla",
+    "copied": "Sayı dizisi panoya kopyalandı.",
+    "badgeShared": "Çok Paylaşılan",
+    "badgePopular": "Popüler",
+    "badgeFrequent": "Sık Kullanılan"
   },
   "profile": {
     "title": "Profil",
