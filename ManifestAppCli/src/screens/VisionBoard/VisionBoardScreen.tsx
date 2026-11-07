@@ -47,14 +47,14 @@ const DEFAULT_DREAMS: Record<DreamKey, boolean> = {
 };
 
 const HOLDERS = [
-  'tapeGold',
+  'washi',
   'pin',
-  'tapeBlush',
-  'cornerTape',
-  'tapeLavender',
-  'dualTape',
   'clip',
-  'tapeStrip',
+  'corner',
+  'starPin',
+  'sideClip',
+  'heartPin',
+  'clover',
 ] as const;
 
 type HolderKind = (typeof HOLDERS)[number];
@@ -69,6 +69,17 @@ const tiltFromKey = (key: string) => {
 
 const holderFromIndex = (index: number): HolderKind =>
   HOLDERS[((index % HOLDERS.length) + HOLDERS.length) % HOLDERS.length];
+
+const LEGACY_HOLDER_MAP: Record<string, HolderKind> = {
+  tapeGold: 'washi',
+  tapeBlush: 'washi',
+  tapeLavender: 'washi',
+  tapeStrip: 'washi',
+  cornerTape: 'corner',
+  dualTape: 'washi',
+  dualWashi: 'washi',
+  wideWashi: 'washi',
+};
 
 type BoardItem = {
   key: string;
@@ -102,11 +113,22 @@ type CollagePieceProps = {
   deleteLabel: string;
 };
 
-const isHolderKind = (value: unknown): value is HolderKind =>
-  typeof value === 'string' && (HOLDERS as readonly string[]).includes(value);
+const resolveHolder = (value: unknown, index: number): HolderKind => {
+  if (typeof value === 'string') {
+    if ((HOLDERS as readonly string[]).includes(value)) {
+      return value as HolderKind;
+    }
+    // Eski taslaklar çoğunlukla banttı; sırayı yeniden dağıt.
+    if (LEGACY_HOLDER_MAP[value]) {
+      return holderFromIndex(index);
+    }
+  }
+  return holderFromIndex(index);
+};
 
 const normalizeItem = (
-  item: Partial<BoardItem> & Pick<BoardItem, 'key' | 'uri' | 'x' | 'y' | 'scale'>,
+  item: Partial<BoardItem> &
+    Pick<BoardItem, 'key' | 'uri' | 'x' | 'y' | 'scale'>,
   index: number,
 ): BoardItem => ({
   key: item.key,
@@ -116,79 +138,76 @@ const normalizeItem = (
   y: item.y,
   scale: item.scale,
   pendingUpload: item.pendingUpload,
-  holder: isHolderKind(item.holder)
-    ? item.holder
-    : holderFromIndex(index),
+  holder: resolveHolder(item.holder, index),
 });
 
 const PhotoHolder = ({kind}: {kind: HolderKind}) => {
   switch (kind) {
-    case 'tapeGold':
+    case 'washi':
       return (
-        <View
-          pointerEvents="none"
-          style={[holderStyles.tape, holderStyles.tapeGold]}
-        />
+        <View pointerEvents="none" style={holderStyles.layer}>
+          <View style={[holderStyles.washi, holderStyles.washiGold]} />
+        </View>
       );
-    case 'tapeBlush':
+    case 'corner':
       return (
-        <View
-          pointerEvents="none"
-          style={[holderStyles.tape, holderStyles.tapeBlush]}
-        />
-      );
-    case 'tapeLavender':
-      return (
-        <View
-          pointerEvents="none"
-          style={[holderStyles.tapeTilt, holderStyles.tapeLavender]}
-        />
-      );
-    case 'tapeStrip':
-      return (
-        <View
-          pointerEvents="none"
-          style={[holderStyles.tapeWide, holderStyles.tapeGold]}
-        />
-      );
-    case 'cornerTape':
-      return (
-        <View
-          pointerEvents="none"
-          style={[holderStyles.cornerTape, holderStyles.tapeBlush]}
-        />
-      );
-    case 'dualTape':
-      return (
-        <View pointerEvents="none" style={holderStyles.dualWrap}>
-          <View
-            style={[
-              holderStyles.dualPiece,
-              holderStyles.tapeGold,
-              holderStyles.dualLeft,
-            ]}
-          />
-          <View
-            style={[
-              holderStyles.dualPiece,
-              holderStyles.tapeLavenderFill,
-              holderStyles.dualRight,
-            ]}
-          />
+        <View pointerEvents="none" style={holderStyles.layer}>
+          <View style={[holderStyles.cornerPiece, holderStyles.washiBlush]} />
         </View>
       );
     case 'pin':
       return (
-        <View pointerEvents="none" style={holderStyles.pinWrap}>
-          <View style={holderStyles.pinHead} />
-          <View style={holderStyles.pinNeedle} />
+        <View pointerEvents="none" style={holderStyles.layer}>
+          <View style={holderStyles.pinWrap}>
+            <View style={holderStyles.pinHead} />
+            <View style={holderStyles.pinShine} />
+            <View style={holderStyles.pinNeedle} />
+          </View>
+        </View>
+      );
+    case 'starPin':
+      return (
+        <View pointerEvents="none" style={holderStyles.layer}>
+          <View style={holderStyles.starPinWrap}>
+            <View style={holderStyles.starPinBase} />
+            <Icon name="sparkles" size={14} color={colors.gold} />
+          </View>
         </View>
       );
     case 'clip':
       return (
-        <View pointerEvents="none" style={holderStyles.clipWrap}>
-          <View style={holderStyles.clipOuter} />
-          <View style={holderStyles.clipInner} />
+        <View pointerEvents="none" style={holderStyles.layer}>
+          <View style={holderStyles.clipWrap}>
+            <View style={holderStyles.clipBody} />
+            <View style={holderStyles.clipWire} />
+          </View>
+        </View>
+      );
+    case 'sideClip':
+      return (
+        <View pointerEvents="none" style={holderStyles.layer}>
+          <View style={holderStyles.sideClipWrap}>
+            <View style={holderStyles.sideClipBody} />
+            <View style={holderStyles.sideClipWire} />
+          </View>
+        </View>
+      );
+    case 'heartPin':
+      return (
+        <View pointerEvents="none" style={holderStyles.layer}>
+          <View style={holderStyles.heartPinWrap}>
+            <View style={holderStyles.heartPinBase} />
+            <Icon name="heart" size={14} color={colors.primary} />
+          </View>
+        </View>
+      );
+    case 'clover':
+      return (
+        <View pointerEvents="none" style={holderStyles.layer}>
+          <View style={holderStyles.cloverWrap}>
+            <View style={holderStyles.cloverBase} />
+            <Icon name="leaf" size={15} color={colors.primary} />
+          </View>
         </View>
       );
     default:
@@ -290,7 +309,6 @@ const CollagePiece = ({
           ],
         },
       ]}>
-      <PhotoHolder kind={item.holder} />
       <TouchableOpacity
         activeOpacity={1}
         onPress={() => onSelect(item.key)}
@@ -300,6 +318,7 @@ const CollagePiece = ({
         ]}>
         <Image source={imageSource} style={pieceStyles.image} />
       </TouchableOpacity>
+      <PhotoHolder kind={item.holder} />
       {selected ? (
         <TouchableOpacity
           accessibilityRole="button"
@@ -314,150 +333,215 @@ const CollagePiece = ({
 };
 
 const holderStyles = StyleSheet.create({
-  tape: {
-    position: 'absolute',
-    top: -7,
-    left: '50%',
-    marginLeft: -22,
-    width: 44,
-    height: 15,
-    borderRadius: 2,
-    opacity: 0.88,
-    zIndex: 6,
-    transform: [{rotate: '-7deg'}],
+  layer: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 20,
+    elevation: 12,
   },
-  tapeTilt: {
+  washi: {
     position: 'absolute',
-    top: -7,
-    left: '50%',
-    marginLeft: -22,
-    width: 44,
-    height: 15,
-    borderRadius: 2,
-    opacity: 0.88,
-    zIndex: 6,
-    transform: [{rotate: '8deg'}],
+    top: 2,
+    alignSelf: 'center',
+    left: '28%',
+    width: '44%',
+    height: 16,
+    borderRadius: 3,
+    opacity: 0.92,
+    transform: [{rotate: '-6deg'}],
   },
-  tapeWide: {
-    position: 'absolute',
-    top: -5,
-    left: '50%',
-    marginLeft: -30,
-    width: 60,
-    height: 13,
-    borderRadius: 2,
-    opacity: 0.85,
-    zIndex: 6,
-    transform: [{rotate: '4deg'}],
-  },
-  tapeGold: {
+  washiGold: {
     backgroundColor: colors.goldSoft,
   },
-  tapeBlush: {
+  washiBlush: {
     backgroundColor: colors.blush,
+    borderWidth: 1,
+    borderColor: colors.borderSoft,
   },
-  tapeLavender: {
-    backgroundColor: colors.lavender,
-  },
-  tapeLavenderFill: {
-    backgroundColor: colors.lavender,
-  },
-  cornerTape: {
+  cornerPiece: {
     position: 'absolute',
-    top: 6,
-    left: -8,
-    width: 38,
-    height: 14,
-    borderRadius: 2,
-    opacity: 0.9,
-    zIndex: 6,
-    transform: [{rotate: '-42deg'}],
-  },
-  dualWrap: {
-    position: 'absolute',
-    top: -6,
-    left: 0,
-    right: 0,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-    zIndex: 6,
-  },
-  dualPiece: {
-    width: 28,
-    height: 12,
-    borderRadius: 2,
-    opacity: 0.88,
-  },
-  dualLeft: {
-    transform: [{rotate: '-10deg'}],
-  },
-  dualRight: {
-    transform: [{rotate: '10deg'}],
+    top: 10,
+    left: -2,
+    width: 42,
+    height: 15,
+    borderRadius: 3,
+    opacity: 0.95,
+    transform: [{rotate: '-40deg'}],
   },
   pinWrap: {
     position: 'absolute',
-    top: -10,
+    top: -2,
     left: '50%',
-    marginLeft: -8,
-    width: 16,
-    height: 22,
+    marginLeft: -11,
+    width: 22,
     alignItems: 'center',
-    zIndex: 7,
   },
   pinHead: {
-    width: 14,
-    height: 14,
-    borderRadius: 7,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
     backgroundColor: colors.primary,
     borderWidth: 2,
-    borderColor: colors.primarySoft,
+    borderColor: colors.white,
     shadowColor: colors.primaryDark,
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-    shadowOffset: {width: 0, height: 1},
-    elevation: 2,
+    shadowOpacity: 0.28,
+    shadowRadius: 4,
+    shadowOffset: {width: 0, height: 2},
+    elevation: 4,
+  },
+  pinShine: {
+    position: 'absolute',
+    top: 5,
+    left: 6,
+    width: 5,
+    height: 5,
+    borderRadius: 3,
+    backgroundColor: colors.primarySoft,
   },
   pinNeedle: {
+    width: 2.5,
+    height: 10,
+    marginTop: -1,
+    backgroundColor: colors.gold,
+    borderRadius: 1,
+  },
+  starPinWrap: {
+    position: 'absolute',
+    top: -2,
+    left: '50%',
+    marginLeft: -12,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: colors.white,
+    borderWidth: 1.5,
+    borderColor: colors.goldSoft,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: colors.primaryDark,
+    shadowOpacity: 0.18,
+    shadowRadius: 4,
+    shadowOffset: {width: 0, height: 2},
+    elevation: 4,
+  },
+  starPinBase: {
+    position: 'absolute',
+    bottom: -6,
     width: 2,
     height: 8,
-    marginTop: -1,
     backgroundColor: colors.goldSoft,
-    borderRadius: 1,
   },
   clipWrap: {
     position: 'absolute',
-    top: -12,
+    top: -4,
     left: '50%',
-    marginLeft: -8,
-    width: 16,
-    height: 28,
-    zIndex: 7,
+    marginLeft: -10,
+    width: 20,
+    height: 34,
     alignItems: 'center',
   },
-  clipOuter: {
-    width: 14,
-    height: 24,
-    borderRadius: 7,
-    borderWidth: 2.5,
+  clipBody: {
+    width: 18,
+    height: 30,
+    borderRadius: 9,
+    borderWidth: 3,
     borderColor: colors.gold,
-    backgroundColor: colors.backgroundWash,
+    backgroundColor: colors.cream,
   },
-  clipInner: {
+  clipWire: {
     position: 'absolute',
-    top: 5,
-    width: 6,
-    height: 14,
-    borderRadius: 3,
-    borderWidth: 2,
+    top: 7,
+    width: 8,
+    height: 16,
+    borderRadius: 4,
+    borderWidth: 2.5,
     borderColor: colors.goldSoft,
-    backgroundColor: 'transparent',
+    backgroundColor: colors.white,
+  },
+  sideClipWrap: {
+    position: 'absolute',
+    top: 18,
+    right: -6,
+    width: 18,
+    height: 32,
+    alignItems: 'center',
+    transform: [{rotate: '18deg'}],
+  },
+  sideClipBody: {
+    width: 16,
+    height: 28,
+    borderRadius: 8,
+    borderWidth: 3,
+    borderColor: colors.primary,
+    backgroundColor: colors.primarySoft,
+  },
+  sideClipWire: {
+    position: 'absolute',
+    top: 6,
+    width: 7,
+    height: 14,
+    borderRadius: 4,
+    borderWidth: 2,
+    borderColor: colors.primaryDark,
+    backgroundColor: colors.white,
+  },
+  heartPinWrap: {
+    position: 'absolute',
+    top: -2,
+    left: '50%',
+    marginLeft: -13,
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    backgroundColor: colors.white,
+    borderWidth: 1.5,
+    borderColor: colors.primarySoft,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: colors.primaryDark,
+    shadowOpacity: 0.18,
+    shadowRadius: 4,
+    shadowOffset: {width: 0, height: 2},
+    elevation: 4,
+  },
+  heartPinBase: {
+    position: 'absolute',
+    bottom: -6,
+    width: 2,
+    height: 8,
+    backgroundColor: colors.goldSoft,
+  },
+  cloverWrap: {
+    position: 'absolute',
+    top: 4,
+    right: 6,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: colors.cream,
+    borderWidth: 1.5,
+    borderColor: colors.lavender,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: colors.primaryDark,
+    shadowOpacity: 0.14,
+    shadowRadius: 4,
+    shadowOffset: {width: 0, height: 2},
+    elevation: 4,
+    transform: [{rotate: '12deg'}],
+  },
+  cloverBase: {
+    position: 'absolute',
+    bottom: -5,
+    width: 2,
+    height: 7,
+    backgroundColor: colors.goldSoft,
   },
 });
 
 const pieceStyles = StyleSheet.create({
   wrap: {
     position: 'absolute',
+    overflow: 'visible',
   },
   frame: {
     flex: 1,
@@ -494,11 +578,11 @@ const pieceStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 30,
+    elevation: 14,
     shadowColor: colors.primaryDark,
     shadowOpacity: 0.12,
     shadowRadius: 4,
     shadowOffset: {width: 0, height: 2},
-    elevation: 2,
   },
 });
 
@@ -516,9 +600,10 @@ const VisionBoardScreen = () => {
   const [saving, setSaving] = useState(false);
   const [modal, setModal] = useState<{
     visible: boolean;
-    type: 'success' | 'error';
+    type: 'success' | 'error' | 'danger';
     message: string;
-  }>({visible: false, type: 'success', message: ''});
+    mode?: 'alert' | 'clearConfirm';
+  }>({visible: false, type: 'success', message: '', mode: 'alert'});
   const itemWidth = ITEM_WIDTH * w1px;
   const itemHeight = ITEM_HEIGHT * h1px;
 
@@ -563,6 +648,16 @@ const VisionBoardScreen = () => {
         },
         saveChipDisabled: {
           backgroundColor: colors.buttonMuted,
+        },
+        clearChip: {
+          backgroundColor: colors.dangerSoft,
+          borderWidth: 1,
+          borderColor: colors.dangerBorder,
+          flex: 0,
+          paddingHorizontal: 14 * w1px,
+        },
+        clearChipDisabled: {
+          opacity: 0.45,
         },
         boardShell: {
           width: '100%',
@@ -749,8 +844,16 @@ const VisionBoardScreen = () => {
     [w1px, h1px, fs1px],
   );
 
-  const showModal = (type: 'success' | 'error', message: string) => {
-    setModal({visible: true, type, message});
+  const showModal = (
+    type: 'success' | 'error' | 'danger',
+    message: string,
+    mode: 'alert' | 'clearConfirm' = 'alert',
+  ) => {
+    setModal({visible: true, type, message, mode});
+  };
+
+  const closeModal = () => {
+    setModal(prev => ({...prev, visible: false, mode: 'alert'}));
   };
 
   const readDraft = async (): Promise<DraftPayload | null> => {
@@ -865,6 +968,20 @@ const VisionBoardScreen = () => {
     setItems(prev => prev.filter(it => it.key !== key));
     setSelectedKey(curr => (curr === key ? null : curr));
   }, []);
+
+  const clearAllPhotos = () => {
+    setItems([]);
+    setSelectedKey(null);
+    closeModal();
+    showModal('success', t('vision.clearAllDone'));
+  };
+
+  const requestClearAll = () => {
+    if (items.length === 0) {
+      return;
+    }
+    showModal('danger', t('vision.clearAllConfirm'), 'clearConfirm');
+  };
 
   const toggleDream = (key: DreamKey) => {
     setDreams(prev => ({...prev, [key]: !prev[key]}));
@@ -988,6 +1105,7 @@ const VisionBoardScreen = () => {
 
   const canSave =
     Boolean(token) && !saving && (items.length > 0 || serverIds.length > 0);
+  const canClear = items.length > 0 && !saving;
 
   const scrapbookDecor = (
     <>
@@ -1127,6 +1245,22 @@ const VisionBoardScreen = () => {
         <TouchableOpacity
           style={[
             styles.toolBtn,
+            styles.clearChip,
+            !canClear ? styles.clearChipDisabled : null,
+          ]}
+          activeOpacity={0.88}
+          disabled={!canClear}
+          onPress={requestClearAll}
+          accessibilityRole="button"
+          accessibilityLabel={t('vision.clearAll')}>
+          <Icon name="trash-outline" size={15} color={colors.dangerText} />
+          <T size={fontSize.label} weight="700" color={colors.dangerText}>
+            {t('vision.clearAll')}
+          </T>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.toolBtn,
             styles.saveChip,
             !canSave ? styles.saveChipDisabled : null,
           ]}
@@ -1190,7 +1324,17 @@ const VisionBoardScreen = () => {
         visible={modal.visible}
         type={modal.type}
         message={modal.message}
-        onClose={() => setModal(prev => ({...prev, visible: false}))}
+        leftButtonText={
+          modal.mode === 'clearConfirm' ? t('common.cancel') : undefined
+        }
+        rightButtonText={
+          modal.mode === 'clearConfirm' ? t('vision.clearAll') : undefined
+        }
+        onLeftPress={modal.mode === 'clearConfirm' ? closeModal : undefined}
+        onRightPress={
+          modal.mode === 'clearConfirm' ? clearAllPhotos : undefined
+        }
+        onClose={closeModal}
       />
     </PageLayout>
   );
