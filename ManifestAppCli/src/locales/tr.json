@@ -30,11 +30,22 @@
   },
   "vision": {
     "title": "Vision Board",
-    "subtitle": "Görmek istediğin hayatı bir araya getir.",
-    "life": "Yaşam",
-    "body": "Beden",
-    "relationship": "İlişki",
-    "creation": "Yaratım"
+    "subtitle": "Hayallerini kolaj gibi bir araya getir.",
+    "emptyTitle": "Tahtan seni bekliyor",
+    "emptyBody": "Fotoğraf ekle, sürükle ve hayalindeki düzeni oluştur.",
+    "addPhoto": "Fotoğraf ekle",
+    "addMore": "Ekle",
+    "save": "Kaydet",
+    "saving": "Kaydediliyor…",
+    "saved": "Vision board kaydedildi.",
+    "saveError": "Kayıt başarısız oldu.",
+    "loadError": "Vision board yüklenemedi.",
+    "loginRequired": "Kaydetmek için giriş yap.",
+    "boardFull": "Tahta dolu. En fazla 40 görsel ekleyebilirsin.",
+    "photoTooLarge": "Görsel 8 MB'dan küçük olmalı.",
+    "delete": "Sil",
+    "hint": "Sürükle ve yerleştir",
+    "pickError": "Fotoğraf seçilemedi."
   },
   "affirmations": {
     "title": "Olumlamalar",

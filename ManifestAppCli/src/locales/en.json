@@ -30,11 +30,22 @@
   },
   "vision": {
     "title": "Vision Board",
-    "subtitle": "Bring the life you want to see into one place.",
-    "life": "Life",
-    "body": "Body",
-    "relationship": "Relationship",
-    "creation": "Creation"
+    "subtitle": "Bring your dreams together like a collage.",
+    "emptyTitle": "Your board is waiting",
+    "emptyBody": "Add a photo, drag it, and shape the life you imagine.",
+    "addPhoto": "Add photo",
+    "addMore": "Add",
+    "save": "Save",
+    "saving": "Saving…",
+    "saved": "Vision board saved.",
+    "saveError": "Could not save the vision board.",
+    "loadError": "Could not load the vision board.",
+    "loginRequired": "Sign in to save your board.",
+    "boardFull": "The board is full. You can add up to 40 images.",
+    "photoTooLarge": "The image must be smaller than 8 MB.",
+    "delete": "Delete",
+    "hint": "Drag and place",
+    "pickError": "Could not pick a photo."
   },
   "affirmations": {
     "title": "Affirmations",
