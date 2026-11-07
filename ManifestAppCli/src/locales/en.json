@@ -31,8 +31,6 @@
   "vision": {
     "title": "Vision Board",
     "subtitle": "Bring your dreams together like a collage.",
-    "emptyTitle": "Your board is waiting",
-    "emptyBody": "Add a photo, drag it, and shape the life you imagine.",
     "addPhoto": "Add photo",
     "addMore": "Add",
     "save": "Save",
@@ -45,7 +43,13 @@
     "photoTooLarge": "The image must be smaller than 8 MB.",
     "delete": "Delete",
     "hint": "Drag and place",
-    "pickError": "Could not pick a photo."
+    "pickError": "Could not pick a photo.",
+    "motto": "Abundance, Health,\nHappiness, Love",
+    "dreamListTitle": "My Dream List",
+    "dreamTravel": "Travel",
+    "dreamHome": "Home",
+    "dreamCareer": "Career",
+    "dreamFreedom": "Freedom"
   },
   "affirmations": {
     "title": "Affirmations",

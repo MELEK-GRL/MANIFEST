@@ -31,8 +31,6 @@
   "vision": {
     "title": "Vision Board",
     "subtitle": "Hayallerini kolaj gibi bir araya getir.",
-    "emptyTitle": "Tahtan seni bekliyor",
-    "emptyBody": "Fotoğraf ekle, sürükle ve hayalindeki düzeni oluştur.",
     "addPhoto": "Fotoğraf ekle",
     "addMore": "Ekle",
     "save": "Kaydet",
@@ -45,7 +43,13 @@
     "photoTooLarge": "Görsel 8 MB'dan küçük olmalı.",
     "delete": "Sil",
     "hint": "Sürükle ve yerleştir",
-    "pickError": "Fotoğraf seçilemedi."
+    "pickError": "Fotoğraf seçilemedi.",
+    "motto": "Bolluk, Sağlık,\nMutluluk, Aşk",
+    "dreamListTitle": "Hayal Listem",
+    "dreamTravel": "Seyahat",
+    "dreamHome": "Ev",
+    "dreamCareer": "Kariyer",
+    "dreamFreedom": "Özgürlük"
   },
   "affirmations": {
     "title": "Olumlamalar",
