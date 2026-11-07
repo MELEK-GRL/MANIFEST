@@ -201,7 +201,7 @@ const VisionBoardCanvas: React.FC<Props> = ({
         <ScrollView
           style={styles.boardScroll}
           contentContainerStyle={{minHeight: canvasHeight}}
-          showsVerticalScrollIndicator
+          showsVerticalScrollIndicator={false}
           nestedScrollEnabled
           bounces
           scrollEnabled={boardScrollEnabled}
