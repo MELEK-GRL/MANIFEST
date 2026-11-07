@@ -1,8 +1,6 @@
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {
-  Animated,
   Image,
-  PanResponder,
   StyleSheet,
   TouchableOpacity,
   View,
@@ -10,8 +8,18 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ImageCropPicker from 'react-native-image-crop-picker';
-import LinearGradient from 'react-native-linear-gradient';
-import {Icon, PageLayout, PopupModal, T} from '@components';
+import {useNavigation} from '@react-navigation/native';
+import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {
+  Button,
+  CenterModal,
+  Icon,
+  PageLayout,
+  PopupModal,
+  T,
+  TextInput,
+  VisionBoardCanvas,
+} from '@components';
 import {
   addVisionBoardItem,
   deleteVisionBoardItem,
@@ -20,584 +28,65 @@ import {
   visionBoardErrorCode,
   visionBoardItemImageUrl,
 } from '../../api/visionBoard';
+import {
+  DRAFT_KEY,
+  DEFAULT_DREAM_CARD_ID,
+  DreamCardPreview,
+  ITEM_HEIGHT,
+  ITEM_WIDTH,
+  MAX_DREAM_CARDS,
+  MAX_DREAMS,
+  NOTE_WIDTH,
+  appendSavedBoard,
+  createDefaultDreamCard,
+  holderFromIndex,
+  loadSavedBoards,
+  normalizeDreamCards,
+  normalizeItem,
+  noteHeightFor,
+  spawnPosForIndex,
+  type BoardItem,
+  type BoardSize,
+  type DraftPayload,
+  type DreamCard,
+  type DreamItem,
+  type SavedVisionBoard,
+} from '../../components/VisionBoard';
 import {useAuthStore} from '../../store/useAuthStore';
-import {useT} from '../../store/useLocaleStore';
+import {useLocaleStore, useT} from '../../store/useLocaleStore';
 import colors from '../../theme/colors';
 import {fontSize} from '../../constants/typography';
 import {useResponsive} from '../../utils/deviceStore/device';
-
-const ITEM_WIDTH = 112;
-const ITEM_HEIGHT = 128;
-const DRAFT_KEY = '@manifest/vision-board-draft';
-
-const DREAM_KEYS = [
-  'dreamTravel',
-  'dreamHome',
-  'dreamCareer',
-  'dreamFreedom',
-] as const;
-
-type DreamKey = (typeof DREAM_KEYS)[number];
-
-const DEFAULT_DREAMS: Record<DreamKey, boolean> = {
-  dreamTravel: true,
-  dreamHome: true,
-  dreamCareer: false,
-  dreamFreedom: false,
-};
-
-const HOLDERS = [
-  'washi',
-  'pin',
-  'clip',
-  'corner',
-  'starPin',
-  'sideClip',
-  'heartPin',
-  'clover',
-] as const;
-
-type HolderKind = (typeof HOLDERS)[number];
-
-const tiltFromKey = (key: string) => {
-  let hash = 0;
-  for (let i = 0; i < key.length; i += 1) {
-    hash = (hash + key.charCodeAt(i) * (i + 1)) % 97;
-  }
-  return ((hash % 11) - 5) * 1.6;
-};
-
-const holderFromIndex = (index: number): HolderKind =>
-  HOLDERS[((index % HOLDERS.length) + HOLDERS.length) % HOLDERS.length];
-
-const LEGACY_HOLDER_MAP: Record<string, HolderKind> = {
-  tapeGold: 'washi',
-  tapeBlush: 'washi',
-  tapeLavender: 'washi',
-  tapeStrip: 'washi',
-  cornerTape: 'corner',
-  dualTape: 'washi',
-  dualWashi: 'washi',
-  wideWashi: 'washi',
-};
-
-type BoardItem = {
-  key: string;
-  serverId?: string;
-  uri: string;
-  x: number;
-  y: number;
-  scale: number;
-  holder: HolderKind;
-  pendingUpload?: boolean;
-};
-
-type DraftPayload = {
-  items: BoardItem[];
-  serverIds: string[];
-  dreams?: Record<DreamKey, boolean>;
-};
-
-type BoardSize = {width: number; height: number};
-
-type CollagePieceProps = {
-  item: BoardItem;
-  selected: boolean;
-  board: BoardSize;
-  itemWidth: number;
-  itemHeight: number;
-  token: string | null;
-  onSelect: (key: string) => void;
-  onChange: (key: string, next: Partial<BoardItem>) => void;
-  onDelete: (key: string) => void;
-  deleteLabel: string;
-};
-
-const resolveHolder = (value: unknown, index: number): HolderKind => {
-  if (typeof value === 'string') {
-    if ((HOLDERS as readonly string[]).includes(value)) {
-      return value as HolderKind;
-    }
-    // Eski taslaklar çoğunlukla banttı; sırayı yeniden dağıt.
-    if (LEGACY_HOLDER_MAP[value]) {
-      return holderFromIndex(index);
-    }
-  }
-  return holderFromIndex(index);
-};
-
-const normalizeItem = (
-  item: Partial<BoardItem> &
-    Pick<BoardItem, 'key' | 'uri' | 'x' | 'y' | 'scale'>,
-  index: number,
-): BoardItem => ({
-  key: item.key,
-  serverId: item.serverId,
-  uri: item.uri,
-  x: item.x,
-  y: item.y,
-  scale: item.scale,
-  pendingUpload: item.pendingUpload,
-  holder: resolveHolder(item.holder, index),
-});
-
-const PhotoHolder = ({kind}: {kind: HolderKind}) => {
-  switch (kind) {
-    case 'washi':
-      return (
-        <View pointerEvents="none" style={holderStyles.layer}>
-          <View style={[holderStyles.washi, holderStyles.washiGold]} />
-        </View>
-      );
-    case 'corner':
-      return (
-        <View pointerEvents="none" style={holderStyles.layer}>
-          <View style={[holderStyles.cornerPiece, holderStyles.washiBlush]} />
-        </View>
-      );
-    case 'pin':
-      return (
-        <View pointerEvents="none" style={holderStyles.layer}>
-          <View style={holderStyles.pinWrap}>
-            <View style={holderStyles.pinHead} />
-            <View style={holderStyles.pinShine} />
-            <View style={holderStyles.pinNeedle} />
-          </View>
-        </View>
-      );
-    case 'starPin':
-      return (
-        <View pointerEvents="none" style={holderStyles.layer}>
-          <View style={holderStyles.starPinWrap}>
-            <View style={holderStyles.starPinBase} />
-            <Icon name="sparkles" size={14} color={colors.gold} />
-          </View>
-        </View>
-      );
-    case 'clip':
-      return (
-        <View pointerEvents="none" style={holderStyles.layer}>
-          <View style={holderStyles.clipWrap}>
-            <View style={holderStyles.clipBody} />
-            <View style={holderStyles.clipWire} />
-          </View>
-        </View>
-      );
-    case 'sideClip':
-      return (
-        <View pointerEvents="none" style={holderStyles.layer}>
-          <View style={holderStyles.sideClipWrap}>
-            <View style={holderStyles.sideClipBody} />
-            <View style={holderStyles.sideClipWire} />
-          </View>
-        </View>
-      );
-    case 'heartPin':
-      return (
-        <View pointerEvents="none" style={holderStyles.layer}>
-          <View style={holderStyles.heartPinWrap}>
-            <View style={holderStyles.heartPinBase} />
-            <Icon name="heart" size={14} color={colors.primary} />
-          </View>
-        </View>
-      );
-    case 'clover':
-      return (
-        <View pointerEvents="none" style={holderStyles.layer}>
-          <View style={holderStyles.cloverWrap}>
-            <View style={holderStyles.cloverBase} />
-            <Icon name="leaf" size={15} color={colors.primary} />
-          </View>
-        </View>
-      );
-    default:
-      return null;
-  }
-};
-
-const CollagePiece = ({
-  item,
-  selected,
-  board,
-  itemWidth,
-  itemHeight,
-  token,
-  onSelect,
-  onChange,
-  onDelete,
-  deleteLabel,
-}: CollagePieceProps) => {
-  const pos = useRef(new Animated.ValueXY({x: item.x, y: item.y})).current;
-  const tilt = useMemo(() => tiltFromKey(item.key), [item.key]);
-  const latest = useRef({
-    item,
-    board,
-    itemWidth,
-    itemHeight,
-    onSelect,
-    onChange,
-  });
-  latest.current = {item, board, itemWidth, itemHeight, onSelect, onChange};
-
-  useEffect(() => {
-    pos.setValue({x: item.x, y: item.y});
-  }, [item.x, item.y, pos]);
-
-  const responder = useMemo(
-    () =>
-      PanResponder.create({
-        onStartShouldSetPanResponder: () => true,
-        onMoveShouldSetPanResponder: () => true,
-        onPanResponderGrant: () => {
-          const {item: it, onSelect: select} = latest.current;
-          select(it.key);
-        },
-        onPanResponderMove: (_e, g) => {
-          const {
-            item: it,
-            board: b,
-            itemWidth: w,
-            itemHeight: h,
-          } = latest.current;
-          const maxX = Math.max(0, b.width - w * it.scale);
-          const maxY = Math.max(0, b.height - h * it.scale);
-          pos.setValue({
-            x: Math.min(maxX, Math.max(0, it.x + g.dx)),
-            y: Math.min(maxY, Math.max(0, it.y + g.dy)),
-          });
-        },
-        onPanResponderRelease: (_e, g) => {
-          const {
-            item: it,
-            board: b,
-            itemWidth: w,
-            itemHeight: h,
-            onChange: change,
-          } = latest.current;
-          const maxX = Math.max(0, b.width - w * it.scale);
-          const maxY = Math.max(0, b.height - h * it.scale);
-          const nx = Math.min(maxX, Math.max(0, it.x + g.dx));
-          const ny = Math.min(maxY, Math.max(0, it.y + g.dy));
-          pos.setValue({x: nx, y: ny});
-          change(it.key, {x: nx, y: ny});
-        },
-      }),
-    [pos],
-  );
-
-  const imageSource =
-    item.pendingUpload || item.uri.startsWith('file://')
-      ? {uri: item.uri}
-      : {
-          uri: item.uri,
-          headers: token ? {Authorization: `Bearer ${token}`} : undefined,
-        };
-
-  return (
-    <Animated.View
-      {...responder.panHandlers}
-      style={[
-        pieceStyles.wrap,
-        {
-          width: itemWidth,
-          height: itemHeight,
-          zIndex: selected ? 40 : 10,
-          transform: [
-            ...pos.getTranslateTransform(),
-            {scale: item.scale},
-            {rotate: `${selected ? 0 : tilt}deg`},
-          ],
-        },
-      ]}>
-      <TouchableOpacity
-        activeOpacity={1}
-        onPress={() => onSelect(item.key)}
-        style={[
-          pieceStyles.frame,
-          selected ? pieceStyles.frameSelected : null,
-        ]}>
-        <Image source={imageSource} style={pieceStyles.image} />
-      </TouchableOpacity>
-      <PhotoHolder kind={item.holder} />
-      {selected ? (
-        <TouchableOpacity
-          accessibilityRole="button"
-          accessibilityLabel={deleteLabel}
-          onPress={() => onDelete(item.key)}
-          style={pieceStyles.deleteBtn}>
-          <Icon name="close" size={14} color={colors.primary} />
-        </TouchableOpacity>
-      ) : null}
-    </Animated.View>
-  );
-};
-
-const holderStyles = StyleSheet.create({
-  layer: {
-    ...StyleSheet.absoluteFillObject,
-    zIndex: 20,
-    elevation: 12,
-  },
-  washi: {
-    position: 'absolute',
-    top: 2,
-    alignSelf: 'center',
-    left: '28%',
-    width: '44%',
-    height: 16,
-    borderRadius: 3,
-    opacity: 0.92,
-    transform: [{rotate: '-6deg'}],
-  },
-  washiGold: {
-    backgroundColor: colors.goldSoft,
-  },
-  washiBlush: {
-    backgroundColor: colors.blush,
-    borderWidth: 1,
-    borderColor: colors.borderSoft,
-  },
-  cornerPiece: {
-    position: 'absolute',
-    top: 10,
-    left: -2,
-    width: 42,
-    height: 15,
-    borderRadius: 3,
-    opacity: 0.95,
-    transform: [{rotate: '-40deg'}],
-  },
-  pinWrap: {
-    position: 'absolute',
-    top: -2,
-    left: '50%',
-    marginLeft: -11,
-    width: 22,
-    alignItems: 'center',
-  },
-  pinHead: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: colors.primary,
-    borderWidth: 2,
-    borderColor: colors.white,
-    shadowColor: colors.primaryDark,
-    shadowOpacity: 0.28,
-    shadowRadius: 4,
-    shadowOffset: {width: 0, height: 2},
-    elevation: 4,
-  },
-  pinShine: {
-    position: 'absolute',
-    top: 5,
-    left: 6,
-    width: 5,
-    height: 5,
-    borderRadius: 3,
-    backgroundColor: colors.primarySoft,
-  },
-  pinNeedle: {
-    width: 2.5,
-    height: 10,
-    marginTop: -1,
-    backgroundColor: colors.gold,
-    borderRadius: 1,
-  },
-  starPinWrap: {
-    position: 'absolute',
-    top: -2,
-    left: '50%',
-    marginLeft: -12,
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    backgroundColor: colors.white,
-    borderWidth: 1.5,
-    borderColor: colors.goldSoft,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: colors.primaryDark,
-    shadowOpacity: 0.18,
-    shadowRadius: 4,
-    shadowOffset: {width: 0, height: 2},
-    elevation: 4,
-  },
-  starPinBase: {
-    position: 'absolute',
-    bottom: -6,
-    width: 2,
-    height: 8,
-    backgroundColor: colors.goldSoft,
-  },
-  clipWrap: {
-    position: 'absolute',
-    top: -4,
-    left: '50%',
-    marginLeft: -10,
-    width: 20,
-    height: 34,
-    alignItems: 'center',
-  },
-  clipBody: {
-    width: 18,
-    height: 30,
-    borderRadius: 9,
-    borderWidth: 3,
-    borderColor: colors.gold,
-    backgroundColor: colors.cream,
-  },
-  clipWire: {
-    position: 'absolute',
-    top: 7,
-    width: 8,
-    height: 16,
-    borderRadius: 4,
-    borderWidth: 2.5,
-    borderColor: colors.goldSoft,
-    backgroundColor: colors.white,
-  },
-  sideClipWrap: {
-    position: 'absolute',
-    top: 18,
-    right: -6,
-    width: 18,
-    height: 32,
-    alignItems: 'center',
-    transform: [{rotate: '18deg'}],
-  },
-  sideClipBody: {
-    width: 16,
-    height: 28,
-    borderRadius: 8,
-    borderWidth: 3,
-    borderColor: colors.primary,
-    backgroundColor: colors.primarySoft,
-  },
-  sideClipWire: {
-    position: 'absolute',
-    top: 6,
-    width: 7,
-    height: 14,
-    borderRadius: 4,
-    borderWidth: 2,
-    borderColor: colors.primaryDark,
-    backgroundColor: colors.white,
-  },
-  heartPinWrap: {
-    position: 'absolute',
-    top: -2,
-    left: '50%',
-    marginLeft: -13,
-    width: 26,
-    height: 26,
-    borderRadius: 13,
-    backgroundColor: colors.white,
-    borderWidth: 1.5,
-    borderColor: colors.primarySoft,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: colors.primaryDark,
-    shadowOpacity: 0.18,
-    shadowRadius: 4,
-    shadowOffset: {width: 0, height: 2},
-    elevation: 4,
-  },
-  heartPinBase: {
-    position: 'absolute',
-    bottom: -6,
-    width: 2,
-    height: 8,
-    backgroundColor: colors.goldSoft,
-  },
-  cloverWrap: {
-    position: 'absolute',
-    top: 4,
-    right: 6,
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: colors.cream,
-    borderWidth: 1.5,
-    borderColor: colors.lavender,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: colors.primaryDark,
-    shadowOpacity: 0.14,
-    shadowRadius: 4,
-    shadowOffset: {width: 0, height: 2},
-    elevation: 4,
-    transform: [{rotate: '12deg'}],
-  },
-  cloverBase: {
-    position: 'absolute',
-    bottom: -5,
-    width: 2,
-    height: 7,
-    backgroundColor: colors.goldSoft,
-  },
-});
-
-const pieceStyles = StyleSheet.create({
-  wrap: {
-    position: 'absolute',
-    overflow: 'visible',
-  },
-  frame: {
-    flex: 1,
-    backgroundColor: colors.white,
-    borderRadius: 14,
-    padding: 8,
-    shadowColor: colors.primaryDark,
-    shadowOpacity: 0.18,
-    shadowRadius: 12,
-    shadowOffset: {width: 0, height: 6},
-    elevation: 5,
-  },
-  frameSelected: {
-    shadowOpacity: 0.26,
-    shadowRadius: 16,
-    elevation: 8,
-  },
-  image: {
-    flex: 1,
-    width: '100%',
-    borderRadius: 8,
-    backgroundColor: colors.blush,
-  },
-  deleteBtn: {
-    position: 'absolute',
-    top: -8,
-    right: -8,
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: colors.white,
-    borderWidth: 1,
-    borderColor: colors.borderSoft,
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 30,
-    elevation: 14,
-    shadowColor: colors.primaryDark,
-    shadowOpacity: 0.12,
-    shadowRadius: 4,
-    shadowOffset: {width: 0, height: 2},
-  },
-});
+import type {RootStackParamList} from '../../navigation/types';
 
 const VisionBoardScreen = () => {
   const t = useT();
+  const locale = useLocaleStore(state => state.locale);
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const token = useAuthStore(state => state.token);
   const {w1px, h1px, fs1px} = useResponsive();
   const [items, setItems] = useState<BoardItem[]>([]);
   const [serverIds, setServerIds] = useState<string[]>([]);
-  const [dreams, setDreams] = useState<Record<DreamKey, boolean>>(DEFAULT_DREAMS);
+  const [dreamCards, setDreamCards] = useState<DreamCard[]>([
+    createDefaultDreamCard(),
+  ]);
+  const [activeDreamCardId, setActiveDreamCardId] = useState(
+    DEFAULT_DREAM_CARD_ID,
+  );
+  const [dreamDraft, setDreamDraft] = useState('');
+  const [cardEditor, setCardEditor] = useState<{
+    visible: boolean;
+    mode: 'create' | 'edit';
+    cardId: string | null;
+    items: DreamItem[];
+  }>({visible: false, mode: 'create', cardId: null, items: []});
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const [board, setBoard] = useState<BoardSize>({width: 0, height: 0});
   const [loading, setLoading] = useState(true);
   const [cacheReady, setCacheReady] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [savedBoards, setSavedBoards] = useState<SavedVisionBoard[]>([]);
   const [modal, setModal] = useState<{
     visible: boolean;
     type: 'success' | 'error' | 'danger';
@@ -623,225 +112,108 @@ const VisionBoardScreen = () => {
           marginBottom: 10 * h1px,
         },
         actions: {
-          flexDirection: 'row',
-          alignItems: 'center',
-          gap: 10 * w1px,
-          marginBottom: 12 * h1px,
+          gap: 8 * h1px,
+          marginBottom: 14 * h1px,
         },
-        toolBtn: {
-          flex: 1,
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: 6 * w1px,
-          borderRadius: 16 * fs1px,
-          paddingHorizontal: 12 * w1px,
-          paddingVertical: 11 * h1px,
-        },
-        addChip: {
-          backgroundColor: colors.blush,
-          borderWidth: 1,
-          borderColor: colors.borderSoft,
-        },
-        saveChip: {
-          backgroundColor: colors.primary,
-        },
-        saveChipDisabled: {
-          backgroundColor: colors.buttonMuted,
-        },
-        clearChip: {
-          backgroundColor: colors.dangerSoft,
-          borderWidth: 1,
-          borderColor: colors.dangerBorder,
-          flex: 0,
-          paddingHorizontal: 14 * w1px,
-        },
-        clearChipDisabled: {
-          opacity: 0.45,
-        },
-        boardShell: {
-          width: '100%',
-          borderRadius: 28 * fs1px,
-          padding: 2.5 * w1px,
-          backgroundColor: colors.primarySoft,
-          shadowColor: colors.primaryDark,
-          shadowOpacity: 0.14,
-          shadowRadius: 18,
-          shadowOffset: {width: 0, height: 8},
-          elevation: 5,
-        },
-        board: {
-          width: '100%',
-          height: 468 * h1px,
-          borderRadius: 26 * fs1px,
-          overflow: 'hidden',
-          borderWidth: 1.5,
-          borderColor: colors.white,
-        },
-        boardInner: {
-          flex: 1,
-        },
-        decorSparkA: {
-          position: 'absolute',
-          top: 14 * h1px,
-          left: 18 * w1px,
-          opacity: 0.75,
-          zIndex: 2,
-        },
-        decorSparkB: {
-          position: 'absolute',
-          top: 120 * h1px,
-          right: 16 * w1px,
-          opacity: 0.7,
-          zIndex: 2,
-        },
-        decorSparkC: {
-          position: 'absolute',
-          bottom: 86 * h1px,
-          left: 28 * w1px,
-          opacity: 0.65,
-          zIndex: 2,
-        },
-        decorSparkD: {
-          position: 'absolute',
-          bottom: 36 * h1px,
-          right: 34 * w1px,
-          opacity: 0.7,
-          zIndex: 2,
-        },
-        decorHeartA: {
-          position: 'absolute',
-          top: 54 * h1px,
-          left: 8 * w1px,
-          opacity: 0.55,
-          zIndex: 2,
-          transform: [{rotate: '-18deg'}],
-        },
-        decorHeartB: {
-          position: 'absolute',
-          bottom: 54 * h1px,
-          right: 10 * w1px,
-          opacity: 0.5,
-          zIndex: 2,
-          transform: [{rotate: '12deg'}],
-        },
-        decorFlower: {
-          position: 'absolute',
-          bottom: 18 * h1px,
-          left: 108 * w1px,
-          opacity: 0.72,
-          zIndex: 2,
-          transform: [{rotate: '-8deg'}],
-        },
-        mottoWrap: {
-          position: 'absolute',
-          top: '42%',
-          left: '50%',
-          marginLeft: -62 * w1px,
-          marginTop: -62 * h1px,
-          width: 124 * w1px,
-          height: 124 * w1px,
-          borderRadius: 62 * w1px,
-          backgroundColor: colors.peach,
-          borderWidth: 1,
-          borderColor: colors.white,
-          alignItems: 'center',
-          justifyContent: 'center',
-          paddingHorizontal: 12 * w1px,
-          zIndex: 3,
-          shadowColor: colors.primaryDark,
-          shadowOpacity: 0.1,
-          shadowRadius: 10,
-          shadowOffset: {width: 0, height: 4},
-          elevation: 3,
-          transform: [{rotate: '-4deg'}],
-        },
-        mottoText: {
-          textAlign: 'center',
-          lineHeight: 18 * fs1px,
-        },
-        note: {
-          position: 'absolute',
-          top: 16 * h1px,
-          right: 14 * w1px,
-          width: 118 * w1px,
-          backgroundColor: colors.white,
-          borderRadius: 10 * fs1px,
-          paddingTop: 16 * h1px,
-          paddingBottom: 10 * h1px,
-          paddingHorizontal: 10 * w1px,
-          zIndex: 4,
-          shadowColor: colors.primaryDark,
-          shadowOpacity: 0.12,
-          shadowRadius: 8,
-          shadowOffset: {width: 0, height: 3},
-          elevation: 3,
-          transform: [{rotate: '3deg'}],
-        },
-        pin: {
-          position: 'absolute',
-          top: -6 * h1px,
-          alignSelf: 'center',
-          left: '50%',
-          marginLeft: -7 * w1px,
-          width: 14 * w1px,
-          height: 14 * w1px,
-          borderRadius: 7 * w1px,
-          backgroundColor: colors.primary,
-          borderWidth: 2,
-          borderColor: colors.primarySoft,
-          zIndex: 5,
-        },
-        noteTitleRow: {
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: 4 * w1px,
-          marginBottom: 8 * h1px,
-        },
-        dreamRow: {
-          flexDirection: 'row',
-          alignItems: 'center',
-          gap: 6 * w1px,
-          marginBottom: 5 * h1px,
-        },
-        checkBox: {
-          width: 14 * w1px,
-          height: 14 * w1px,
-          borderRadius: 3 * fs1px,
-          borderWidth: 1.5,
-          borderColor: colors.primary,
-          alignItems: 'center',
-          justifyContent: 'center',
-          backgroundColor: colors.white,
-        },
-        checkBoxOn: {
-          backgroundColor: colors.primarySoft,
-        },
-        empty: {
-          position: 'absolute',
-          left: 0,
-          right: 0,
-          bottom: 28 * h1px,
-          alignItems: 'center',
-          zIndex: 5,
-        },
-        primaryBtn: {
+        actionsRow: {
           flexDirection: 'row',
           alignItems: 'center',
           gap: 8 * w1px,
+        },
+        actionBtn: {
+          flex: 1,
+          minWidth: 0,
+        },
+        editorBody: {
+          width: '100%',
+          alignItems: 'center',
+          gap: 12 * h1px,
+        },
+        editorInputRow: {
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: 8 * w1px,
+          width: '100%',
+        },
+        dreamInputWrap: {
+          flex: 1,
+          marginBottom: 0,
+          minWidth: 0,
+        },
+        dreamInput: {
+          paddingVertical: 8 * h1px,
+          paddingHorizontal: 12 * w1px,
+        },
+        dreamIconBtn: {
+          width: 38 * w1px,
+          height: 38 * w1px,
+          borderRadius: 19 * w1px,
+          alignItems: 'center',
+          justifyContent: 'center',
           backgroundColor: colors.primary,
-          borderRadius: 16 * fs1px,
-          paddingHorizontal: 16 * w1px,
-          paddingVertical: 11 * h1px,
-          shadowColor: colors.primaryDark,
-          shadowOpacity: 0.16,
-          shadowRadius: 8,
-          shadowOffset: {width: 0, height: 3},
-          elevation: 3,
+        },
+        dreamIconBtnDisabled: {
+          opacity: 0.4,
+        },
+        editorCount: {
+          alignSelf: 'flex-end',
+        },
+        savedSection: {
+          marginTop: 18 * h1px,
+          gap: 10 * h1px,
+        },
+        savedCard: {
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: 12 * w1px,
+          padding: 12 * w1px,
+          borderRadius: 18 * fs1px,
+          backgroundColor: colors.white,
+          borderWidth: 1,
+          borderColor: colors.borderSoft,
+        },
+        savedCover: {
+          width: 56 * w1px,
+          height: 56 * w1px,
+          borderRadius: 14 * fs1px,
+          backgroundColor: colors.lavender,
+          alignItems: 'center',
+          justifyContent: 'center',
+          overflow: 'hidden',
+        },
+        savedCoverImage: {
+          width: '100%',
+          height: '100%',
+        },
+        savedBody: {
+          flex: 1,
+          minWidth: 0,
+          gap: 2 * h1px,
         },
       }),
     [w1px, h1px, fs1px],
+  );
+
+  const refreshSavedBoards = useCallback(async () => {
+    setSavedBoards(await loadSavedBoards());
+  }, []);
+
+  const updateItem = useCallback((key: string, next: Partial<BoardItem>) => {
+    setItems(prev => prev.map(it => (it.key === key ? {...it, ...next} : it)));
+  }, []);
+
+  const deleteItem = useCallback((key: string) => {
+    setItems(prev => prev.filter(it => it.key !== key));
+    setSelectedKey(curr => (curr === key ? null : curr));
+  }, []);
+
+  const moveDreamCard = useCallback(
+    (cardId: string, next: {x: number; y: number}) => {
+      setDreamCards(prev =>
+        prev.map(card => (card.id === cardId ? {...card, ...next} : card)),
+      );
+    },
+    [],
   );
 
   const showModal = (
@@ -869,7 +241,7 @@ const VisionBoardScreen = () => {
       return {
         items: parsed.items,
         serverIds: Array.isArray(parsed.serverIds) ? parsed.serverIds : [],
-        dreams: parsed.dreams,
+        dreamCards: normalizeDreamCards(parsed.dreamCards, parsed.dreamItems),
       };
     } catch {
       return null;
@@ -890,9 +262,15 @@ const VisionBoardScreen = () => {
     try {
       const draft = await readDraft();
       if (draft) {
+        const cards = draft.dreamCards || [createDefaultDreamCard()];
         setItems(draft.items.map((item, index) => normalizeItem(item, index)));
         setServerIds(draft.serverIds);
-        setDreams({...DEFAULT_DREAMS, ...(draft.dreams || {})});
+        setDreamCards(cards);
+        setActiveDreamCardId(
+          cards.find(card => card.isDefault)?.id ||
+            cards[0]?.id ||
+            DEFAULT_DREAM_CARD_ID,
+        );
         setLoading(false);
         setCacheReady(true);
         return;
@@ -901,7 +279,8 @@ const VisionBoardScreen = () => {
       if (!token) {
         setItems([]);
         setServerIds([]);
-        setDreams(DEFAULT_DREAMS);
+        setDreamCards([createDefaultDreamCard()]);
+        setActiveDreamCardId(DEFAULT_DREAM_CARD_ID);
         setLoading(false);
         setCacheReady(true);
         return;
@@ -922,19 +301,24 @@ const VisionBoardScreen = () => {
           index,
         ),
       );
+      const starterCards = [createDefaultDreamCard()];
       setItems(mapped);
       setServerIds(mapped.map(item => item.serverId!).filter(Boolean));
+      setDreamCards(starterCards);
+      setActiveDreamCardId(DEFAULT_DREAM_CARD_ID);
       await writeDraft({
         items: mapped,
         serverIds: mapped.map(item => item.serverId!).filter(Boolean),
-        dreams: DEFAULT_DREAMS,
+        dreamCards: starterCards,
       });
     } catch {
       const draft = await readDraft();
       if (draft) {
+        const cards = draft.dreamCards || [createDefaultDreamCard()];
         setItems(draft.items.map((item, index) => normalizeItem(item, index)));
         setServerIds(draft.serverIds);
-        setDreams({...DEFAULT_DREAMS, ...(draft.dreams || {})});
+        setDreamCards(cards);
+        setActiveDreamCardId(cards[0]?.id || DEFAULT_DREAM_CARD_ID);
       } else {
         showModal('error', t('vision.loadError'));
       }
@@ -949,42 +333,282 @@ const VisionBoardScreen = () => {
   }, [loadBoard]);
 
   useEffect(() => {
+    refreshSavedBoards();
+    const unsubscribe = navigation.addListener('focus', () => {
+      refreshSavedBoards();
+    });
+    return unsubscribe;
+  }, [navigation, refreshSavedBoards]);
+
+  useEffect(() => {
     if (!cacheReady || loading) {
       return;
     }
-    writeDraft({items, serverIds, dreams});
-  }, [items, serverIds, dreams, cacheReady, loading]);
+    writeDraft({items, serverIds, dreamCards});
+  }, [items, serverIds, dreamCards, cacheReady, loading]);
 
   const onBoardLayout = (e: LayoutChangeEvent) => {
     const {width, height} = e.nativeEvent.layout;
     setBoard({width, height});
+    if (width <= 0 || height <= 0) {
+      return;
+    }
+    const noteW = NOTE_WIDTH * w1px;
+    setDreamCards(prev => {
+      let changed = false;
+      const next = prev.map(card => {
+        const maxX = Math.max(0, width - noteW);
+        const maxY = Math.max(0, height - noteHeightFor(card.items.length));
+        const x = Math.min(maxX, Math.max(0, card.x));
+        const y = Math.min(maxY, Math.max(0, card.y));
+        if (x !== card.x || y !== card.y) {
+          changed = true;
+          return {...card, x, y};
+        }
+        return card;
+      });
+      return changed ? next : prev;
+    });
   };
 
-  const updateItem = useCallback((key: string, next: Partial<BoardItem>) => {
-    setItems(prev => prev.map(it => (it.key === key ? {...it, ...next} : it)));
-  }, []);
-
-  const deleteItem = useCallback((key: string) => {
-    setItems(prev => prev.filter(it => it.key !== key));
-    setSelectedKey(curr => (curr === key ? null : curr));
-  }, []);
-
-  const clearAllPhotos = () => {
+  const clearAllBoard = () => {
     setItems([]);
     setSelectedKey(null);
+    setDreamCards([createDefaultDreamCard()]);
+    setActiveDreamCardId(DEFAULT_DREAM_CARD_ID);
+    setDreamDraft('');
+    setCardEditor({
+      visible: false,
+      mode: 'create',
+      cardId: null,
+      items: [],
+    });
     closeModal();
     showModal('success', t('vision.clearAllDone'));
   };
 
   const requestClearAll = () => {
-    if (items.length === 0) {
+    const hasPhotos = items.length > 0;
+    const hasDreams = dreamCards.some(
+      card => card.items.length > 0 || !card.isDefault,
+    );
+    if (!hasPhotos && !hasDreams) {
       return;
     }
     showModal('danger', t('vision.clearAllConfirm'), 'clearConfirm');
   };
 
-  const toggleDream = (key: DreamKey) => {
-    setDreams(prev => ({...prev, [key]: !prev[key]}));
+  const removeDream = (cardId: string, itemId: string) => {
+    const target = dreamCards.find(card => card.id === cardId);
+    if (!target) {
+      return;
+    }
+    const nextItems = target.items.filter(item => item.id !== itemId);
+    if (!target.isDefault && nextItems.length === 0 && dreamCards.length > 1) {
+      const next = dreamCards.filter(card => card.id !== cardId);
+      setDreamCards(next);
+      setActiveDreamCardId(curr =>
+        curr === cardId
+          ? next.find(card => card.isDefault)?.id ||
+            next[0]?.id ||
+            DEFAULT_DREAM_CARD_ID
+          : curr,
+      );
+      return;
+    }
+    setDreamCards(prev =>
+      prev.map(card =>
+        card.id !== cardId ? card : {...card, items: nextItems},
+      ),
+    );
+  };
+
+  const buildDreamCard = (
+    index: number,
+    items: DreamItem[] = [],
+  ): DreamCard => {
+    const id = `dream-card-${Date.now()}-${Math.random()
+      .toString(36)
+      .slice(2, 6)}`;
+    const spawn = spawnPosForIndex(index);
+    const maxX = Math.max(0, board.width - NOTE_WIDTH * w1px);
+    const maxY = Math.max(
+      0,
+      board.height - noteHeightFor(items.length) * h1px,
+    );
+    return {
+      id,
+      isDefault: false,
+      items,
+      x: Math.min(spawn.x * w1px, maxX || spawn.x * w1px),
+      y: Math.min(spawn.y * h1px, maxY || spawn.y * h1px),
+    };
+  };
+
+  const makeDreamItem = (text: string): DreamItem => ({
+    id: `dream-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+    text: text.slice(0, 40),
+    checked: false,
+  });
+
+  const openEditCardEditor = (cardId: string) => {
+    const card = dreamCards.find(c => c.id === cardId);
+    if (!card) {
+      return;
+    }
+    setActiveDreamCardId(cardId);
+    setSelectedKey(null);
+    setDreamDraft('');
+    setCardEditor({
+      visible: true,
+      mode: 'edit',
+      cardId,
+      items: card.items.map(item => ({...item})),
+    });
+  };
+
+  const openCreateCardEditor = () => {
+    const onlyEmptyDefault =
+      dreamCards.length === 1 &&
+      dreamCards[0]?.isDefault &&
+      dreamCards[0].items.length === 0;
+    if (onlyEmptyDefault) {
+      openEditCardEditor(dreamCards[0].id);
+      return;
+    }
+    if (dreamCards.length >= MAX_DREAM_CARDS) {
+      showModal('error', t('vision.dreamCardsMax'));
+      return;
+    }
+    setSelectedKey(null);
+    setDreamDraft('');
+    setCardEditor({
+      visible: true,
+      mode: 'create',
+      cardId: null,
+      items: [],
+    });
+  };
+
+  const closeCardEditor = () => {
+    setCardEditor({
+      visible: false,
+      mode: 'create',
+      cardId: null,
+      items: [],
+    });
+    setDreamDraft('');
+  };
+
+  const addEditorDream = () => {
+    const text = dreamDraft.trim();
+    if (!text) {
+      return;
+    }
+    if (cardEditor.items.length >= MAX_DREAMS) {
+      return;
+    }
+    setCardEditor(prev => ({
+      ...prev,
+      items: [...prev.items, makeDreamItem(text)],
+    }));
+    setDreamDraft('');
+  };
+
+  const removeEditorDream = (itemId: string) => {
+    setCardEditor(prev => ({
+      ...prev,
+      items: prev.items.filter(item => item.id !== itemId),
+    }));
+  };
+
+  const commitCardEditor = () => {
+    // Plus'a basmadan yazılan metni de kayda dahil et
+    const pending = dreamDraft.trim();
+    let nextItems = cardEditor.items;
+    if (pending && nextItems.length < MAX_DREAMS) {
+      nextItems = [...nextItems, makeDreamItem(pending)];
+    }
+
+    if (cardEditor.mode === 'create') {
+      if (nextItems.length === 0) {
+        return;
+      }
+      if (dreamCards.length >= MAX_DREAM_CARDS) {
+        closeCardEditor();
+        showModal('error', t('vision.dreamCardsMax'));
+        return;
+      }
+      const next = buildDreamCard(dreamCards.length, nextItems);
+      setDreamCards(prev =>
+        prev.length >= MAX_DREAM_CARDS ? prev : [...prev, next],
+      );
+      setActiveDreamCardId(next.id);
+      closeCardEditor();
+      return;
+    }
+
+    if (!cardEditor.cardId) {
+      closeCardEditor();
+      return;
+    }
+    const editId = cardEditor.cardId;
+    setDreamCards(prev => {
+      const target = prev.find(card => card.id === editId);
+      if (
+        target &&
+        !target.isDefault &&
+        nextItems.length === 0 &&
+        prev.length > 1
+      ) {
+        const next = prev.filter(card => card.id !== editId);
+        setActiveDreamCardId(
+          next.find(card => card.isDefault)?.id ||
+            next[0]?.id ||
+            DEFAULT_DREAM_CARD_ID,
+        );
+        return next;
+      }
+      return prev.map(card =>
+        card.id === editId ? {...card, items: nextItems} : card,
+      );
+    });
+    closeCardEditor();
+  };
+
+  const addDreamCard = openCreateCardEditor;
+
+  const deleteDreamCard = (cardId: string) => {
+    if (dreamCards.length <= 1) {
+      return;
+    }
+    const target = dreamCards.find(card => card.id === cardId);
+    if (!target) {
+      return;
+    }
+    let next = dreamCards.filter(card => card.id !== cardId);
+    if (target.isDefault) {
+      next = next.map((card, index) =>
+        index === 0 ? {...card, isDefault: true} : {...card, isDefault: false},
+      );
+    }
+    setDreamCards(next);
+    setActiveDreamCardId(curr =>
+      curr === cardId
+        ? next.find(card => card.isDefault)?.id ||
+          next[0]?.id ||
+          DEFAULT_DREAM_CARD_ID
+        : curr,
+    );
+  };
+
+  const selectDreamCard = (cardId: string) => {
+    setActiveDreamCardId(cardId);
+    setSelectedKey(null);
+  };
+
+  const openDreamCard = (cardId: string) => {
+    openEditCardEditor(cardId);
   };
 
   const addPhoto = async () => {
@@ -1087,7 +711,19 @@ const VisionBoardScreen = () => {
         .filter(Boolean);
       setItems(nextItems);
       setServerIds(nextServerIds);
-      await writeDraft({items: nextItems, serverIds: nextServerIds, dreams});
+      await writeDraft({items: nextItems, serverIds: nextServerIds, dreamCards});
+      const dreamCount = dreamCards.reduce(
+        (sum, card) => sum + card.items.length,
+        0,
+      );
+      await appendSavedBoard({
+        photoCount: nextItems.length,
+        dreamCount,
+        items: nextItems,
+        dreamCards,
+        coverUri: nextItems[0]?.uri,
+      });
+      await refreshSavedBoards();
       showModal('success', t('vision.saved'));
     } catch (error) {
       const code = visionBoardErrorCode(error);
@@ -1103,114 +739,19 @@ const VisionBoardScreen = () => {
     }
   };
 
-  const canSave =
-    Boolean(token) && !saving && (items.length > 0 || serverIds.length > 0);
-  const canClear = items.length > 0 && !saving;
-
-  const scrapbookDecor = (
-    <>
-      <Icon
-        name="sparkles"
-        size={15}
-        color={colors.primary}
-        style={styles.decorSparkA}
-      />
-      <Icon
-        name="sparkles"
-        size={13}
-        color={colors.gold}
-        style={styles.decorSparkB}
-      />
-      <Icon
-        name="sparkles"
-        size={14}
-        color={colors.primary}
-        style={styles.decorSparkC}
-      />
-      <Icon
-        name="sparkles"
-        size={12}
-        color={colors.gold}
-        style={styles.decorSparkD}
-      />
-      <Icon
-        name="heart-outline"
-        size={18}
-        color={colors.primary}
-        style={styles.decorHeartA}
-      />
-      <Icon
-        name="heart-outline"
-        size={16}
-        color={colors.primary}
-        style={styles.decorHeartB}
-      />
-      <Icon
-        name="flower-outline"
-        size={22}
-        color={colors.primary}
-        style={styles.decorFlower}
-      />
-
-      <View style={styles.mottoWrap} pointerEvents="none">
-        <T
-          family="serif"
-          italic
-          size={fontSize.caption}
-          weight="600"
-          color={colors.primaryDark}
-          style={styles.mottoText}>
-          {t('vision.motto')}
-        </T>
-        <Icon
-          name="heart"
-          size={12}
-          color={colors.primary}
-          style={{marginTop: 4 * h1px}}
-        />
-      </View>
-
-      <View style={styles.note}>
-        <View style={styles.pin} />
-        <View style={styles.noteTitleRow}>
-          <T
-            family="serif"
-            italic
-            size={fontSize.caption}
-            weight="700"
-            color={colors.primaryDark}>
-            {t('vision.dreamListTitle')}
-          </T>
-          <Icon name="heart" size={10} color={colors.primary} />
-        </View>
-        {DREAM_KEYS.map(key => {
-          const checked = dreams[key];
-          return (
-            <TouchableOpacity
-              key={key}
-              style={styles.dreamRow}
-              activeOpacity={0.8}
-              onPress={() => toggleDream(key)}
-              accessibilityRole="checkbox"
-              accessibilityState={{checked}}>
-              <View
-                style={[styles.checkBox, checked ? styles.checkBoxOn : null]}>
-                {checked ? (
-                  <Icon name="checkmark" size={10} color={colors.primary} />
-                ) : null}
-              </View>
-              <T
-                size={fontSize.caption}
-                weight="500"
-                color={colors.textMutedDark}>
-                {t(`vision.${key}`)}
-              </T>
-            </TouchableOpacity>
-          );
-        })}
-      </View>
-    </>
+  const hasDreamContent = dreamCards.some(
+    card => card.items.length > 0 || !card.isDefault,
   );
+  const canSave =
+    Boolean(token) &&
+    !saving &&
+    (items.length > 0 || serverIds.length > 0 || hasDreamContent);
+  const canClear = (items.length > 0 || hasDreamContent) && !saving;
+  const canWriteEditorDream = cardEditor.items.length < MAX_DREAMS;
+  const canCommitEditor =
+    cardEditor.mode === 'edit' ||
+    cardEditor.items.length > 0 ||
+    Boolean(dreamDraft.trim());
 
   return (
     <PageLayout title={t('vision.title')}>
@@ -1225,100 +766,217 @@ const VisionBoardScreen = () => {
       </View>
 
       <View style={styles.hintRow}>
-        <Icon name="move-outline" size={15} color={colors.gold} />
+        <Icon name="move-outline" size="small" color={colors.gold} />
         <T size={fontSize.caption} weight="500" color={colors.textMuted}>
           {t('vision.hint')}
         </T>
       </View>
+
       <View style={styles.actions}>
-        <TouchableOpacity
-          style={[styles.toolBtn, styles.addChip]}
-          activeOpacity={0.88}
-          onPress={addPhoto}
-          accessibilityRole="button"
-          accessibilityLabel={t('vision.addPhoto')}>
-          <Icon name="add" size={15} color={colors.primary} />
-          <T size={fontSize.label} weight="700" color={colors.primaryDark}>
-            {t('vision.addMore')}
-          </T>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.toolBtn,
-            styles.clearChip,
-            !canClear ? styles.clearChipDisabled : null,
-          ]}
-          activeOpacity={0.88}
-          disabled={!canClear}
-          onPress={requestClearAll}
-          accessibilityRole="button"
-          accessibilityLabel={t('vision.clearAll')}>
-          <Icon name="trash-outline" size={15} color={colors.dangerText} />
-          <T size={fontSize.label} weight="700" color={colors.dangerText}>
-            {t('vision.clearAll')}
-          </T>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.toolBtn,
-            styles.saveChip,
-            !canSave ? styles.saveChipDisabled : null,
-          ]}
-          activeOpacity={0.88}
-          disabled={!canSave}
-          onPress={saveBoard}
-          accessibilityRole="button"
-          accessibilityLabel={t('vision.save')}>
-          <Icon name="checkmark" size={15} color={colors.textWhite} />
-          <T size={fontSize.label} weight="700" color={colors.textWhite}>
-            {saving ? t('vision.saving') : t('vision.save')}
-          </T>
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.boardShell}>
-        <LinearGradient
-          colors={[colors.peach, colors.cream, colors.lavender]}
-          start={{x: 0.1, y: 0}}
-          end={{x: 0.9, y: 1}}
-          style={styles.board}>
-          <View style={styles.boardInner} onLayout={onBoardLayout}>
-            {scrapbookDecor}
-
-            {!loading && items.length === 0 ? (
-              <View style={styles.empty} pointerEvents="box-none">
-                <TouchableOpacity
-                  style={styles.primaryBtn}
-                  activeOpacity={0.88}
-                  onPress={addPhoto}
-                  accessibilityRole="button"
-                  accessibilityLabel={t('vision.addPhoto')}>
-                  <Icon name="image-outline" size={16} color={colors.textWhite} />
-                  <T size={fontSize.label} weight="700" color={colors.textWhite}>
-                    {t('vision.addPhoto')}
-                  </T>
-                </TouchableOpacity>
-              </View>
-            ) : null}
-
-            {items.map(item => (
-              <CollagePiece
-                key={item.key}
-                item={item}
-                selected={selectedKey === item.key}
-                board={board}
-                itemWidth={itemWidth}
-                itemHeight={itemHeight}
-                token={token}
-                onSelect={setSelectedKey}
-                onChange={updateItem}
-                onDelete={deleteItem}
-                deleteLabel={t('vision.delete')}
-              />
-            ))}
+        <View style={styles.actionsRow}>
+          <View style={styles.actionBtn}>
+            <Button
+              buttonText={t('vision.addMore')}
+              icon="add"
+              variant="secondary"
+              size="compact"
+              disabled={dreamCards.length >= MAX_DREAM_CARDS}
+              onPress={addDreamCard}
+            />
           </View>
-        </LinearGradient>
+          <View style={styles.actionBtn}>
+            <Button
+              buttonText={saving ? t('vision.saving') : t('vision.save')}
+              icon="checkmark"
+              variant="primary"
+              size="compact"
+              disabled={!canSave}
+              loading={saving}
+              onPress={saveBoard}
+            />
+          </View>
+        </View>
+        <View style={styles.actionsRow}>
+          <View style={styles.actionBtn}>
+            <Button
+              buttonText={t('vision.addPhoto')}
+              icon="image-outline"
+              variant="secondary"
+              size="compact"
+              onPress={addPhoto}
+            />
+          </View>
+          <View style={styles.actionBtn}>
+            <Button
+              buttonText={t('vision.clearAll')}
+              icon="trash-outline"
+              variant="danger"
+              size="compact"
+              disabled={!canClear}
+              onPress={requestClearAll}
+            />
+          </View>
+        </View>
       </View>
+
+      <VisionBoardCanvas
+        items={items}
+        dreamCards={dreamCards}
+        board={board}
+        itemWidth={itemWidth}
+        itemHeight={itemHeight}
+        token={token}
+        selectedKey={selectedKey}
+        activeDreamCardId={activeDreamCardId}
+        motto={t('vision.motto')}
+        dreamListTitle={t('vision.dreamListTitle')}
+        dreamEmpty={t('vision.dreamEmpty')}
+        dreamDeleteCard={t('vision.dreamDeleteCard')}
+        deleteLabel={t('vision.delete')}
+        onBoardLayout={onBoardLayout}
+        onSelectPhoto={setSelectedKey}
+        onChangePhoto={updateItem}
+        onDeletePhoto={deleteItem}
+        onSelectDreamCard={selectDreamCard}
+        onOpenDreamCard={openDreamCard}
+        onMoveDreamCard={moveDreamCard}
+        onDeleteDreamCard={deleteDreamCard}
+        onRemoveDream={removeDream}
+      />
+
+      <View style={styles.savedSection}>
+        <T size={fontSize.subtitle} weight="700" color={colors.primaryDark}>
+          {t('vision.savedListTitle')}
+        </T>
+        {savedBoards.length === 0 ? (
+          <T size={fontSize.bodySmall} weight="400" color={colors.textMuted}>
+            {t('vision.savedEmpty')}
+          </T>
+        ) : (
+          savedBoards.map(entry => {
+            let dateLabel = entry.savedAt;
+            try {
+              dateLabel = new Date(entry.savedAt).toLocaleString(
+                locale === 'tr' ? 'tr-TR' : 'en-US',
+                {dateStyle: 'medium', timeStyle: 'short'},
+              );
+            } catch {
+              // keep raw
+            }
+            return (
+              <TouchableOpacity
+                key={entry.id}
+                style={styles.savedCard}
+                activeOpacity={0.88}
+                onPress={() =>
+                  navigation.navigate('VisionBoardDetail', {boardId: entry.id})
+                }
+                accessibilityRole="button"
+                accessibilityLabel={t('vision.savedOpen')}>
+                <View style={styles.savedCover}>
+                  {entry.coverUri ? (
+                    <Image
+                      source={{
+                        uri: entry.coverUri,
+                        headers: token
+                          ? {Authorization: `Bearer ${token}`}
+                          : undefined,
+                      }}
+                      style={styles.savedCoverImage}
+                    />
+                  ) : (
+                    <Icon name="heart" size="small" color={colors.primary} />
+                  )}
+                </View>
+                <View style={styles.savedBody}>
+                  <T
+                    size={fontSize.label}
+                    weight="700"
+                    color={colors.primaryDark}
+                    numberOfLines={1}>
+                    {dateLabel}
+                  </T>
+                  <T
+                    size={fontSize.caption}
+                    weight="500"
+                    color={colors.textMuted}
+                    numberOfLines={1}>
+                    {t('vision.savedMeta')
+                      .replace('{photos}', String(entry.photoCount))
+                      .replace('{dreams}', String(entry.dreamCount))}
+                  </T>
+                </View>
+                <Icon
+                  name="chevron-forward"
+                  size="small"
+                  color={colors.primary}
+                />
+              </TouchableOpacity>
+            );
+          })
+        )}
+      </View>
+
+      <CenterModal
+        visible={cardEditor.visible}
+        title={t('vision.dreamFillTitle')}
+        fixedHeight={false}
+        leftButtonText={t('common.cancel')}
+        rightButtonText={t('vision.save')}
+        onLeftPress={closeCardEditor}
+        onRightPress={commitCardEditor}
+        rightButtonBackgroundColor={
+          canCommitEditor ? colors.primary : colors.buttonMuted
+        }>
+        <View style={styles.editorBody}>
+          <DreamCardPreview
+            items={cardEditor.items}
+            title={t('vision.dreamListTitle')}
+            emptyLabel={t('vision.dreamEmpty')}
+            deleteItemLabel={t('vision.delete')}
+            noteWidth={NOTE_WIDTH * w1px * 1.35}
+            onRemoveItem={removeEditorDream}
+          />
+          <View style={styles.editorInputRow}>
+            <TextInput
+              value={dreamDraft}
+              onChangeText={setDreamDraft}
+              placeholder={t('vision.dreamPlaceholder')}
+              maxLength={40}
+              autoCapitalize="sentences"
+              returnKeyType="done"
+              onSubmitEditing={addEditorDream}
+              editable={canWriteEditorDream}
+              containerStyle={styles.dreamInputWrap}
+              style={styles.dreamInput}
+            />
+            <TouchableOpacity
+              style={[
+                styles.dreamIconBtn,
+                !canWriteEditorDream || !dreamDraft.trim()
+                  ? styles.dreamIconBtnDisabled
+                  : null,
+              ]}
+              activeOpacity={0.85}
+              disabled={!canWriteEditorDream || !dreamDraft.trim()}
+              onPress={addEditorDream}
+              accessibilityRole="button"
+              accessibilityLabel={t('vision.dreamAdd')}>
+              <Icon name="add" size="small" color={colors.textWhite} />
+            </TouchableOpacity>
+          </View>
+          <T
+            size={fontSize.caption}
+            weight="600"
+            color={colors.textMuted}
+            style={styles.editorCount}>
+            {t('vision.dreamCount').replace(
+              '{count}',
+              String(cardEditor.items.length),
+            )}
+          </T>
+        </View>
+      </CenterModal>
 
       <PopupModal
         visible={modal.visible}
@@ -1332,7 +990,7 @@ const VisionBoardScreen = () => {
         }
         onLeftPress={modal.mode === 'clearConfirm' ? closeModal : undefined}
         onRightPress={
-          modal.mode === 'clearConfirm' ? clearAllPhotos : undefined
+          modal.mode === 'clearConfirm' ? clearAllBoard : undefined
         }
         onClose={closeModal}
       />

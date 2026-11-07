@@ -16,7 +16,6 @@ type Props = {
   rightButtonText?: string;
   onLeftPress?: () => void;
   onRightPress?: () => void;
-  leftButtonBackgroundColor?: string;
   rightButtonBackgroundColor?: string;
   fixedHeight?: boolean;
 };
@@ -30,7 +29,6 @@ const CenterModal: React.FC<Props> = ({
   rightButtonText,
   onLeftPress,
   onRightPress,
-  leftButtonBackgroundColor = colors.primary,
   rightButtonBackgroundColor = colors.primary,
   fixedHeight,
 }) => {
@@ -133,7 +131,7 @@ const CenterModal: React.FC<Props> = ({
                   <Button
                     buttonText={leftButtonText}
                     onPress={onLeftPress}
-                    backgroundColor={leftButtonBackgroundColor}
+                    variant="muted"
                   />
                 </View>
               ) : null}

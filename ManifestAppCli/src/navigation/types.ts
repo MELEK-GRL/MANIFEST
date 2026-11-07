@@ -4,6 +4,7 @@ export type RootStackParamList = {
   Home: undefined;
   Manifest: undefined;
   VisionBoard: undefined;
+  VisionBoardDetail: {boardId: string};
   Affirmations: undefined;
   LuckyNumbers: undefined;
   LuckyNumbersDetail: {topicId: string};

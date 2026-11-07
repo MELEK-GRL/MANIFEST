@@ -1,4 +1,4 @@
-const colors = {
+const palette = {
   primary: '#6B4F82',
   primarySoft: '#EDE4F5',
   primaryDark: '#56406B',
@@ -43,17 +43,73 @@ const colors = {
   info: '#6B8CFF',
   infoSoft: '#E8EEFF',
   overlay: '#3A2F4573',
-  buttonMuted: '#B7A9C4',
+  /** Vazgeç — danger ile aynı soft gradient dili, gri ton */
+  buttonMuted: '#7A6C84',
+  buttonMutedSoft: '#F3F0F5',
+  buttonMutedBorder: '#C4BCC8',
+} as const;
 
-  gradientHero: ['#E8D5DC', '#F9E9E8'] as [string, string],
-  gradientPrimary: ['#8B6FA8', '#6B4F82'] as [string, string],
-  gradientTile: ['#FAF3F0', '#F3E6E1', '#EFE0DA'] as [string, string, string],
-  gradientProgress: ['#6B4F82', '#C9A86A'] as [string, string],
+const gradientPrimary = ['#8B6FA8', palette.primary] as [string, string];
+const gradientSecondary = [palette.white, palette.peach] as [string, string];
+const gradientDanger = [palette.white, palette.dangerSoft] as [string, string];
+const gradientMuted = [palette.white, palette.buttonMutedSoft] as [
+  string,
+  string,
+];
+
+export type ButtonVariantTheme = {
+  gradient: [string, string];
+  text: string;
+  border: string;
+  shadow: string;
+};
+
+const colors = {
+  ...palette,
+
+  gradientHero: [palette.backgroundTop, palette.peach] as [string, string],
+  gradientPrimary,
+  gradientSecondary,
+  gradientDanger,
+  gradientMuted,
+  gradientTile: ['#FAF3F0', palette.blush, '#EFE0DA'] as [
+    string,
+    string,
+    string,
+  ],
+  gradientProgress: [palette.primary, palette.gold] as [string, string],
   gradientTabActive: ['#D4BEE8', '#B89AD4', '#C4A8DC'] as [
     string,
     string,
     string,
   ],
+
+  buttonThemes: {
+    primary: {
+      gradient: gradientPrimary,
+      text: palette.textWhite,
+      border: palette.primary,
+      shadow: palette.primaryDark,
+    },
+    secondary: {
+      gradient: gradientSecondary,
+      text: palette.primary,
+      border: palette.borderSoft,
+      shadow: palette.primary,
+    },
+    danger: {
+      gradient: gradientDanger,
+      text: palette.dangerText,
+      border: palette.dangerBorder,
+      shadow: palette.danger,
+    },
+    muted: {
+      gradient: gradientMuted,
+      text: palette.buttonMuted,
+      border: palette.buttonMutedBorder,
+      shadow: palette.buttonMuted,
+    },
+  } satisfies Record<string, ButtonVariantTheme>,
 };
 
 export default colors;

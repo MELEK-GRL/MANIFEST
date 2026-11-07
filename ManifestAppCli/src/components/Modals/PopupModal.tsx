@@ -190,7 +190,7 @@ const PopupModal: React.FC<Props> = ({
                     buttonText={leftButtonText}
                     onPress={onLeftPress}
                     width="100%"
-                    backgroundColor={colors.buttonMuted}
+                    variant="muted"
                   />
                 </View>
               ) : null}
@@ -200,7 +200,9 @@ const PopupModal: React.FC<Props> = ({
                     buttonText={rightButtonText}
                     onPress={onRightPress}
                     width="100%"
-                    backgroundColor={confirmColor}
+                    variant={
+                      confirmColor === colors.danger ? 'danger' : 'primary'
+                    }
                   />
                 </View>
               ) : null}

@@ -8,6 +8,7 @@ import {View} from 'react-native';
 import HomeScreen from '../screens/Home/HomeScreen';
 import ManifestScreen from '../screens/Manifest/ManifestScreen';
 import VisionBoardScreen from '../screens/VisionBoard/VisionBoardScreen';
+import VisionBoardDetailScreen from '../screens/VisionBoard/VisionBoardDetailScreen';
 import AffirmationsScreen from '../screens/Affirmations/AffirmationsScreen';
 import LuckyNumbersScreen from '../screens/LuckyNumbers/LuckyNumbersScreen';
 import LuckyNumbersDetailScreen from '../screens/LuckyNumbers/LuckyNumbersDetailScreen';
@@ -32,6 +33,7 @@ const linking: LinkingOptions<RootStackParamList> = {
       Home: 'home',
       Manifest: 'manifest',
       VisionBoard: 'vision-board',
+      VisionBoardDetail: 'vision-board/:boardId',
       Affirmations: 'affirmations',
       LuckyNumbers: 'lucky-numbers',
       LuckyNumbersDetail: 'lucky-numbers/:topicId',
@@ -59,6 +61,10 @@ function AppNavigator() {
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Manifest" component={ManifestScreen} />
         <Stack.Screen name="VisionBoard" component={VisionBoardScreen} />
+        <Stack.Screen
+          name="VisionBoardDetail"
+          component={VisionBoardDetailScreen}
+        />
         <Stack.Screen name="Affirmations" component={AffirmationsScreen} />
         <Stack.Screen name="LuckyNumbers" component={LuckyNumbersScreen} />
         <Stack.Screen

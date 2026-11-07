@@ -53,6 +53,9 @@ export const useLocaleStore = create<LocaleState>()(
 
 /** Locale değiştiğinde bile bileşenlerin yeniden render olması için locale'e abone olur */
 export function useT() {
-    useLocaleStore((s) => s.locale);
-    return useLocaleStore((s) => s.t);
+    return useLocaleStore(s => {
+        // locale'e abone ol — aksi halde dil değişince ekran güncellenmez
+        void s.locale;
+        return s.t;
+    });
 }

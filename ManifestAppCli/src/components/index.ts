@@ -12,3 +12,5 @@ export {default as EmptyState} from './EmptyState/EmptyState';
 export {default as TextInput} from './Inputs/TextInput';
 export {default as Search} from './Inputs/Search';
 export {default as Icon} from './Icons/Icon';
+export {VisionBoardCanvas} from './VisionBoard';
+export type {ButtonVariant} from './Buttons/Button';
