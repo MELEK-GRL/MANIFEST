@@ -13,9 +13,9 @@ import {useAuthStore} from '../../store/useAuthStore';
 import {fetchProfile, profilePhotoUrl} from '../../api/auth';
 import type {RootStackParamList} from '../../navigation/types';
 
-const AVATAR = 60;
-const PAGE_HEADER_TOP = 20;
-const PAGE_HEADER_BOTTOM = 12;
+const AVATAR = 63;
+const PAGE_HEADER_TOP = 8;
+const PAGE_HEADER_BOTTOM = 8;
 
 type Props = {
   title: string;
@@ -111,7 +111,7 @@ const PageHeader: React.FC<Props> = ({title, showProfile = true}) => {
   return (
     <View style={styles.wrap}>
       <View style={styles.title}>
-        <T family="serif" size={fontSize.title} weight="700" color={colors.textDark}>
+        <T family="serif" size={fontSize.titleXl} weight="700" color={colors.textDark}>
           {title}
         </T>
       </View>

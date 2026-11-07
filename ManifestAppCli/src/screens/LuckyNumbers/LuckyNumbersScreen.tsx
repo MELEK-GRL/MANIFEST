@@ -1,31 +1,28 @@
 import React, {useMemo} from 'react';
-import {Image, StyleSheet, View} from 'react-native';
+import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import {useNavigation} from '@react-navigation/native';
+import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {Icon, PageHeader, PageLayout, T} from '@components';
 import {grabovoiDaily, grabovoiData} from '../../data/LuckyNumbers/grabovoi';
+import {
+  fallbackTopicImage,
+  topicImages,
+} from '../../data/LuckyNumbers/topicImages';
 import {useLocaleStore, useT} from '../../store/useLocaleStore';
 import colors from '../../theme/colors';
 import {fontSize} from '../../constants/typography';
 import {useResponsive} from '../../utils/deviceStore/device';
+import type {RootStackParamList} from '../../navigation/types';
 
 const luckImage = require('../../assets/images/luckImage.png');
 const luckBanner = require('../../assets/images/luckBanner.png');
-const luckMany = require('../../assets/images/luckmany.png');
-
-const topicImages: Record<string, number> = {
-  money: require('../../assets/images/luckyPage/para.png'),
-  career: require('../../assets/images/luckyPage/is.png'),
-  love: require('../../assets/images/luckyPage/ask.png'),
-  growth: require('../../assets/images/luckyPage/ozguven.png'),
-  spirit: require('../../assets/images/luckyPage/dunya.png'),
-  health: require('../../assets/images/luckyPage/saglik.png'),
-  family: require('../../assets/images/luckyPage/aile.png'),
-  nature: require('../../assets/images/luckyPage/doga.png'),
-};
 
 const LuckyNumbersScreen = () => {
   const t = useT();
   const locale = useLocaleStore(state => state.locale);
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const {w1px, h1px, fs1px} = useResponsive();
 
   const styles = useMemo(
@@ -38,7 +35,7 @@ const LuckyNumbersScreen = () => {
         },
         heroArt: {
           position: 'absolute',
-          top: -10 * h1px,
+          top: 36 * h1px,
           right: -40 * w1px,
           width: 220 * w1px,
           height: 220 * h1px,
@@ -60,7 +57,7 @@ const LuckyNumbersScreen = () => {
         },
         dailyWrap: {
           width: '100%',
-          marginTop: 18 * h1px,
+          marginTop: 34 * h1px,
           borderRadius: 22 * fs1px,
           overflow: 'hidden',
         },
@@ -103,8 +100,8 @@ const LuckyNumbersScreen = () => {
           lineHeight: 18 * fs1px,
         },
         section: {
-          marginTop: 14 * h1px,
-          marginBottom: 14 * h1px,
+          marginTop: 2 * h1px,
+          marginBottom: 10 * h1px,
         },
         list: {
           width: '100%',
@@ -183,7 +180,7 @@ const LuckyNumbersScreen = () => {
         <View style={styles.heroCopy}>
           <T
             family="serif"
-            size={fontSize.display}
+            size={fontSize.titleXl}
             weight="700"
             color={colors.textDark}
             style={styles.heroTitle}>
@@ -239,43 +236,51 @@ const LuckyNumbersScreen = () => {
       </View>
       <View style={styles.list}>
         {grabovoiData.map(topic => (
-          <LinearGradient
+          <TouchableOpacity
             key={topic.id}
-            colors={colors.gradientTile}
-            start={{x: 0, y: 0}}
-            end={{x: 1, y: 1}}
-            style={styles.card}>
-            <View style={styles.cardThumbWrap}>
-              <Image
-                source={topicImages[topic.id] ?? luckMany}
-                style={styles.cardThumb}
-                resizeMode="cover"
-              />
-              <View style={styles.cardThumbWash} pointerEvents="none" />
-            </View>
-            <View style={styles.cardBody}>
-              <T
-                family="serif"
-                size={fontSize.subtitle}
-                weight="700"
-                color={colors.textDark}
-                style={styles.cardTitle}
-                numberOfLines={1}>
-                {text(topic.tr, topic.en)}
-              </T>
-              <T
-                size={fontSize.caption}
-                weight="500"
-                color={colors.textMuted}
-                style={styles.cardSubtitle}
-                numberOfLines={1}>
-                {text(topic.subtitleTr, topic.subtitleEn)}
-              </T>
-            </View>
-            <View style={styles.cardArrow}>
-              <Icon name="chevron-forward" size={16} color={colors.textDark} />
-            </View>
-          </LinearGradient>
+            activeOpacity={0.88}
+            onPress={() =>
+              navigation.navigate('LuckyNumbersDetail', {topicId: topic.id})
+            }
+            accessibilityRole="button"
+            accessibilityLabel={text(topic.tr, topic.en)}>
+            <LinearGradient
+              colors={colors.gradientTile}
+              start={{x: 0, y: 0}}
+              end={{x: 1, y: 1}}
+              style={styles.card}>
+              <View style={styles.cardThumbWrap}>
+                <Image
+                  source={topicImages[topic.id] ?? fallbackTopicImage}
+                  style={styles.cardThumb}
+                  resizeMode="cover"
+                />
+                <View style={styles.cardThumbWash} pointerEvents="none" />
+              </View>
+              <View style={styles.cardBody}>
+                <T
+                  family="serif"
+                  size={fontSize.subtitle}
+                  weight="700"
+                  color={colors.textDark}
+                  style={styles.cardTitle}
+                  numberOfLines={1}>
+                  {text(topic.tr, topic.en)}
+                </T>
+                <T
+                  size={fontSize.caption}
+                  weight="500"
+                  color={colors.textMuted}
+                  style={styles.cardSubtitle}
+                  numberOfLines={1}>
+                  {text(topic.subtitleTr, topic.subtitleEn)}
+                </T>
+              </View>
+              <View style={styles.cardArrow}>
+                <Icon name="chevron-forward" size={16} color={colors.textDark} />
+              </View>
+            </LinearGradient>
+          </TouchableOpacity>
         ))}
       </View>
     </PageLayout>

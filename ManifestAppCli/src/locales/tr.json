@@ -51,7 +51,10 @@
     "dailyExplore": "Günün keşfi",
     "discover": "Keşfet →",
     "chooseArea": "Niyet alanını seç",
-    "popular": "Popüler"
+    "popular": "Popüler",
+    "detailBack": "Geri",
+    "detailSequences": "Sayı dizileri",
+    "detailMissing": "Bu niyet alanı bulunamadı."
   },
   "profile": {
     "title": "Profil",

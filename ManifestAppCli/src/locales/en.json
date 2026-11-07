@@ -51,7 +51,10 @@
     "dailyExplore": "Today's discovery",
     "discover": "Discover →",
     "chooseArea": "Choose an intention area",
-    "popular": "Popular"
+    "popular": "Popular",
+    "detailBack": "Back",
+    "detailSequences": "Number sequences",
+    "detailMissing": "This intention area was not found."
   },
   "profile": {
     "title": "Profile",

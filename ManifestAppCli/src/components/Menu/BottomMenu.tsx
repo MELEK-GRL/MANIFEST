@@ -177,7 +177,11 @@ const BottomMenu = () => {
           end={{x: 1, y: 1}}
           style={styles.sheet}>
           {items.map(item => {
-            const active = item.route ? route.name === item.route : false;
+            const active = item.route
+              ? route.name === item.route ||
+                (item.route === 'LuckyNumbers' &&
+                  route.name === 'LuckyNumbersDetail')
+              : false;
 
             return (
               <TouchableOpacity
