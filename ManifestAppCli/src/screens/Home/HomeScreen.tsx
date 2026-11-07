@@ -161,6 +161,7 @@ const HomeScreen = () => {
         messageWash: {
           ...StyleSheet.absoluteFillObject,
           backgroundColor: colors.messageWash,
+          opacity: 0.7,
         },
         messageContent: {
           paddingVertical: 16 * h1px,
@@ -279,7 +280,7 @@ const HomeScreen = () => {
   };
 
   return (
-    <PageLayout background={heroBg} softOverlay userHeader={false}>
+    <PageLayout background={heroBg} softOverlay="light" userHeader={false}>
       <View style={styles.brandWrap}>
         <Icon
           name="sparkles"

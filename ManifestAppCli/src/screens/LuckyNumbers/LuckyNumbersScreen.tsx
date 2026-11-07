@@ -134,11 +134,12 @@ const LuckyNumbersScreen = () => {
         cardThumb: {
           width: '100%',
           height: '100%',
+          opacity: 0.92,
         },
         cardThumbWash: {
           ...StyleSheet.absoluteFillObject,
-          backgroundColor: colors.messageWash,
-          opacity: 0.7,
+          backgroundColor: colors.peach,
+          opacity: 0.22,
         },
         cardBody: {
           flex: 1,
