@@ -1,7 +1,7 @@
 import React, {useMemo} from 'react';
 import {Image, StyleSheet, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import {Icon, PageLayout, T} from '@components';
+import {Icon, PageHeader, PageLayout, T, UserHeader} from '@components';
 import {grabovoiDaily, grabovoiData} from '../../data/LuckyNumbers/grabovoi';
 import {useLocaleStore, useT} from '../../store/useLocaleStore';
 import colors from '../../theme/colors';
@@ -31,11 +31,39 @@ const LuckyNumbersScreen = () => {
   const styles = useMemo(
     () =>
       StyleSheet.create({
+        hero: {
+          width: '100%',
+          marginBottom: 6 * h1px,
+          minHeight: 168 * h1px,
+        },
+        heroArt: {
+          position: 'absolute',
+          top: -10 * h1px,
+          right: -40 * w1px,
+          width: 220 * w1px,
+          height: 220 * h1px,
+          opacity: 0.95,
+        },
+        heroBar: {
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          marginBottom: 8 * h1px,
+          zIndex: 2,
+        },
+        heroHeader: {
+          flex: 1,
+          paddingRight: 12 * w1px,
+        },
+        heroCopy: {
+          paddingRight: 128 * w1px,
+          zIndex: 2,
+        },
         heroTitle: {
-          marginTop: 4 * h1px,
+          marginBottom: 8 * h1px,
         },
         heroSubtitle: {
-          marginTop: 8 * h1px,
+          lineHeight: 20 * fs1px,
         },
         dailyWrap: {
           width: '100%',
@@ -148,22 +176,38 @@ const LuckyNumbersScreen = () => {
   const text = (tr: string, en: string) => (locale === 'en' ? en : tr);
 
   return (
-    <PageLayout title={t('luckyNumbers.title')} cornerArt={luckImage}>
-      <T
-        family="serif"
-        size={fontSize.display}
-        weight="700"
-        color={colors.textDark}
-        style={styles.heroTitle}>
-        {t('luckyNumbers.discoverTitle')}
-      </T>
-      <T
-        size={fontSize.body}
-        weight="400"
-        color={colors.textMuted}
-        style={styles.heroSubtitle}>
-        {t('luckyNumbers.discoverSubtitle')}
-      </T>
+    <PageLayout userHeader={false}>
+      <View style={styles.hero}>
+        <Image
+          source={luckImage}
+          style={styles.heroArt}
+          resizeMode="contain"
+          pointerEvents="none"
+        />
+        <View style={styles.heroBar}>
+          <View style={styles.heroHeader}>
+            <PageHeader title={t('luckyNumbers.title')} />
+          </View>
+          <UserHeader compact />
+        </View>
+        <View style={styles.heroCopy}>
+          <T
+            family="serif"
+            size={fontSize.display}
+            weight="700"
+            color={colors.textDark}
+            style={styles.heroTitle}>
+            {t('luckyNumbers.discoverTitle')}
+          </T>
+          <T
+            size={fontSize.bodySmall}
+            weight="400"
+            color={colors.textMutedDark}
+            style={styles.heroSubtitle}>
+            {t('luckyNumbers.discoverSubtitle')}
+          </T>
+        </View>
+      </View>
       <View style={styles.dailyWrap} collapsable={false}>
         <Image source={luckBanner} style={styles.dailyBg} resizeMode="stretch" />
         <View style={styles.dailyWash} pointerEvents="none" />

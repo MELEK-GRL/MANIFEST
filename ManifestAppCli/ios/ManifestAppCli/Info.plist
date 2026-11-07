@@ -33,6 +33,10 @@
 	</dict>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Profil fotoğrafın için galerine erişilir.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Profil fotoğrafın için galerine erişilir.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Profil fotoğrafın için kameraya erişilir.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string/>
 	<key>UILaunchStoryboardName</key>

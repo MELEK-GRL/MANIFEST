@@ -2,6 +2,7 @@ import React, {useEffect, useMemo, useState} from 'react';
 import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import LinearGradient from 'react-native-linear-gradient';
 import Icon from '../Icons/Icon';
 import T from '../Text/T';
 import colors from '../../theme/colors';
@@ -12,9 +13,13 @@ import {useAuthStore} from '../../store/useAuthStore';
 import {fetchProfile, profilePhotoUrl} from '../../api/auth';
 import type {RootStackParamList} from '../../navigation/types';
 
-const AVATAR = 40;
+const AVATAR = 60;
 
-const UserHeader = () => {
+type Props = {
+  compact?: boolean;
+};
+
+const UserHeader = ({compact = false}: Props) => {
   const t = useT();
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -22,7 +27,7 @@ const UserHeader = () => {
   const token = useAuthStore(state => state.token);
   const username = useAuthStore(state => state.username);
   const photoRevision = useAuthStore(state => state.photoRevision ?? 0);
-  const {w1px, h1px} = useResponsive();
+  const {w1px, h1px, fs1px} = useResponsive();
   const [hasPhoto, setHasPhoto] = useState(false);
   const initial = username?.trim().charAt(0).toUpperCase();
 
@@ -52,10 +57,19 @@ const UserHeader = () => {
     () =>
       StyleSheet.create({
         wrap: {
-          paddingTop: 20 * h1px,
-          paddingBottom: 12 * h1px,
-          marginLeft: 12 * w1px,
+          paddingTop: compact ? 0 : 20 * h1px,
+          paddingBottom: compact ? 0 : 12 * h1px,
+          marginLeft: compact ? 0 : 12 * w1px,
           justifyContent: 'center',
+        },
+        ring: {
+          padding: 1.5 * fs1px,
+          borderRadius: ((AVATAR + 3) / 2) * w1px,
+          shadowColor: colors.primaryDark,
+          shadowOpacity: 0.14,
+          shadowRadius: 8,
+          shadowOffset: {width: 0, height: 3},
+          elevation: 3,
         },
         avatar: {
           width: AVATAR * w1px,
@@ -65,13 +79,15 @@ const UserHeader = () => {
           alignItems: 'center',
           justifyContent: 'center',
           overflow: 'hidden',
+          borderWidth: StyleSheet.hairlineWidth,
+          borderColor: colors.lavender,
         },
         photo: {
-          width: AVATAR * w1px,
-          height: AVATAR * w1px,
+          width: '100%',
+          height: '100%',
         },
       }),
-    [w1px, h1px],
+    [w1px, h1px, fs1px, compact],
   );
 
   const openProfile = () => {
@@ -91,23 +107,29 @@ const UserHeader = () => {
         onPress={openProfile}
         accessibilityRole="button"
         accessibilityLabel={t('tabs.profile')}>
-        <View style={styles.avatar}>
-          {hasPhoto && token ? (
-            <Image
-              source={{
-                uri: profilePhotoUrl(photoRevision),
-                headers: {Authorization: `Bearer ${token}`},
-              }}
-              style={styles.photo}
-            />
-          ) : initial ? (
-            <T family="serif" size={fontSize.label} weight="700" color={colors.primaryDark}>
-              {initial}
-            </T>
-          ) : (
-            <Icon name="person" size="medium" color={colors.primary} />
-          )}
-        </View>
+        <LinearGradient
+          colors={[colors.goldSoft, colors.lavender, colors.goldSoft]}
+          start={{x: 0, y: 0}}
+          end={{x: 1, y: 1}}
+          style={styles.ring}>
+          <View style={styles.avatar}>
+            {hasPhoto && token ? (
+              <Image
+                source={{
+                  uri: profilePhotoUrl(photoRevision),
+                  headers: {Authorization: `Bearer ${token}`},
+                }}
+                style={styles.photo}
+              />
+            ) : initial ? (
+              <T family="serif" size={fontSize.label} weight="700" color={colors.primaryDark}>
+                {initial}
+              </T>
+            ) : (
+              <Icon name="person" size="medium" color={colors.primary} />
+            )}
+          </View>
+        </LinearGradient>
       </TouchableOpacity>
     </View>
   );

@@ -1,6 +1,12 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
-import {launchImageLibrary} from 'react-native-image-picker';
+import {
+  Image,
+  PermissionsAndroid,
+  Platform,
+  Pressable,
+  StyleSheet,
+  View,
+} from 'react-native';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import {ActivityIndicator, Icon, PageLayout, PopupModal, T} from '@components';
 import colors from '../../theme/colors';
@@ -17,13 +23,30 @@ import {
 
 const maxPhotoBytes = 8_000_000;
 
-function isCropCancel(error: unknown) {
+function isPickerCancel(error: unknown) {
   return (
     typeof error === 'object' &&
     error !== null &&
     'code' in error &&
-    (error as {code?: string}).code === 'E_PICKER_CANCELLED'
+    ((error as {code?: string}).code === 'E_PICKER_CANCELLED' ||
+      (error as {code?: string}).code === 'E_NO_LIBRARY_PERMISSION')
   );
+}
+
+async function ensureGalleryPermission() {
+  if (Platform.OS !== 'android') {
+    return true;
+  }
+  if (Platform.Version >= 33) {
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES,
+    );
+    return granted === PermissionsAndroid.RESULTS.GRANTED;
+  }
+  const granted = await PermissionsAndroid.request(
+    PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+  );
+  return granted === PermissionsAndroid.RESULTS.GRANTED;
 }
 
 const ProfileScreen = () => {
@@ -60,39 +83,42 @@ const ProfileScreen = () => {
           paddingTop: 18 * h1px,
         },
         ring: {
-          width: 112 * w1px,
-          height: 112 * w1px,
+          width: 156 * w1px,
+          height: 156 * w1px,
           alignItems: 'center',
           justifyContent: 'center',
+          overflow: 'visible',
+        },
+        avatar: {
+          width: 140 * w1px,
+          height: 140 * w1px,
+          borderRadius: 70 * w1px,
+          backgroundColor: colors.primarySoft,
+          alignItems: 'center',
+          justifyContent: 'center',
+          overflow: 'hidden',
           shadowColor: colors.primaryDark,
           shadowOpacity: 0.16,
           shadowRadius: 12,
           shadowOffset: {width: 0, height: 6},
           elevation: 4,
         },
-        avatar: {
-          width: 112 * w1px,
-          height: 112 * w1px,
-          borderRadius: 56 * w1px,
-          backgroundColor: colors.primarySoft,
-          alignItems: 'center',
-          justifyContent: 'center',
-          overflow: 'hidden',
-        },
         photo: {
-          width: 112 * w1px,
-          height: 112 * w1px,
+          width: 140 * w1px,
+          height: 140 * w1px,
         },
         badge: {
           position: 'absolute',
-          right: 2 * w1px,
-          bottom: 2 * h1px,
-          width: 32 * w1px,
-          height: 32 * w1px,
-          borderRadius: 16 * w1px,
+          right: 6 * w1px,
+          bottom: 6 * h1px,
+          width: 42 * w1px,
+          height: 42 * w1px,
+          borderRadius: 21 * w1px,
           backgroundColor: colors.primary,
           alignItems: 'center',
           justifyContent: 'center',
+          zIndex: 10,
+          elevation: 8,
         },
         details: {
           alignSelf: 'stretch',
@@ -135,29 +161,26 @@ const ProfileScreen = () => {
         }
       : null;
 
-  const pickPhoto = async () => {
-    const result = await launchImageLibrary({
-      mediaType: 'photo',
-      selectionLimit: 1,
-      quality: 0.8,
-    });
-    if (result.didCancel || !result.assets?.length) {
+  const pickPhoto = useCallback(async () => {
+    if (uploading) {
       return;
     }
 
-    const asset = result.assets[0];
-    if (!asset.uri) {
-      setPhotoError(t('profile.photoInvalid'));
+    const allowed = await ensureGalleryPermission();
+    if (!allowed) {
+      setPhotoError(t('profile.photoError'));
       return;
     }
 
-    let cropped;
     try {
-      cropped = await ImageCropPicker.openCropper({
-        path: asset.uri,
+      // Android: open after press ends so Activity can launch cleanly.
+      await new Promise<void>(resolve => setTimeout(resolve, 80));
+
+      const cropped = await ImageCropPicker.openPicker({
         mediaType: 'photo',
         width: 800,
         height: 800,
+        cropping: true,
         cropperCircleOverlay: true,
         showCropFrame: false,
         showCropGuidelines: false,
@@ -168,45 +191,46 @@ const ProfileScreen = () => {
         cropperCancelText: t('common.cancel'),
         cropperTintColor: colors.primary,
       });
+
+      if (cropped.size > maxPhotoBytes) {
+        setPhotoError(t('profile.photoTooLarge'));
+        return;
+      }
+
+      const uri = cropped.path.startsWith('file://')
+        ? cropped.path
+        : `file://${cropped.path}`;
+      const type = cropped.mime === 'image/jpg' ? 'image/jpeg' : cropped.mime;
+      if (type !== 'image/jpeg' && type !== 'image/png') {
+        setPhotoError(t('profile.photoInvalid'));
+        return;
+      }
+
+      setPreviewUri(uri);
+      setUploading(true);
+      try {
+        await uploadProfilePhoto(uri, type, cropped.filename ?? 'photo.jpg');
+        setHasPhoto(true);
+        setPhotoVersion(value => value + 1);
+        useAuthStore.getState().bumpPhoto();
+      } catch (error) {
+        setPreviewUri(null);
+        const code = authErrorCode(error);
+        setPhotoError(
+          code === 'photoInvalid' || code === 'photoTooLarge'
+            ? t(`profile.${code}`)
+            : t('profile.photoError'),
+        );
+      } finally {
+        setUploading(false);
+      }
     } catch (error) {
-      if (isCropCancel(error)) {
+      if (isPickerCancel(error)) {
         return;
       }
       setPhotoError(t('profile.photoError'));
-      return;
     }
-
-    if (cropped.size > maxPhotoBytes) {
-      setPhotoError(t('profile.photoTooLarge'));
-      return;
-    }
-
-    const uri = cropped.path.startsWith('file://') ? cropped.path : `file://${cropped.path}`;
-    const type = cropped.mime === 'image/jpg' ? 'image/jpeg' : cropped.mime;
-    if (type !== 'image/jpeg' && type !== 'image/png') {
-      setPhotoError(t('profile.photoInvalid'));
-      return;
-    }
-
-    setPreviewUri(uri);
-    setUploading(true);
-    try {
-      await uploadProfilePhoto(uri, type, cropped.filename ?? 'photo.jpg');
-      setHasPhoto(true);
-      setPhotoVersion(value => value + 1);
-      useAuthStore.getState().bumpPhoto();
-    } catch (error) {
-      setPreviewUri(null);
-      const code = authErrorCode(error);
-      setPhotoError(
-        code === 'photoInvalid' || code === 'photoTooLarge'
-          ? t(`profile.${code}`)
-          : t('profile.photoError'),
-      );
-    } finally {
-      setUploading(false);
-    }
-  };
+  }, [t, uploading]);
 
   return (
     <PageLayout
@@ -214,13 +238,12 @@ const ProfileScreen = () => {
       subtitle={t('profile.subtitle')}
       userHeader={false}>
       <View style={styles.page}>
-        <TouchableOpacity
-          activeOpacity={0.85}
-          disabled={uploading}
-          onPress={pickPhoto}
-          accessibilityRole="button"
-          accessibilityLabel={t(hasPhoto ? 'profile.changePhoto' : 'profile.addPhoto')}>
-          <View style={styles.ring}>
+        <View style={styles.ring}>
+          <Pressable
+            disabled={uploading}
+            onPress={pickPhoto}
+            accessibilityRole="button"
+            accessibilityLabel={t(hasPhoto ? 'profile.changePhoto' : 'profile.addPhoto')}>
             <View style={styles.avatar}>
               {photoSource ? (
                 <Image source={photoSource} style={styles.photo} />
@@ -232,15 +255,21 @@ const ProfileScreen = () => {
                 <Icon name="person" size="xxl" color={colors.primary} />
               )}
             </View>
-            <View style={styles.badge}>
-              {uploading ? (
-                <ActivityIndicator size="small" color={colors.textWhite} />
-              ) : (
-                <Icon name="camera-outline" size="small" color={colors.textWhite} />
-              )}
-            </View>
-          </View>
-        </TouchableOpacity>
+          </Pressable>
+          <Pressable
+            style={styles.badge}
+            disabled={uploading}
+            onPress={pickPhoto}
+            hitSlop={16}
+            accessibilityRole="button"
+            accessibilityLabel={t(hasPhoto ? 'profile.changePhoto' : 'profile.addPhoto')}>
+            {uploading ? (
+              <ActivityIndicator size="small" color={colors.textWhite} />
+            ) : (
+              <Icon name="camera-outline" size="medium" color={colors.textWhite} />
+            )}
+          </Pressable>
+        </View>
         <View style={styles.details}>
           <View style={styles.row}>
             <View style={styles.iconCircle}>
