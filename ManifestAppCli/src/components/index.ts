@@ -3,7 +3,6 @@ export {default as ActivityIndicator} from './ActivityIndicator/ActivityIndicato
 export {default as Button} from './Buttons/Button';
 export {default as Header} from './Headers/Header';
 export {default as PageHeader} from './Headers/PageHeader';
-export {default as UserHeader} from './Headers/UserHeader';
 export {default as CenterModal} from './Modals/CenterModal';
 export {default as PopupModal} from './Modals/PopupModal';
 export {default as BottomMenu} from './Menu/BottomMenu';

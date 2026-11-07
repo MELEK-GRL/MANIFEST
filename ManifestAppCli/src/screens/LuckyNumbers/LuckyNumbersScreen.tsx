@@ -1,7 +1,7 @@
 import React, {useMemo} from 'react';
 import {Image, StyleSheet, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import {Icon, PageHeader, PageLayout, T, UserHeader} from '@components';
+import {Icon, PageHeader, PageLayout, T} from '@components';
 import {grabovoiDaily, grabovoiData} from '../../data/LuckyNumbers/grabovoi';
 import {useLocaleStore, useT} from '../../store/useLocaleStore';
 import colors from '../../theme/colors';
@@ -44,16 +44,9 @@ const LuckyNumbersScreen = () => {
           height: 220 * h1px,
           opacity: 0.95,
         },
-        heroBar: {
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          marginBottom: 8 * h1px,
-          zIndex: 2,
-        },
         heroHeader: {
-          flex: 1,
-          paddingRight: 12 * w1px,
+          zIndex: 2,
+          marginBottom: 8 * h1px,
         },
         heroCopy: {
           paddingRight: 128 * w1px,
@@ -184,11 +177,8 @@ const LuckyNumbersScreen = () => {
           resizeMode="contain"
           pointerEvents="none"
         />
-        <View style={styles.heroBar}>
-          <View style={styles.heroHeader}>
-            <PageHeader title={t('luckyNumbers.title')} />
-          </View>
-          <UserHeader compact />
+        <View style={styles.heroHeader}>
+          <PageHeader title={t('luckyNumbers.title')} />
         </View>
         <View style={styles.heroCopy}>
           <T

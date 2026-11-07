@@ -13,7 +13,6 @@ import LinearGradient from 'react-native-linear-gradient';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import BottomMenu from '../Menu/BottomMenu';
 import PageHeader from '../Headers/PageHeader';
-import UserHeader from '../Headers/UserHeader';
 import T from '../Text/T';
 import colors from '../../theme/colors';
 import {fontSize} from '../../constants/typography';
@@ -86,14 +85,9 @@ const PageLayout: React.FC<Props> = ({
           height: 260 * h1px,
           zIndex: 0,
         },
-        headerRow: {
-          flexDirection: 'row',
-          alignItems: 'center',
+        header: {
           width: '100%',
           zIndex: 2,
-        },
-        title: {
-          flex: 1,
         },
         subtitle: {
           marginTop: 6 * h1px,
@@ -132,11 +126,8 @@ const PageLayout: React.FC<Props> = ({
         />
       ) : null}
       {title ? (
-        <View style={styles.headerRow}>
-          <View style={styles.title}>
-            <PageHeader title={title} />
-          </View>
-          {userHeader ? <UserHeader /> : null}
+        <View style={styles.header}>
+          <PageHeader title={title} showProfile={userHeader} />
         </View>
       ) : null}
       {subtitle ? (
