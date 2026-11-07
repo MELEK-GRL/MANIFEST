@@ -1,6 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {
-  Image,
   StyleSheet,
   TouchableOpacity,
   View,
@@ -11,14 +10,13 @@ import ImageCropPicker from 'react-native-image-crop-picker';
 import {useNavigation} from '@react-navigation/native';
 import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {
-  Button,
   CenterModal,
   Icon,
   PageLayout,
   PopupModal,
   T,
   TextInput,
-  VisionBoardCanvas,
+  VisionBoardWorkspace,
 } from '@components';
 import {
   addVisionBoardItem,
@@ -40,7 +38,6 @@ import {
   appendSavedBoard,
   createDefaultDreamCard,
   holderFromIndex,
-  loadSavedBoards,
   normalizeDreamCards,
   normalizeItem,
   noteHeightFor,
@@ -50,10 +47,9 @@ import {
   type DraftPayload,
   type DreamCard,
   type DreamItem,
-  type SavedVisionBoard,
 } from '../../components/VisionBoard';
 import {useAuthStore} from '../../store/useAuthStore';
-import {useLocaleStore, useT} from '../../store/useLocaleStore';
+import {useT} from '../../store/useLocaleStore';
 import colors from '../../theme/colors';
 import {fontSize} from '../../constants/typography';
 import {useResponsive} from '../../utils/deviceStore/device';
@@ -61,7 +57,6 @@ import type {RootStackParamList} from '../../navigation/types';
 
 const VisionBoardScreen = () => {
   const t = useT();
-  const locale = useLocaleStore(state => state.locale);
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const token = useAuthStore(state => state.token);
@@ -86,7 +81,6 @@ const VisionBoardScreen = () => {
   const [loading, setLoading] = useState(true);
   const [cacheReady, setCacheReady] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [savedBoards, setSavedBoards] = useState<SavedVisionBoard[]>([]);
   const [modal, setModal] = useState<{
     visible: boolean;
     type: 'success' | 'error' | 'danger';
@@ -104,25 +98,6 @@ const VisionBoardScreen = () => {
         },
         leadText: {
           lineHeight: 21 * fs1px,
-        },
-        hintRow: {
-          flexDirection: 'row',
-          alignItems: 'center',
-          gap: 6 * w1px,
-          marginBottom: 10 * h1px,
-        },
-        actions: {
-          gap: 8 * h1px,
-          marginBottom: 14 * h1px,
-        },
-        actionsRow: {
-          flexDirection: 'row',
-          alignItems: 'center',
-          gap: 8 * w1px,
-        },
-        actionBtn: {
-          flex: 1,
-          minWidth: 0,
         },
         editorBody: {
           width: '100%',
@@ -158,45 +133,9 @@ const VisionBoardScreen = () => {
         editorCount: {
           alignSelf: 'flex-end',
         },
-        savedSection: {
-          marginTop: 18 * h1px,
-          gap: 10 * h1px,
-        },
-        savedCard: {
-          flexDirection: 'row',
-          alignItems: 'center',
-          gap: 12 * w1px,
-          padding: 12 * w1px,
-          borderRadius: 18 * fs1px,
-          backgroundColor: colors.white,
-          borderWidth: 1,
-          borderColor: colors.borderSoft,
-        },
-        savedCover: {
-          width: 56 * w1px,
-          height: 56 * w1px,
-          borderRadius: 14 * fs1px,
-          backgroundColor: colors.lavender,
-          alignItems: 'center',
-          justifyContent: 'center',
-          overflow: 'hidden',
-        },
-        savedCoverImage: {
-          width: '100%',
-          height: '100%',
-        },
-        savedBody: {
-          flex: 1,
-          minWidth: 0,
-          gap: 2 * h1px,
-        },
       }),
     [w1px, h1px, fs1px],
   );
-
-  const refreshSavedBoards = useCallback(async () => {
-    setSavedBoards(await loadSavedBoards());
-  }, []);
 
   const updateItem = useCallback((key: string, next: Partial<BoardItem>) => {
     setItems(prev => prev.map(it => (it.key === key ? {...it, ...next} : it)));
@@ -331,14 +270,6 @@ const VisionBoardScreen = () => {
   useEffect(() => {
     loadBoard();
   }, [loadBoard]);
-
-  useEffect(() => {
-    refreshSavedBoards();
-    const unsubscribe = navigation.addListener('focus', () => {
-      refreshSavedBoards();
-    });
-    return unsubscribe;
-  }, [navigation, refreshSavedBoards]);
 
   useEffect(() => {
     if (!cacheReady || loading) {
@@ -723,7 +654,6 @@ const VisionBoardScreen = () => {
         dreamCards,
         coverUri: nextItems[0]?.uri,
       });
-      await refreshSavedBoards();
       showModal('success', t('vision.saved'));
     } catch (error) {
       const code = visionBoardErrorCode(error);
@@ -765,61 +695,18 @@ const VisionBoardScreen = () => {
         </T>
       </View>
 
-      <View style={styles.hintRow}>
-        <Icon name="move-outline" size="small" color={colors.gold} />
-        <T size={fontSize.caption} weight="500" color={colors.textMuted}>
-          {t('vision.hint')}
-        </T>
-      </View>
-
-      <View style={styles.actions}>
-        <View style={styles.actionsRow}>
-          <View style={styles.actionBtn}>
-            <Button
-              buttonText={t('vision.addMore')}
-              icon="add"
-              variant="secondary"
-              size="compact"
-              disabled={dreamCards.length >= MAX_DREAM_CARDS}
-              onPress={addDreamCard}
-            />
-          </View>
-          <View style={styles.actionBtn}>
-            <Button
-              buttonText={saving ? t('vision.saving') : t('vision.save')}
-              icon="checkmark"
-              variant="primary"
-              size="compact"
-              disabled={!canSave}
-              loading={saving}
-              onPress={saveBoard}
-            />
-          </View>
-        </View>
-        <View style={styles.actionsRow}>
-          <View style={styles.actionBtn}>
-            <Button
-              buttonText={t('vision.addPhoto')}
-              icon="image-outline"
-              variant="secondary"
-              size="compact"
-              onPress={addPhoto}
-            />
-          </View>
-          <View style={styles.actionBtn}>
-            <Button
-              buttonText={t('vision.clearAll')}
-              icon="trash-outline"
-              variant="danger"
-              size="compact"
-              disabled={!canClear}
-              onPress={requestClearAll}
-            />
-          </View>
-        </View>
-      </View>
-
-      <VisionBoardCanvas
+      <VisionBoardWorkspace
+        hintText={t('vision.hint')}
+        showListButton
+        addCardDisabled={dreamCards.length >= MAX_DREAM_CARDS}
+        saveDisabled={!canSave}
+        clearDisabled={!canClear}
+        saving={saving}
+        onAddCard={addDreamCard}
+        onSave={saveBoard}
+        onAddPhoto={addPhoto}
+        onClear={requestClearAll}
+        onOpenList={() => navigation.navigate('VisionBoardList')}
         items={items}
         dreamCards={dreamCards}
         board={board}
@@ -828,11 +715,6 @@ const VisionBoardScreen = () => {
         token={token}
         selectedKey={selectedKey}
         activeDreamCardId={activeDreamCardId}
-        motto={t('vision.motto')}
-        dreamListTitle={t('vision.dreamListTitle')}
-        dreamEmpty={t('vision.dreamEmpty')}
-        dreamDeleteCard={t('vision.dreamDeleteCard')}
-        deleteLabel={t('vision.delete')}
         onBoardLayout={onBoardLayout}
         onSelectPhoto={setSelectedKey}
         onChangePhoto={updateItem}
@@ -843,79 +725,6 @@ const VisionBoardScreen = () => {
         onDeleteDreamCard={deleteDreamCard}
         onRemoveDream={removeDream}
       />
-
-      <View style={styles.savedSection}>
-        <T size={fontSize.subtitle} weight="700" color={colors.primaryDark}>
-          {t('vision.savedListTitle')}
-        </T>
-        {savedBoards.length === 0 ? (
-          <T size={fontSize.bodySmall} weight="400" color={colors.textMuted}>
-            {t('vision.savedEmpty')}
-          </T>
-        ) : (
-          savedBoards.map(entry => {
-            let dateLabel = entry.savedAt;
-            try {
-              dateLabel = new Date(entry.savedAt).toLocaleString(
-                locale === 'tr' ? 'tr-TR' : 'en-US',
-                {dateStyle: 'medium', timeStyle: 'short'},
-              );
-            } catch {
-              // keep raw
-            }
-            return (
-              <TouchableOpacity
-                key={entry.id}
-                style={styles.savedCard}
-                activeOpacity={0.88}
-                onPress={() =>
-                  navigation.navigate('VisionBoardDetail', {boardId: entry.id})
-                }
-                accessibilityRole="button"
-                accessibilityLabel={t('vision.savedOpen')}>
-                <View style={styles.savedCover}>
-                  {entry.coverUri ? (
-                    <Image
-                      source={{
-                        uri: entry.coverUri,
-                        headers: token
-                          ? {Authorization: `Bearer ${token}`}
-                          : undefined,
-                      }}
-                      style={styles.savedCoverImage}
-                    />
-                  ) : (
-                    <Icon name="heart" size="small" color={colors.primary} />
-                  )}
-                </View>
-                <View style={styles.savedBody}>
-                  <T
-                    size={fontSize.label}
-                    weight="700"
-                    color={colors.primaryDark}
-                    numberOfLines={1}>
-                    {dateLabel}
-                  </T>
-                  <T
-                    size={fontSize.caption}
-                    weight="500"
-                    color={colors.textMuted}
-                    numberOfLines={1}>
-                    {t('vision.savedMeta')
-                      .replace('{photos}', String(entry.photoCount))
-                      .replace('{dreams}', String(entry.dreamCount))}
-                  </T>
-                </View>
-                <Icon
-                  name="chevron-forward"
-                  size="small"
-                  color={colors.primary}
-                />
-              </TouchableOpacity>
-            );
-          })
-        )}
-      </View>
 
       <CenterModal
         visible={cardEditor.visible}

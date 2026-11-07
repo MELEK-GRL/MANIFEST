@@ -9,14 +9,13 @@ import ImageCropPicker from 'react-native-image-crop-picker';
 import {useNavigation, useRoute, type RouteProp} from '@react-navigation/native';
 import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {
-  Button,
   CenterModal,
   Icon,
   PageLayout,
   PopupModal,
   T,
   TextInput,
-  VisionBoardCanvas,
+  VisionBoardWorkspace,
 } from '@components';
 import {
   addVisionBoardItem,
@@ -160,25 +159,6 @@ const VisionBoardDetailScreen = () => {
         topText: {
           flex: 1,
           gap: 2 * h1px,
-        },
-        hintRow: {
-          flexDirection: 'row',
-          alignItems: 'center',
-          gap: 6 * w1px,
-          marginBottom: 10 * h1px,
-        },
-        actions: {
-          gap: 8 * h1px,
-          marginBottom: 14 * h1px,
-        },
-        actionsRow: {
-          flexDirection: 'row',
-          alignItems: 'center',
-          gap: 8 * w1px,
-        },
-        actionBtn: {
-          flex: 1,
-          minWidth: 0,
         },
         editorBody: {
           width: '100%',
@@ -653,61 +633,17 @@ const VisionBoardDetailScreen = () => {
         </View>
       ) : (
         <>
-          <View style={styles.hintRow}>
-            <Icon name="create-outline" size="small" color={colors.gold} />
-            <T size={fontSize.caption} weight="500" color={colors.textMuted}>
-              {t('vision.detailHint')}
-            </T>
-          </View>
-
-          <View style={styles.actions}>
-            <View style={styles.actionsRow}>
-              <View style={styles.actionBtn}>
-                <Button
-                  buttonText={t('vision.addMore')}
-                  icon="add"
-                  variant="secondary"
-                  size="compact"
-                  disabled={dreamCards.length >= MAX_DREAM_CARDS}
-                  onPress={openCreateCardEditor}
-                />
-              </View>
-              <View style={styles.actionBtn}>
-                <Button
-                  buttonText={saving ? t('vision.saving') : t('vision.save')}
-                  icon="checkmark"
-                  variant="primary"
-                  size="compact"
-                  disabled={!canSave}
-                  loading={saving}
-                  onPress={saveBoard}
-                />
-              </View>
-            </View>
-            <View style={styles.actionsRow}>
-              <View style={styles.actionBtn}>
-                <Button
-                  buttonText={t('vision.addPhoto')}
-                  icon="image-outline"
-                  variant="secondary"
-                  size="compact"
-                  onPress={addPhoto}
-                />
-              </View>
-              <View style={styles.actionBtn}>
-                <Button
-                  buttonText={t('vision.clearAll')}
-                  icon="trash-outline"
-                  variant="danger"
-                  size="compact"
-                  disabled={!canClear}
-                  onPress={requestClearAll}
-                />
-              </View>
-            </View>
-          </View>
-
-          <VisionBoardCanvas
+          <VisionBoardWorkspace
+            hintIcon="create-outline"
+            hintText={t('vision.detailHint')}
+            addCardDisabled={dreamCards.length >= MAX_DREAM_CARDS}
+            saveDisabled={!canSave}
+            clearDisabled={!canClear}
+            saving={saving}
+            onAddCard={openCreateCardEditor}
+            onSave={saveBoard}
+            onAddPhoto={addPhoto}
+            onClear={requestClearAll}
             items={items}
             dreamCards={dreamCards}
             board={board}
@@ -716,11 +652,6 @@ const VisionBoardDetailScreen = () => {
             token={token}
             selectedKey={selectedKey}
             activeDreamCardId={activeDreamCardId}
-            motto={t('vision.motto')}
-            dreamListTitle={t('vision.dreamListTitle')}
-            dreamEmpty={t('vision.dreamEmpty')}
-            dreamDeleteCard={t('vision.dreamDeleteCard')}
-            deleteLabel={t('vision.delete')}
             onBoardLayout={onBoardLayout}
             onSelectPhoto={setSelectedKey}
             onChangePhoto={updateItem}

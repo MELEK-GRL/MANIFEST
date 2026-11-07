@@ -1,4 +1,5 @@
 export {default as VisionBoardCanvas} from './VisionBoardCanvas';
+export {default as VisionBoardWorkspace} from './VisionBoardWorkspace';
 export {normalizeItem, DreamCardPreview} from './VisionBoardPieces';
 export {
   ITEM_WIDTH,
